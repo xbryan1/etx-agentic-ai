@@ -13,7 +13,7 @@ metadata:
     meta.helm.sh/release-namespace: demo-application2
     openshift.io/host.generated: 'true'
   name: undertow-servlet
-  namespace: demo-application4
+  namespace: demo-pipeline
 spec:
   port:
     targetPort: 8080-tcp

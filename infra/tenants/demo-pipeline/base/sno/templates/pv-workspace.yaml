@@ -4,7 +4,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: shared-workspace
-  namespace: demo-application4
+  namespace: demo-pipeline
 spec:
   resources:
     requests:
