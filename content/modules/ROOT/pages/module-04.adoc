@@ -1,0 +1,917 @@
+= Using Llama Stack
+
+[IMPORTANT]
+.In this section
+====
+We are going to build out the LlamaStack server configuration from the ground up. Along the way we will use the LlamaStack playground UI as a test client and show how to configure providers, models and MCP servers.
+
+In the final section we will use the playground to develop our Use Case specific prompts.
+====
+
+== Create an LLM
+
+It is nice to have a small LLM available locally to validate the default deployment of LlamaStack. We can test in an isolated fashion our configuration.
+
+Since we have a GPU available we can deploy the **models** gitops application which contains a reference deployment of the **granite-31-2b-instruct** model. The same app also deploys out the secrets for the **Models as a Service (MaaS)** that we setup in the bootstrap phase.
+
+. Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/models.yaml.undeploy[**infra/app-of-apps/sno/models.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/models.yaml[**infra/app-of-apps/sno/models.yaml**,window=_blank]
++ 
+image::models-deploy.png[Models Deploy, 300]
+
+. Check this file into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy default models"; git push
+----
+
+. Check ArgoCD that **models** has appeared under the **etx-app-of-apps**
++ 
+image::models-etx-app-of-apps.png[Models GitOps, 800]
+
+. Check ACM Policies that **models-serving** has appeared with the expected results - we can see the MaaS secrets and the default granite model
++ 
+image::models-policy.png[Models Policy, 800]
+
+. Check in RHOAI that there is a model deployment in the **vllm-server** namespace
++ 
+image::models-rhoai.png[Models RHOAI, 800]
+
+. Check that the external route becomes available in RHOAI - the model's OpenAI docs can be seen in OpenAPI - you need to append **/docs** to the URL to browse them
++ 
+image::models-granite-swagger.png[Models OpenAI, 800]
+
+. Check the call to the models endpoint **/v1/models** returns OK
++ 
+image::models-swagger-v1-models.png[Models OpenAI v1/models, 800]
+
+. You can checkout the model deployment code here https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml[**infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml**,window=_blank]
++ 
+image::models-deploy-code.png[Models Code, 300]
+
+== LlamaStack
+
+https://llama-stack.readthedocs.io/en/latest/[LlamaStack,window=_blank] is the open-source framework for building generative AI applications. We are going to deploy LlamaStack using the Operator and then take a look around using the client CLI and the playground UI.
+
+== LlamaStack K8s Operator
+
+https://github.com/llamastack/llama-stack-k8s-operator[Github Upstream link,window=_blank].
+
+The Llama Stack K8s Operator is a Kubernetes operator that automates the deployment and management of Llama Stack servers in Kubernetes environments. It provides a declarative way to manage AI model serving infrastructure. It is:
+
+. Kubernetes native and follows standard operator development pattern.
+. Supports Ollama and vLLM inference providers
+. Allows configuring and managing LlamaStack servers and client instances.
+
+== DataScienceCluster Custom Resource
+
+[WARNING]
+====
+**VERSION 2.22 DOES NOT HAVE USERCONFIG MAP OVERRIDE SO DO NOT USE DSC YET - SCHEDULED FOR 2.23 **
+
+With the latest version of RHOAI 2.22.0+ we can use the built in DSC (Data Science Cluster) mechanism to deploy the operator.
+
+. Ensure the DataScienceCluster resource has the **llamastackoperator** component as **Managed**
++
+[source,yaml,options="wrap"]
+----
+apiVersion: datasciencecluster.opendatahub.io/v1
+kind: DataScienceCluster
+metadata:
+  name: default-dsc
+spec:
+  components:
+    ...
+    llamastackoperator:
+      managementState: Managed
+    ...
+status: {}
+----
+
+. Check the LlamaStack controller manager pod is running in the **redhat-ods-applications** Namespace
++ 
+image::llama-stack-controller-manager.png[LlamaStack Controller Manager Pod, 800]
+====
+
+. Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack-operator.yaml.undeploy[**infra/app-of-apps/sno/llama-stack-operator.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack-operator.yaml[**infra/app-of-apps/sno/llama-stack-operator.yaml**,window=_blank]
++ 
+image::llama-stack-operator-deploy.png[LlamaStack Operator, 300]
+
+. Check this file into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llamastack operator"; git push
+----
+
+. Check the LlamaStack controller manager pod is running in the **llama-stack-k8s-operator-controller-manager** Namespace
++ 
+image::llama-stack-controller-manager2.png[LlamaStack Controller Manager Pod, 800]
+
+== LlamaStackDistribution Custom Resource
+
+The `LlamaStackDistribution` is the main custom resource that defines how a Llama Stack server should be deployed. It allows you to specify:
+
+* **Server Configuration**: Which distribution to use (Ollama, vLLM, etc.)
+* **Container Specifications**: Port, environment variables, resource limits
+
+You may have many LlamaStackDistribution instances deployed in a cluster.
+
+=== Example LlamaStackDistribution
+
+Here is a very basic configuration. Note that the RHOAI distribution is named **rh-dev** and the upstream is named **remote-vllm**
+
+[source,yaml,options="wrap"]
+----
+apiVersion: llamastack.io/v1alpha1
+kind: LlamaStackDistribution
+metadata:
+   name: llamastack-with-config
+spec:
+   replicas: 1
+   server:
+     distribution:
+       name: rh-dev # remote-vllm (upstream)
+     containerSpec:
+       port: 8321
+     userConfig:
+        # reference to the configmap that contains Llama stack configuration.
+       configMapName: llama-stack-config 
+----
+
+== Using ConfigMap for run.yaml Configuration
+
+The operator supports using ConfigMaps to store the https://github.com/meta-llama/llama-stack/blob/main/llama_stack/templates/nvidia/run.yaml[run.yaml,window=_blank] configuration file. 
+
+* **Centralized Configuration**: Store all Llama Stack settings in one place
+* **Dynamic Updates**: Changes to the ConfigMap automatically restart pods to load new configuration
+* **Environment-Specific Configs**: Use different ConfigMaps for different environments
+
+=== ConfigMap Basic Example
+
+. Here is a basic example of the **run.yaml** config provided to our LlamaStack deployment that has just the Tavily Web Search provider configured.
++
+[source,yaml,options="wrap"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llamastack-config
+data:
+  run.yaml: |
+    # Llama Stack configuration
+    version: '2'
+    image_name: vllm
+    apis:
+    - tool_runtime
+    providers:
+      tool_runtime:
+      - provider_id: tavily-search
+        provider_type: remote::tavily-search
+        config:
+          api_key: ${env.TAVILY_API_KEY}
+          max_results: 3
+    tools:
+      - name: builtin::websearch
+        enabled: true
+    tool_groups:
+    - provider_id: tavily-search
+      toolgroup_id: builtin::websearch
+    server:
+      port: 8321
+----
+
+. Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack.yaml.undeploy[**infra/app-of-apps/sno/llama-stack.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack.yaml[**llama-stack.yaml**,window=_blank]
++ 
+image::llama-stack-deploy.png[LlamaStack Deploy, 300]
+
+. Edit the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/policy-generator-config.yaml[**infra/applications/llama-stack/overlay/policy-generator-config.yaml**,window=_blank] to point to the **basic/** folder
++
+image::llama-stack-basic.png[LlamaStack Basic, 300]
++
+TIP: If **PolicyGenerator** is new to you, checkout the https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.13/html/governance/policy-deployment#integrate-policy-generator[policy generator product documentation,window=_blank]
+
+. Check these files into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack distribution"; git push
+----
+
+. Check ArgoCD, ACM for LlamaStack
++
+image::llama-stack-basic-argocd.png[LlamaStack Basic ArgoCD, 800]
++
+image::llama-stack-basic-acm.png[LlamaStack Basic ACM, 800]
+
+. Check LlamaStack pod is running OK, check its logs
++
+image::llama-stack-basic-pod.png[LlamaStack Basic Pod, 800]
+
+. Install the **llama-stack-client** - either in a notebook, or from your jumphost - ideally we match client and server versions
++
+[source,bash,options="wrap",role="execute"]
+----
+pip install llama-stack-client==0.2.12
+----
+
+. Port forward the LlamaStack port so we can connect to it (in a workbench you can use the Service as the **--endpoint** argument)
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n llama-stack port-forward svc/llamastack-with-config-service 8321:8321 2>&1>/dev/null &
+----
++
+TIP: You will need to restart this port-forward when the LlamaStack pod restarts
+
+. Check the connection by listing the version - ideally we match client and server versions
++
+[source,bash,options="wrap",role="execute"]
+----
+llama-stack-client inspect version
+----
++
+[source,bash,options="wrap"]
+----
+INFO:httpx:HTTP Request: GET http://localhost:8321/v1/version "HTTP/1.1 200 OK"
+VersionInfo(version='0.2.12')
+----
+
+. If you need help with the client commands, take a look at
++
+[source,bash,options="wrap",role="execute"]
+----
+llama-stack-client --help
+----
+
+. Now list the providers - this should match what we have configured so far i.e. Tavily Web Search
++
+[source,bash,options="wrap",role="execute"]
+----
+llama-stack-client providers list
+----
++
+[source,bash,options="wrap"]
+----
+INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK"
+┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ API          ┃ Provider ID   ┃ Provider Type         ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ tool_runtime │ tavily-search │ remote::tavily-search │
+└──────────────┴───────────────┴───────────────────────┘
+----
+
+. Done ✅
+
+=== ConfigMap Basic Model Example
+
+. Lets add our **granite-31-2b** model to LlamaStack. As it is being served up by vLLM, we add a **remote::vllm** provider to LlamaStack under **providers/inference** in the **run.yaml**. We can set various config parameters such as the model name, the context length, tls verification and the model OpenAI endpoint URL with **/v1** appended to it. We also set up a **models** entry as well as adding the **-inference** to apis.
++
+[source,yaml,options="wrap"]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llamastack-config
+data:
+  run.yaml: |
+    # Llama Stack configuration
+    version: '2'
+    image_name: vllm
+    apis:
+    - inference
+    - tool_runtime
+    models:
+      - metadata: {}
+        model_id: granite-31-2b-instruct
+        provider_id: vllm
+        provider_model_id: granite-31-2b-instruct
+        model_type: llm
+    providers:
+      inference:
+      - provider_id: vllm
+        provider_type: "remote::vllm"
+        config:
+          url: "url: "https://granite-31-2b-instruct.vllm-server.svc.cluster.local/v1"
+          name: llama3.2:1b
+          context_length: 4096
+          tls_verify: false
+      tool_runtime:
+      - provider_id: tavily-search
+        provider_type: remote::tavily-search
+        config:
+          api_key: ${env.TAVILY_API_KEY}
+          max_results: 3
+    tools:
+      - name: builtin::websearch
+        enabled: true
+    tool_groups:
+    - provider_id: tavily-search
+      toolgroup_id: builtin::websearch
+    server:
+      port: 8321
+----
+
+. Edit the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/policy-generator-config.yaml[**infra/applications/llama-stack/overlay/policy-generator-config.yaml**,window=_blank] to point to the **basic-model/** folder
++
+image::llama-stack-basic-model.png[LlamaStack Basic Model, 300]
+
+. Check this file into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack with basic-model"; git push
+----
+
+. When we update the ConfigMap run.yaml the LlamaStack Pod is restarted automatically by the controller
+
+. Now list the providers again - this should match what we have configured so far i.e. Tavily Web Search and Inference
++
+[source,bash,options="wrap",role="execute"]
+----
+llama-stack-client providers list
+----
++
+[source,bash,options="wrap"]
+----
+INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK"
+┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ API          ┃ Provider ID   ┃ Provider Type         ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ inference    │ vllm          │ remote::vllm          │
+│ tool_runtime │ tavily-search │ remote::tavily-search │
+└──────────────┴───────────────┴───────────────────────┘
+----
+
+. Now list the models
++
+[source,bash,options="wrap",role="execute"]
+----
+llama-stack-client models list
+----
++
+[source,bash,options="wrap"]
+----
+INFO:httpx:HTTP Request: GET http://localhost:8321/v1/models "HTTP/1.1 200 OK"
+
+Available Models
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ model_type                   ┃ identifier                                               ┃ provider_resource_id                                     ┃ metadata               ┃ provider_id                   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ llm                          │ granite-31-2b-instruct                                   │ granite-31-2b-instruct                                   │                        │ vllm                          │
+└──────────────────────────────┴──────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────┴────────────────────────┴───────────────────────────────┘
+
+Total models: 1
+----
+
+=== LlamaStack User Interface
+
+. LlamaStack comes with a simple UI. Let's deploy it so we can start using our LLM and Web Search tool. Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack-playground.yaml.undeploy[**infra/app-of-apps/sno/llama-stack-playground.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack-playground.yaml[**llama-stack-playground.yaml**,window=_blank]
++ 
+image::llama-stack-playground-deploy.png[LlamaStack Deploy, 300]
+
+. Check ArgoCD, ACM and the **llama-stack-playground** Deployment in the **llama-stack** Namespace
++
+image::llama-stack-playground-argocd.png[LlamaStack Playground ArgoCD, 800]
++
+image::llama-stack-playground-acm.png[LlamaStack Playground ACM, 800]
++
+image::llama-stack-playground2.png[LlamaStack Playground UI, 800]
+
+. We can Chat with the LLM - this calls the **/v1/chat/completion** endpoint that we can find in the OpenAI docs for the vLLM served model. You can prompt it to check the connection is working. Ask the LLM some more complex questions such as _"What is LlamaStack"_ to see if it contains that information.
++
+image::llama-stack-playground-hello.png[LlamaStack Playground Hello, 800]
+
+. If we select the Tools section in the playground we should get an error that looks like this. It is instructive to debug this a little. We can see the built in tools websearch is configured OK on the left of the UI. If we read the stack trace error we see that the code seems to be erroring on **Agent**. So, we will need to configure a basic agent config for the Tool's section of the playground to work.
++
+image::llama-stack-playground-tools-error.png[LlamaStack Playground Hello, 800]
+
+. We have added in the **agents** configuration under the **basic-model-agent** overlay. It includes the following additions.
++
+[source,yaml,options="wrap"]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: llama-stack-config
+  namespace: default
+data:
+  run.yaml: |
+    apis:
+    - agents
+    - safety
+    - vector_io
+...
+    providers:
+      agents:
+      - provider_id: meta-reference
+        provider_type: inline::meta-reference
+        config:
+          persistence_store:
+            type: sqlite
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/agents_store.db
+          responses_store:
+            type: sqlite
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/responses_store.db
+...
+----
+
+. Edit the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/policy-generator-config.yaml[**infra/applications/llama-stack/overlay/policy-generator-config.yaml**,window=_blank] to point to the **basic-model/** folder
++
+image::llama-stack-basic-model-agent.png[LlamaStack Basic Model Agent, 300]
+
+. Check these files into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack with basic-model-agent"; git push
+----
+
+. Once LlamaStack pod restarts, we can Refresh the playground UI and the error should now be cleared. Select the **websearch** Tool and prompt the model for information it will not have e.g. "What is the weather today in Brisbane ?". In the playground this actually uses the **Regular** agent to call the Tool. The LLM makes its own decision to call the Tool. The tool returns a result to LLM and allows LLM to perform a new decision. This process loops until the LLM decides that a result can be provided to the user or certain conditions are met. The LLM produces a final result for the agent.
++
+image::agent.png[Agent, 600]
++
+image::llama-stack-websearch-agent.png[LlamaStack Websearch Agent, 800]
+
+. Try out the **ReAct** agent to call the tool with the same prompt - "What is the weather today in Brisbane ?". Notice that the agent first Reasons - where the LLM thins about the data or tool results, Acts - where the LLM performs an action, LLM then Observes the result of the tool call, before returning the result. This is the essence of the ReAct agent pattern.
++
+image::react-agent.png[ReAct Agent, 600]
++
+image::llama-stack-websearch-react.png[LlamaStack Websearch ReAct Agent, 800]
+
+. Done ✅
+
+=== LlamaStack integrate with MaaS
+
+By this point in time, we should be getting a feel for how to configure LlamaStack. Let's add in our other models from the MaaS.
+
+. Open the MaaS configuration under the **maas** overlay. We can see the two MaaS models - **llama-3-2-3b** and **llama-4-scout-17b-16e-w4a16** along with their "remote::vllm" provider entries.
++
+[source,yaml,options="wrap"]
+----
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: llama-stack-config
+  namespace: default
+data:
+  run.yaml: |
+    # Llama Stack configuration
+    version: '2'
+    image_name: vllm
+    apis:
+    - agents
+    - inference
+    - safety
+    - tool_runtime
+    - vector_io
+    models:
+      - metadata: {}
+        model_id: granite-31-2b-instruct
+        provider_id: vllm
+        provider_model_id: granite-31-2b-instruct
+        model_type: llm
+      - metadata: {}
+        model_id: llama-3-2-3b
+        provider_id: vllm-llama-3-2-3b
+        provider_model_id: llama-3-2-3b
+        model_type: llm
+      - metadata: {}
+        model_id: llama-4-scout-17b-16e-w4a16
+        provider_id: vllm-llama-4-guard
+        provider_model_id: llama-4-scout-17b-16e-w4a16
+        model_type: llm
+    providers:
+      agents:
+      - provider_id: meta-reference
+        provider_type: inline::meta-reference
+        config:
+          persistence_store:
+            type: sqlite
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/agents_store.db
+          responses_store:
+            type: sqlite
+            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/responses_store.db
+      inference:
+      - provider_id: vllm
+        provider_type: "remote::vllm"
+        config:
+          url: "https://granite-31-2b-instruct.vllm-server.svc.cluster.local/v1"
+          name: llama3.2:1b
+          context_length: 4096
+          tls_verify: false
+      - provider_id: vllm-llama-3-2-3b
+        provider_type: "remote::vllm"
+        config:
+          url: "https://llama-3-2-3b-maas-apicast-production.apps.prod.rhoai.rh-aiservices-bu.com:443/v1"
+          max_tokens: 110000
+          api_token: ${env.LLAMA_3_2_3B_API_TOKEN}
+          tls_verify: true
+      - provider_id: vllm-llama-4-guard
+        provider_type: "remote::vllm"
+        config:
+          url: "https://llama-4-scout-17b-16e-w4a16-maas-apicast-production.apps.prod.rhoai.rh-aiservices-bu.com:443/v1"
+          max_tokens: 110000
+          api_token: ${env.LLAMA_4_SCOUT_17B_16E_W4A16_API_TOKEN}
+          tls_verify: true
+      tool_runtime:
+      - provider_id: tavily-search
+        provider_type: remote::tavily-search
+        config:
+          api_key: ${env.TAVILY_API_KEY}
+          max_results: 3
+    tools:
+      - name: builtin::websearch
+        enabled: true
+    tool_groups:
+    - provider_id: tavily-search
+      toolgroup_id: builtin::websearch
+    server:
+      port: 8321
+----
+
+. Edit the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/policy-generator-config.yaml[**infra/applications/llama-stack/overlay/policy-generator-config.yaml**,window=_blank] to point to the **maas/** folder
++
+image::llama-stack-maas.png[LlamaStack MaaS, 300]
+
+. Check these files into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack with maas"; git push
+----
+
+. Refresh the playground in the browser. You should now be able to see three models, two from MaaS *llama-3-2-3b*, *llama-4-scout-17b-16e-w4a16* and the default **granite-31-2b-instruct** model.
++
+image::maas-models.png[LlamaStack MaaS Models, 300]
+
+. Try chatting to these new models. Do they both work ? The LLama4 model has a significant improvement in size and context length over the smaller models.
++
+image::maas-llama-chat.png[LlamaStack MaaS Models Chat, 300]
+
+. Done ✅
+
+[WARNING]
+====
+If one of the MaaS model fails, evaluate the stack trace error. It may be that the vLLM ServingRuntime or InferenceService server has not been correctly configured for tool calling. vLLM needs the correct arguments set to be able to correctly interpret tool calling prompts.
+
+If you check back on the model deployment code for the default model https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml[**infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml**,window=_blank] you may notice these arguments to vLLM
+
+[source,yaml,options="wrap"]
+----
+      command:
+        - python
+        - '-m'
+        - vllm.entrypoints.openai.api_server
+        - '--enable-auto-tool-choice'
+        - '--tool-call-parser=granite'
+        - '--chat-template=/app/data/template/tool_chat_template_granite.jinja'
+----
+
+You would then have to talk with the MaaS team to set these correctly for your model.
+====
+
+=== LlamaStack mcp::openshift
+
+MCP is an upcoming, popular standard for tool discovery and execution. It is a protocol that allows tools to be dynamically discovered from an MCP endpoint and can be used to extend the agent’s capabilities.
+
+First we need to deploy the pod that runs the **mcp::openshift** functions. Then we need to configure LlamaStack to use our first MCP tool that interacts with the OpenShift cluster. MCP servers are configured similarly to the tool and toolgroup provider.
+
+. Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/mcp-openshift.yaml.undeploy[**infra/app-of-apps/mcp-openshift.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/mcp-openshift.yaml[**infra/app-of-apps/mcp-openshift.yaml**,window=_blank]
++ 
+image::mcp-openshift-deploy.png[LlamaStack MCP OpenShift, 300]
+
+. Check this file into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy mcp::openshift"; git push
+----
+
+. Check ArgoCD and ACM and for the MCP Pod
++
+image::mcp-openshift-argocd.png[LlamaStack Basic ArgoCD, 800]
++
+image::mcp-openshift-acm.png[LlamaStack Basic ACM, 800]
+
+. Check MCP Pod is running OK, check its logs
++
+image::mcp-openshift-pod.png[LlamaStack Basic Pod, 800]
+
+. Next we need to configure LlamaStack. Open the https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/mcp-openshift/configmap.yaml[**mcp-openshift/configmap.yaml**,window=_blank] overlay and check where we add the tool runtime for MCP
++
+[source,yaml,options="wrap"]
+----
+      tool_runtime:
+      - provider_id: model-context-protocol
+        provider_type: remote::model-context-protocol
+        config: {}
+----
+
+. We also add in the tool group
++
+[source,yaml,options="wrap"]
+----
+    tool_groups:
+    - toolgroup_id: mcp::openshift
+      provider_id: model-context-protocol
+----
+
+. Edit the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/policy-generator-config.yaml[**infra/applications/llama-stack/overlay/policy-generator-config.yaml**,window=_blank] to point to the **mcp-openshift/** folder
++
+image::llama-stack-mcp-openshift.png[LlamaStack MCP OpenShift, 300]
+
+. Check these files into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack with mcp-openshift"; git push
+----
+
+. Refresh the playground in the browser. Select the Tools playground with the MCP Server openshift, ReAct agent and Llama4 model. Try the prompt **list pods using the label app=ocp-mcp-server in the agent-demo namespace**
++
+image::llama-playground-mcp-openshift-chat.png[LlamaStack MCP OpenShift, 800]
+
+. You will notice the the response has the Pod yaml included that fails to parse properly in the llamastack-playground. 
+
+. The pydantic errors are in the playground pod logs.
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n llama-stack -c llama-stack-playground logs -l app.kubernetes.io/instance=llama-stack-playground
+----
+
+. Try this prompt instead - **list pods using the label app=ocp-mcp-server in the agent-demo namespace. dont give me the pod yaml, rather just give me the pod name**
++
+image::llamastack-playground-pod-search-no-error.png[LlamaStack MCP OpenShift No Error, 400]
+
+. Try different models, agents and prompts. Not all of them work all of the time. This is a common problem with Tool calling and LLMs
+
+. Done ✅
+
+=== LlamaStack mcp::github
+
+The last MCP Server we need to deploy interacts with GitHub. The configuration is very similar to MCP OpenShift.
+
+. Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/mcp-github.yaml.undeploy[**infra/app-of-apps/sno/mcp-github.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/mcp-github.yaml[**infra/app-of-apps/sno/mcp-github.yaml**,window=_blank]
++ 
+image::mcp-github-deploy.png[LlamaStack MCP GitHub, 300]
+
+. Check this file into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy mcp::github"; git push
+----
+
+. Check ArgoCD and ACM and for the MCP Pod
++
+image::mcp-github-argocd.png[LlamaStack MCP GitHub ArgoCD, 800]
++
+image::mcp-github-acm.png[LlamaStack MCP GitHub ACM, 800]
+
+. Check MCP Pod is running OK, check its logs
++
+image::mcp-github-pod.png[LlamaStack MCP GitHub Pod, 800]
+
+. We add in the tool group. Notice that the URI for the MCP Server uses Server Sent Events (/sse).
++
+[source,yaml,options="wrap"]
+----
+    tool_groups:
+    - toolgroup_id: mcp::github
+      provider_id: model-context-protocol
+      mcp_endpoint:
+        uri: http://github-mcp-server.agent-demo.svc.cluster.local:80/sse
+----
+
+. Edit the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/policy-generator-config.yaml[**infra/applications/llama-stack/overlay/policy-generator-config.yaml**,window=_blank] to point to the **mcp-github/** folder
++
+image::llama-stack-mcp-github.png[LlamaStack MCP GitHub, 300]
+
+. Check these files into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack with mcp-github"; git push
+----
+
+. Refresh the playground in the browser. Select the Tools playground with the MCP Server github, ReAct agent and Llama4 model. Try the prompt **Get the file contents README.adoc from the redhat-ai-services/etx-agentic-ai repo.**
++
+image::llama-playground-mcp-github-chat.png[LlamaStack MCP GitHub, 800]
+
+. Try different models, agents and prompts. Not all of them work all of the time. This is a common problem with Tool calling and LLMs
+
+. Done ✅
+
+
+=== LlamaStack Observability
+
+LlamaStack integrates with the Observability stack we deployed as part of the bootstrap. The observability stack has a lot of moving parts. Traces are sent from LlamaStack via OTEL to a Tempo sink endpoint. We can then view traces in OpenShift using the Observe > Traces dashboard.
+
+. To configure telemetry on our LlamaStack server, edit the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/overlay/policy-generator-config.yaml[**infra/applications/llama-stack/overlay/policy-generator-config.yaml**,window=_blank] to point to the **sno/** folder. This is the final configuration for our use case.
++
+image::llama-stack-sno.png[LlamaStack Telemetry, 300]
+
+. Checking the base ConfigMap shows the telemetry stanza with the service name, sinks and the OTEL Tracing endpoint which is set as an environment variable on the Deployment 
++
+[source,yaml,options="wrap"]
+----
+      telemetry:
+      - provider_id: meta-reference
+        provider_type: inline::meta-reference
+        config:
+          service_name: ${env.OTEL_SERVICE_NAME:llama-stack}
+          sinks: ${env.TELEMETRY_SINKS:console, sqlite, otel_metric}
+          otel_trace_endpoint: ${env.OTEL_TRACE_ENDPOINT:}
+          sqlite_db_path: ${env.SQLITE_DB_PATH:~/.llama/distributions/remote-vllm/trace_store.db}
+----
+
+. Check these files into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack with telemetry"; git push
+----
+
+. Refresh the playground in the browser. Select the Tools playground and select websearch, the MCP github Server and MCP OpenShift tool, ReAct agent and Llama4 model. Try out some of the previous prompting that include Tool calls to generate some traces.
++
+image::llama-stack-traces1.png[LlamaStack Traces, 800]
++
+image::llama-stack-traces2.png[LlamaStack Traces, 800]
+
+. Done ✅
+
+=== LlamaStack Configured
+
+. Check the completed LlamaStack configuration
++
+[source,bash,options="wrap",role="execute"]
+----
+llama-stack-client providers list
+----
++
+[source,bash,options="wrap"]
+----
+INFO:llama_stack_client._base_client:Retrying request to /v1/providers in 0.491883 seconds
+INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK"
+┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ API          ┃ Provider ID            ┃ Provider Type                  ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ scoring      │ basic                  │ inline::basic                  │
+│ scoring      │ llm-as-judge           │ inline::llm-as-judge           │
+│ agents       │ meta-reference         │ inline::meta-reference         │
+│ inference    │ vllm                   │ remote::vllm                   │
+│ inference    │ vllm-llama-3-2-3b      │ remote::vllm                   │
+│ inference    │ vllm-llama-4-guard     │ remote::vllm                   │
+│ tool_runtime │ model-context-protocol │ remote::model-context-protocol │
+│ tool_runtime │ brave-search           │ remote::brave-search           │
+│ tool_runtime │ tavily-search          │ remote::tavily-search          │
+│ telemetry    │ meta-reference         │ inline::meta-reference         │
+└──────────────┴────────────────────────┴────────────────────────────────┘
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+llama-stack-client models list
+----
++
+[source,bash,options="wrap"]
+----
+INFO:httpx:HTTP Request: GET http://localhost:8321/v1/models "HTTP/1.1 200 OK"
+
+Available Models
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ model_type              ┃ identifier                                               ┃ provider_resource_id                                     ┃ metadata           ┃ provider_id                            ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ llm                     │ granite-31-2b-instruct                                   │ granite-31-2b-instruct                                   │                    │ vllm                                   │
+├─────────────────────────┼──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼────────────────────┼────────────────────────────────────────┤
+│ llm                     │ llama-3-2-3b                                             │ llama-3-2-3b                                             │                    │ vllm-llama-3-2-3b                      │
+├─────────────────────────┼──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼────────────────────┼────────────────────────────────────────┤
+│ llm                     │ llama-4-scout-17b-16e-w4a16                              │ llama-4-scout-17b-16e-w4a16                              │                    │ vllm-llama-4-guard                     │
+└─────────────────────────┴──────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────┴────────────────────┴────────────────────────────────────────┘
+
+Total models: 3
+----
+
+. Done ✅
+
+
+== Using LlamaStack Playground for Use Case prompting
+
+====
+Use the Playground for our actual Use Case prompting (requires pipeline failure pods)
+
+. query namespace pod for a pod error; copy-paste search for solution to error logs
+. create issue, add issue comments
+. prompt engineering; create the final prompt 🍺
+. Done ✅
+====
+
+
+// lightbox - for images - FIXME need to make the include::partial$lightbox.hbs WORK
+++++
+<div id="myModal" class="modal">
+    <span class="close cursor" onclick="closeModal()">&times;</span>
+    <div class="modal-content" onclick="closeModal()">
+        <!--suppress HtmlRequiredAltAttribute as this will be set when selecting the image via JavaScript,
+        RequiredAttributes as src will be set by when selecting the image via JavaScript -->
+        <img id="imageinmodal">
+    </div>
+</div>
+<script>
+    function openModal() {
+        document.getElementById("myModal").style.display = "block";
+        // use overflowY = hidden to prevent the body from scrolling when modal is visible
+        // doesn't work with overscroll-behavior, as this would work only when the modal has a scrollbar
+        document.getElementsByTagName("body")[0].style.overflowY = "hidden";
+    }
+
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+        document.getElementsByTagName("body")[0].style.overflowY = "auto";
+    }
+
+    document.querySelectorAll('.imageblock img').forEach(element => {
+        if (element.closest('a') === null) {
+            element.className += " lightbox";
+            element.addEventListener('click', evt => {
+                document.getElementById("imageinmodal").setAttribute("src", evt.currentTarget.getAttribute("src"))
+                document.getElementById("imageinmodal").setAttribute("alt", evt.currentTarget.getAttribute("alt"))
+                openModal();
+            })
+        }
+    });
+</script>
+<style>
+    /* The Modal (background) */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        padding-top: 5vh;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        backdrop-filter: blur(3px);
+        background-color: rgba(30, 30, 30, 0.8);
+    }
+    img.lightbox {
+        cursor: pointer;
+    }
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        margin: auto;
+        padding: 0;
+        width: 90%;
+        max-height: 90vh;
+        cursor: pointer;
+    }
+
+    .modal-content img {
+        width: auto;
+        height: auto;
+        max-width: 90vw;
+        max-height: 90vh;
+        min-width: 90vw;
+        min-height: 90vh;
+        display: block;
+        margin-right: auto;
+        margin-left: auto;
+        object-fit: contain;
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #999;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+++++

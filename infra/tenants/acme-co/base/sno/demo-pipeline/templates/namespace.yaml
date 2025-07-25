@@ -1,0 +1,7 @@
+---
+# Source: demo-pipeline/templates/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: demo-application2
+spec: {}

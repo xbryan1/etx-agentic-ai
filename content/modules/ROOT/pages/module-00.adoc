@@ -1,0 +1,614 @@
+= Environment Prerequisites
+
+[IMPORTANT]
+.Getting started
+====
+We need to bootstrap our GitOps environment so that we can hydrate secrets from vault using a single source of truth as well as keeping our source code clean and free of any secret variables.
+====
+
+We have created some scripts to automate the heavy lifting (see the https://github.com/redhat-ai-services/etx-agentic-ai/tree/main/infra/bootstrap[__bootstrap__,window=_blank] folder), however it is instructive to run through the steps manually to learn what the scripts do.
+
+== Team Setup
+
+. Teams of 2 people per cluster
++
+NOTE: We are trying to https://openpracticelibrary.com/practice/pair-programming/[increase knowledge sharing and communication,window=_blank] between your team members
+
+. Login credentials for the OpenShift cluster will be provided 🔐
+. One of the Team members: https://github.com/redhat-ai-services/etx-agentic-ai[Fork the etx-agentic-ai git repository,window=_blank] and make sure the other Team member has access to the fork i.e. add them as collaborators.
++
+.GitHub Repo Fork
+image::github-fork.png[GitHub Repo Fork, 400]
++
+.GitHub Repo Collaborators
+image::github-collaborators.png[GitHub Repo Collaborators, 400]
+
+. Clone your forked repo locally onto your Laptop - be sure to use your GitHub user fork
++
+[source,bash,options="wrap",role="execute"]
+----
+git clone git@github.com:your-gh-user/etx-agentic-ai.git
+----
++
+.GitHub Repo Clone
+image::github-clone.png[GitHub Repo Clone, 400]
+
+. Done ✅
+
+== Cluster Environment
+The workshop environment includes:
+
+* Red Hat OpenShift AI (RHOAI) with GPU support
+* Node Feature Discovery (NFD) for GPU detection
+* Bootstrap components:
+** Advanced Cluster Management (ACM) + ArgoCD
+** Vault for secrets management
+** Observability stack
+** LLM Granite model with MaaS integration
+** Pipeline infrastructure in failing state
+** Containerfile + BuildConfig/Tekton Pipeline for as a Service (initially disabled)
+** Workbench creation with RBAC
+
+We need to perform some bootstrapping of the environment. All of the instructions in this module set us up for what comes next. Our environment configuration philosophy can be summarized as follows.
+
+[IMPORTANT]
+.Policy as Code
+====
+> Policies are one key way that organizations ensure software is high quality, easy to use, and secure. Manual reviews are one method to check software is
+compliant, but they are time-consuming, error-prone, and impossible to scale. Policy as code (PaC) automates this decision-making process by codifying
+and enforcing policies. It can be used to automate validation procedures to control and manage infrastructure.
+====
+
+The other benefits include:
+
+* ZERO configuration drift - what's in git is real
+* Integrates into the Governance Dashboard in ACM for SRE
+* We start as we mean to go on - we are _Green from GO_ so that our dev environment looks like prod only smaller
+* All our clusters and environments are Kubernetes Native once bootstrapped
+
+.Policy as Code using GitOps and ACM
+image::policy-as-code.png[Policy as Code, 600]
+
+== Required Applications
+
+As a Team, you need to do each of these Prerequisites.
+
+. Choose a client to bootstrap from. It could be:
+*** Your https://www.dell.com/en-au/shop/dell-laptops/xps-16-laptop/spd/xps-16-9640-laptop[Laptop,window=_blank] or a https://docs.fedoraproject.org/en-US/fedora-silverblue/toolbox[Toolbx,window=_blank] or a https://docs.fedoraproject.org/en-US/docs/[Fedora like jumphost,window=_blank] or a https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Workbench Terminal,window=_blank] that can access your cluster and the internet
+** Your bootstrap client must have a https://packages.fedoraproject.org/pkgs/bash/bash/[bash] shell with https://packages.fedoraproject.org/pkgs/openssl/openssl/[openssl,window=_blank], https://docs.ansible.com/ansible/2.9/cli/ansible-vault.html#ansible-vault[ansible-vault,window=_blank] installed
+** Download and https://developer.hashicorp.com/vault/install[Install the Hashi Vault Client binary,window=_blank]
+** Login to your OpenShift cluster using the https://mirror.openshift.com/pub/openshift-v4/clients/ocp[OpenShift client,window=_blank] as the cluster-admin user
+
+. Setup env vars
++
+[source,bash,options="wrap",role="execute"]
+----
+export CLUSTER_NAME=cluster-4xglk.4xglk # replace with yours
+export BASE_DOMAIN=sandbox2518.opentlc.com # replace with yours
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+oc login --server=https://api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 -u admin -p ${ADMIN_PASSWORD}
+----
+
+. Done ✅
+
+=== MaaS credentials
+
+Gather your Model as a Service Credentials.
+
+. Login to https://maas.apps.prod.rhoai.rh-aiservices-bu.com[Models-as-a-service using your RedHat credentials,window=_blank].
+. Click on the __See your Applications & their credentials__ button.
+. Create 3 Applications for these three models
+** **Llama-3.2-3B**
+** **Llama-4-Scout-17B-16E-W4A16**
+** **Nomic-Embed-Text-v1.5**
++
+e.g. for example __llama-4-scout-17b-16e-w4a16__
++
+.MaaS LLama4 Scout
+image::maas-llama-4-scout-17b-16e-w4a16.png[MaaS LLama4 Scout, 400]
+
+. Setup env vars
++
+[source,bash,options="wrap",role="execute"]
+----
+export MODEL_LLAMA3_API_KEY=e3...
+export MODEL_LLAMA3_ENDPOINT_URL=https://llama-3-2-3b-maas-apicast-production.apps.prod.rhoai.rh-aiservices-bu.com:443
+export MODEL_LLAMA3_NAME=llama-3-2-3b
+
+export MODEL_LLAMA4_API_KEY=ce...
+export MODEL_LLAMA4_ENDPOINT_URL=https://llama-4-scout-17b-16e-w4a16-maas-apicast-production.apps.prod.rhoai.rh-aiservices-bu.com:443
+MODEL_LLAMA4_NAME=llama-4-scout-17b-16e-w4a16
+
+export MODEL_EMBED_API_KEY=95...
+export MODEL_EMBED_URL=https://nomic-embed-text-v1-5-maas-apicast-production.apps.prod.rhoai.rh-aiservices-bu.com:443
+export MODEL_EMBED_NAME=/mnt/models
+----
+
+. Done ✅
+
+=== Vault Setup for GitOps
+
+We need to setup vault for your environment.
+
+. Initialize the vault. Make sure you record the **UNSEAL_KEY** and **ROOT_TOKEN** somewhere safe and export them as env vars.
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n vault exec -ti vault-0 -- vault operator init -key-threshold=1 -key-shares=1 -tls-skip-verify
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+export UNSEAL_KEY=EGbx...
+export ROOT_TOKEN=hvs.wnz...
+----
+
+. Unseal the Vault.
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n vault exec -ti vault-0 -- vault operator unseal -tls-skip-verify $UNSEAL_KEY
+----
+
+. Setup secrets for gitops.
++
+TIP: (Optional Reading) You can see more details of this sort of setup https://eformat.github.io/rainforest-docs/#/2-platform-work/3-secrets[here,window=_blank] if you need more background.
+
+. Setup env vars
++
+[source,bash,options="wrap",role="execute"]
+----
+export VAULT_ROUTE=vault-vault.apps.${CLUSTER_NAME}.${BASE_DOMAIN}
+export VAULT_ADDR=https://${VAULT_ROUTE}
+export VAULT_SKIP_VERIFY=true
+----
+
+. Login to Vault.
++
+[source,bash,options="wrap",role="execute"]
+----
+vault login token=${ROOT_TOKEN}
+----
+
+. Setup env vars
++
+[source,bash,options="wrap",role="execute"]
+----
+export APP_NAME=vault
+export PROJECT_NAME=openshift-gitops
+export CLUSTER_DOMAIN=apps.${CLUSTER_NAME}.${BASE_DOMAIN}
+----
+
+. Create the Vault Auth using Kubernetes auth
++
+[source,bash,options="wrap",role="execute"]
+----
+vault auth enable -path=$CLUSTER_DOMAIN-${PROJECT_NAME} kubernetes
+export MOUNT_ACCESSOR=$(vault auth list -format=json | jq -r ".\"$CLUSTER_DOMAIN-$PROJECT_NAME/\".accessor")
+----
+
+. Create an ACL Policy - ArgoCD will only be allowed to __READ__ secret values for hydration into the cluster
++
+[source,bash,options="wrap",role="execute"]
+----
+vault policy write $CLUSTER_DOMAIN-$PROJECT_NAME-kv-read -<< EOF
+path "kv/data/*" {
+capabilities=["read","list"]
+}
+EOF
+----
+
+. Enable kv2 to store our secrets
++
+[source,bash,options="wrap",role="execute"]
+----
+vault secrets enable -path=kv/ -version=2 kv
+----
+
+. Bind the ACL to Auth policy
++
+[source,bash,options="wrap",role="execute"]
+----
+vault write auth/$CLUSTER_DOMAIN-$PROJECT_NAME/role/$APP_NAME \
+bound_service_account_names=$APP_NAME \
+bound_service_account_namespaces=$PROJECT_NAME \
+policies=$CLUSTER_DOMAIN-$PROJECT_NAME-kv-read \
+period=120s
+----
+
+. Grab the cluster CA certificate on the API
++
+[source,bash,options="wrap",role="execute"]
+----
+CA_CRT=$(openssl s_client -showcerts -connect api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 2>&1 | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/ {print $0}')
+----
+
+. Add the initial token and CA cert to the Vault Auth Config.
++
+[source,bash,options="wrap",role="execute"]
+----
+vault write auth/$CLUSTER_DOMAIN-${PROJECT_NAME}/config \
+kubernetes_host="$(oc whoami --show-server)" \
+kubernetes_ca_cert="$CA_CRT"
+----
+
+. Done ✅
+
+==== Create a CronJob
+
+[TIP]
+====
+In case the vault pod, or the node it runs on, reboots, it is always handy to auto unseal the vault.
+
+[source,bash,options="wrap",role="execute"]
+----
+export UNSEAL_KEY=EGbx...
+----
+
+[source,bash,options="wrap",role="execute"]
+----
+cat infra/bootstrap/vault-unseal-cronjob.yaml | envsubst | oc apply -f-
+----
+
+Done ✅
+====
+
+=== Tavily search token
+
+Gather your Tavily web search API Key.
+
+. Setup a https://app.tavily.com[Tavily,window=_blank] api key for web search. Login using a github account of one of your team members.
++
+.Tavily API Key
+image::tavily-apikey.png[Create Tavily API Key, 600]
+
+. Done ✅
+
+=== GitHub token
+
+Create a fine-grained GitHub Personal Access (PAT) Token.
+
+. Login to GitHub in a browser, then click on your user icon > **Settings**
+
+. Select **Developer Settings** > **Personal Access Tokens** > **Fine-grained personal access tokens**
+
+. Select Button **Generate a new token** - give it a token name e.g. __etx-ai__
+
+. Set **Repository access** > **Use Only select repositories**
++
+.GitHub Repo Access
+image::github-access.png[GitHub Repo Access, 400]
+
+. Give it the following permissions: **FIXME - Add fine grained permissions**
++
+.GitHub Repo Perms
+image::github-repo-perms.png[GitHub Repo Perms, 400]
+
+. Generate the token.
++
+.GitHub Repo Token
+image::github-pat.png[GitHub Repo Token, 400]
+
+. Done ✅
+
+=== The Secrets File
+
+[IMPORTANT]
+.Why Do This
+====
+We need to be able to hydrate the vault from a single source of truth. It makes secret management very efficient. In the case if a disaster, we need to recover the vault environment quickly. We can check this file into git as an AES256 encoded file (until quantum cracks it ❈).
+====
+
+The secrets file is just a bash shell script that uses the vault cli.
+
+. Copy the example secrets file provided
++
+[source,bash,options="wrap",role="execute"]
+----
+cp infra/secrets/vault-example infra/secrets/vault-sno
+----
++
+TIP: If the secrets file was encrypted we could unencrypt is as follows
++
+[source,bash,options="wrap",role="execute"]
+----
+ansible-vault decrypt infra/secrets/vault-sno
+----
+
+. Add the gathered api tokens as env vars to the secrets file
++
+.Add API Tokens
+image::add-apikeys-secrets.png[Add API Tokens, 300]
+
+. Setup env vars
++
+[source,bash,options="wrap",role="execute"]
+----
+export VAULT_ROUTE=vault-vault.apps.${CLUSTER_NAME}.${BASE_DOMAIN}
+export VAULT_ADDR=https://${VAULT_ROUTE}
+export VAULT_SKIP_VERIFY=true
+----
+
+. Login to Vault.
++
+[source,bash,options="wrap",role="execute"]
+----
+vault login token=${ROOT_TOKEN}
+----
+
+. Hydrate the vault by running the secrets file as a script
++
+[source,bash,options="wrap",role="execute"]
+----
+sh infra/secrets/vault-sno
+----
+
+. Encrypt the secrets file and check it back into your git fork. Generate a large secret key to use to encrypt the file and keep it safe.
++
+TIP: you can put the key in vault 🔑
++
+[source,bash,options="wrap",role="execute"]
+----
+openssl rand -hex 32
+----
+
+. Ansible vault encrypt will prompt you for the Key twice
++
+[source,bash,options="wrap",role="execute"]
+----
+ansible-vault encrypt infra/secrets/vault-sno
+----
+
+. Add to git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add infra/secrets/vault-sno; git commit -m "hydrated vault with apikeys"; git push
+----
++
+[TIP]
+.Optional
+====
+You can add a pre-commit git hook client side so that you do not check in an unencrypted AES256 secrets file. Run this after cloning forked repo to configure git hooks:
+
+[source,bash,options="wrap",role="execute"]
+----
+chmod 755 infra/bootstrap/pre-commit
+cd .git/hooks
+ln -s ../../infra/bootstrap/pre-commit pre-commit
+----
+====
+
+. Lastly, create the secret used by ArgoCD to connect to Vault in our OpenShift cluster. Since the OpenShift TokenAPI is used, we only really reference the service account details.
++
+[source,yaml,options="wrap",role="execute"]
+----
+cat <<EOF | oc apply -f-
+kind: Secret
+apiVersion: v1
+metadata:
+  name: team-avp-credentials
+  namespace: openshift-gitops
+stringData:
+  AVP_AUTH_TYPE: "k8s"
+  AVP_K8S_MOUNT_PATH: "auth/apps.${CLUSTER_NAME}.${BASE_DOMAIN}"
+  AVP_K8S_ROLE: "vault"
+  AVP_TYPE: "vault"
+  VAULT_ADDR: "https://vault.vault.svc:8200"
+  VAULT_SKIP_VERIFY: "true"
+type: Opaque
+EOF
+----
+
+. You can also login to Vault using the Vault UI and $ROOT_TOKEN from the OpenShift web console to check out the configuration
++
+.Login to Vault
+image::vault-console.png[Login to Vault, 400]
+
+. Done ✅
+
+=== 💥 Expert Mode 💥
+
+[IMPORTANT]
+.Experts Only ⛷️
+====
+Only run this script if you are familiar with the Hashi Vault setup we just ran through and you skipped to here. Run the all-in-one vault setup script.
+
+[source,bash,options="wrap",role="execute"]
+----
+export CLUSTER_NAME=cluster-4xglk.4xglk
+export BASE_DOMAIN=sandbox2518.opentlc.com
+export AWS_PROFILE=etx-ai
+export ADMIN_PASSWORD=password
+export ANSIBLE_VAULT_SECRET=94bbffb36de4285abcf95b5d650e0790c13939bc0e2f5214aaf58196456b8989
+
+./infra/bootstrap/vault-setup.sh
+----
+
+Done ✅
+====
+
+== Complete the Bootstrap
+
+. Setup env vars
++
+[source,bash,options="wrap",role="execute"]
+----
+export CLUSTER_NAME=cluster-4xglk.4xglk
+export BASE_DOMAIN=sandbox2518.opentlc.com
+----
+
+. Create https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/console_apis/consolelink-console-openshift-io-v1[OpenShift ConsoleLinks,window=_blank]
++
+[source,bash,options="wrap",role="execute"]
+----
+cat infra/bootstrap/console-links.yaml | envsubst | oc apply -f-
+----
+
+. Bootstrap https://argo-cd.readthedocs.io/en/latest/operator-manual/cluster-bootstrapping/#app-of-apps-pattern[App-of-Apps,window=_blank]
++
+[source,bash,options="wrap",role="execute"]
+----
+# We need to update our ArgoCD Apps to point to your team fork
+export YOUR_GITHUB_USER=your-gh-user  # the Team member who forked the GitHub Repo
+cd etx-agentic-ai   # Root directory of code base
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+sed -i "s/redhat-ai-services/${YOUR_GITHUB_USER}/g" infra/app-of-apps/etx-app-of-apps.yaml
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+for x in $(ls infra/app-of-apps/sno); do
+    sed -i "s/redhat-ai-services/${YOUR_GITHUB_USER}/g" infra/app-of-apps/sno/$x
+done
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "using my github fork"; git push
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+# Bootstrap all our apps
+oc apply -f infra/app-of-apps/etx-app-of-apps.yaml
+----
++
+This will install the tenant pipeline app and observability stack into our cluster. All the other GenAI apps are undeployed for now. You can check this in your _app-of-apps/cluster-name_ github fork folder.
++
+image::bootstrap-initial.png[bootstrap-initial, 400]
+
+. Check Install
++
+[source,bash,options="wrap",role="execute"]
+----
+export CLUSTER_NAME=cluster-4xglk.4xglk
+export BASE_DOMAIN=sandbox2518.opentlc.com
+----
++
+[source,bash,options="wrap",role="execute"]
+----
+./infra/bootstrap/check-install.sh
+----
+
+. Done ✅
+
+== Workbench
+
+. Create a Workbench environment for development
+
+. Done ✅
+
+== Technical Knowledge
+
+Ideally https://www.redhat.com/tracks/_pfcdn/assets/10330/contents/344388/925d2cb5-39c2-49dc-9ed2-3f4aeeb52a85.pdf[your team is a cross-functional one (Optional: Read Chapter.1 - Introduction),window=_blank] with:
+
+* Good understanding of OpenShift/Kubernetes concepts
+* Basic familiarity with Python programming
+* Good knowledge of https://www.redhat.com/en/topics/containers[containerization,window=_blank] concepts
+* Basic understanding of CI/CD pipelines
+* Good grasp of https://openpracticelibrary.com/practice/gitops[GitOps,window=_blank] and https://openpracticelibrary.com/practice/everything-as-code[Everything as Code practices,window=_blank]
+
+xref:module-01.adoc[☕ Buckle Up], Here we go ...
+
+// lightbox - for images - FIXME need to make the include::partial$lightbox.hbs WORK
+++++
+<div id="myModal" class="modal">
+    <span class="close cursor" onclick="closeModal()">&times;</span>
+    <div class="modal-content" onclick="closeModal()">
+        <!--suppress HtmlRequiredAltAttribute as this will be set when selecting the image via JavaScript,
+        RequiredAttributes as src will be set by when selecting the image via JavaScript -->
+        <img id="imageinmodal">
+    </div>
+</div>
+<script>
+    function openModal() {
+        document.getElementById("myModal").style.display = "block";
+        // use overflowY = hidden to prevent the body from scrolling when modal is visible
+        // doesn't work with overscroll-behavior, as this would work only when the modal has a scrollbar
+        document.getElementsByTagName("body")[0].style.overflowY = "hidden";
+    }
+
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+        document.getElementsByTagName("body")[0].style.overflowY = "auto";
+    }
+
+    document.querySelectorAll('.imageblock img').forEach(element => {
+        if (element.closest('a') === null) {
+            element.className += " lightbox";
+            element.addEventListener('click', evt => {
+                document.getElementById("imageinmodal").setAttribute("src", evt.currentTarget.getAttribute("src"))
+                document.getElementById("imageinmodal").setAttribute("alt", evt.currentTarget.getAttribute("alt"))
+                openModal();
+            })
+        }
+    });
+</script>
+<style>
+    /* The Modal (background) */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 10;
+        padding-top: 5vh;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        backdrop-filter: blur(3px);
+        background-color: rgba(30, 30, 30, 0.8);
+    }
+    img.lightbox {
+        cursor: pointer;
+    }
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        margin: auto;
+        padding: 0;
+        width: 90%;
+        max-height: 90vh;
+        cursor: pointer;
+    }
+
+    .modal-content img {
+        width: auto;
+        height: auto;
+        max-width: 90vw;
+        max-height: 90vh;
+        min-width: 90vw;
+        min-height: 90vh;
+        display: block;
+        margin-right: auto;
+        margin-left: auto;
+        object-fit: contain;
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        position: absolute;
+        top: 10px;
+        right: 25px;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #999;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+++++

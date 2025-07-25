@@ -1,0 +1,14 @@
+---
+# Source: demo-pipeline/templates/pv-workspace.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-workspace
+  namespace: demo-application2
+spec:
+  resources:
+    requests:
+      storage: 3Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

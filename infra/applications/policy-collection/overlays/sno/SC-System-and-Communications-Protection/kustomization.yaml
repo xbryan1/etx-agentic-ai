@@ -1,0 +1,5 @@
+---
+namespace: openshift-gitops
+
+resources:
+  - network-policy-agent-demo-sno.yaml

@@ -1,0 +1,10 @@
+---
+namespace: demo-application2
+registry: image-registry.openshift-image-registry.svc:5000
+application_name: undertow-servlet
+git_url: https://github.com/nstrug/openshift-quickstarts.git
+git_subdirectory: undertow-servlet
+git_revision: good
+# git_revision: bad
+agent_endpoint: http://agent-service-test-2.agent-demo.svc.cluster.local:8000/report-failure
+

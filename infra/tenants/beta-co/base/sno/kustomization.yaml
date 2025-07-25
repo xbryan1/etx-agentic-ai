@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - demo-pipeline/templates/namespace.yaml
+  - demo-pipeline/templates/job-1_initial-pipeline-run_good.yaml
+  - demo-pipeline/templates/java-app-build.yaml
+  - demo-pipeline/templates/pv-workspace.yaml
+  - demo-pipeline/templates/deployment.yaml
+  - demo-pipeline/templates/route.yaml
+  - demo-pipeline/templates/service.yaml
