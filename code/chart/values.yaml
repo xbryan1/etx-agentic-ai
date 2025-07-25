@@ -10,7 +10,8 @@ agent_endpoint: http://ai-agent:8000/webhook
 # Agent Configuration
 agentConfig:
   clientTimeout: "600.0"
-  llamaStackUrl: "http://llamastack-with-config-service.default.svc.cluster.local:8321"
+  llamaStackUrl: "http://llamastack-with-config-service.llama-stack.svc.cluster.local:8321"
+  # llamaStackUrl: "http://llamastack-with-config-service.default.svc.cluster.local:8321"
   maxInferIterations: "50"
   maxTokens: "5000"
   modelId: "llama-4-scout-17b-16e-w4a16"
