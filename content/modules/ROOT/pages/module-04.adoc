@@ -812,7 +812,7 @@ Total models: 3
 
 == Using LlamaStack Playground for Use Case prompting
 
-Use the Playground for our actual Use Case prompting (requires pipeline failure pods). We can try out various prompts to see what works best. Here are some examples - you will need to change the pod name - or try something else like a pod label selector.
+Use the Playground for our actual Use Case prompting (requires pipeline failure pods). We can try out various prompts to see what works best. Here are some examples - you will need to change the pod name.
 
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
