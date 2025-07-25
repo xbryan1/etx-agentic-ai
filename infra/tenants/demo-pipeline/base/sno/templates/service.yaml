@@ -12,7 +12,7 @@ metadata:
     meta.helm.sh/release-name: demo-application5
     meta.helm.sh/release-namespace: demo-application2
   name: undertow-servlet
-  namespace: demo-application4
+  namespace: demo-pipeline
 spec:
   ports:
   - name: 8080-tcp

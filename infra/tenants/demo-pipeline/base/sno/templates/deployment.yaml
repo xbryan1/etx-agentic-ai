@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: undertow-servlet
-  namespace: demo-application2
+  namespace: demo-pipeline
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
@@ -23,7 +23,7 @@ spec:
         deployment: undertow-servlet
     spec:
       containers:
-      - image: "image-registry.openshift-image-registry.svc:5000/demo-application2/undertow-servlet:latest"
+      - image: "image-registry.openshift-image-registry.svc:5000/demo-pipeline/undertow-servlet:latest"
         imagePullPolicy: IfNotPresent
         name: undertow-servlet
         ports:

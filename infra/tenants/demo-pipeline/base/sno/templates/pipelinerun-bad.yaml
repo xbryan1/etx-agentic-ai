@@ -4,11 +4,11 @@ apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
   generateName: java-app-build-run-bad-
-  namespace: demo-application4
+  namespace: demo-pipeline
 spec:
   params:
     - name: IMAGE_NAME
-      value: "image-registry.openshift-image-registry.svc:5000/demo-application4/undertow-servlet"
+      value: "image-registry.openshift-image-registry.svc:5000/demo-pipeline/undertow-servlet"
     - name: GIT_REPO
       value: "https://github.com/nstrug/openshift-quickstarts.git"
     - name: GIT_REVISION
