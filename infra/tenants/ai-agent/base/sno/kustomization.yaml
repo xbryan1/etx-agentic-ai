@@ -3,11 +3,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  - templates/namespace.yaml
+  - templates/configmap.yaml
   - templates/serviceaccount.yaml
   - templates/rolebinding.yaml
-  - templates/job.yaml
-  - templates/namespace.yaml
   - templates/pipeline.yaml
+  - templates/job.yaml
   - templates/deployment.yaml
-  - templates/route.yaml
   - templates/service.yaml
+  - templates/route.yaml
