@@ -1,53 +1,55 @@
+{{- if .Values.jobs.good.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: trigger-java-app-build-good
-  namespace: demo-application3
+  name: {{ .Values.jobs.good.name }}
+  namespace: {{ .Values.namespace }}
 spec:
   template:
     spec:
-      serviceAccountName: pipeline
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
       - name: kubectl-runner
-        image: registry.redhat.io/openshift4/ose-cli:latest
+        image: {{ .Values.images.cliTool }}
         command:
           - /bin/sh
           - -c
           - |
             # This 'here document' passes the PipelineRun YAML directly to oc.
-            # It tells Tekton to start a new run of the 'java-app-build' pipeline.
+            # It tells Tekton to start a new run of the '{{ .Values.pipeline.name }}' pipeline.
             oc create -f - <<EOF
             apiVersion: tekton.dev/v1
             kind: PipelineRun
             metadata:
               # generateName creates a unique name for each run (e.g., java-app-build-run-abc12).
               generateName: java-app-build-run-good-
-              namespace: demo-application3
+              namespace: {{ .Values.namespace }}
             spec:
               taskRunTemplate:
-                serviceAccountName: pipeline
+                serviceAccountName: {{ .Values.serviceAccount.name }}
               pipelineRef:
                 # This must match the name of your existing Tekton Pipeline.
-                name: java-app-build
+                name: {{ .Values.pipeline.name }}
               # Parameters for the pipeline - using "good" git revision as requested
               params:
                 - name: IMAGE_NAME
-                  value: "image-registry.openshift-image-registry.svc:5000/demo-application3/undertow-servlet"
+                  value: "{{ .Values.registry }}/{{ .Values.namespace }}/{{ .Values.application_name }}"
                 - name: GIT_REPO
-                  value: "https://github.com/nstrug/openshift-quickstarts.git"
+                  value: "{{ .Values.git_url }}"
                 - name: GIT_REVISION
-                  value: "good"
+                  value: "{{ .Values.git_revision }}"
                 - name: SUBDIRECTORY
-                  value: "undertow-servlet"
+                  value: "{{ .Values.git_subdirectory }}"
               # Required workspace for the pipeline
               workspaces:
-                - name: shared-workspace
+                - name: {{ .Values.workspace.name }}
                   volumeClaimTemplate:
                     spec:
                       accessModes:
                         - ReadWriteOnce
                       resources:
                         requests:
-                          storage: 1Gi
+                          storage: {{ .Values.workspace.storage }}
             EOF
       restartPolicy: OnFailure
+{{- end }} 

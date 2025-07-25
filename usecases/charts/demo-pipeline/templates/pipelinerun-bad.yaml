@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: java-app-build-run-bad-
+  namespace: {{ .Values.namespace }}
+spec:
+  params:
+    - name: IMAGE_NAME
+      value: "{{ .Values.registry }}/{{ .Values.namespace }}/{{ .Values.application_name }}"
+    - name: GIT_REPO
+      value: "{{ .Values.git_url }}"
+    - name: GIT_REVISION
+      value: "{{ .Values.git_revision_bad }}"
+    - name: SUBDIRECTORY
+      value: "{{ .Values.git_subdirectory }}"
+  timeouts:
+    pipeline: {{ .Values.pipeline.timeout }}
+  workspaces:
+    - name: {{ .Values.workspace.name }}
+      emptyDir: {}
+  pipelineRef:
+    name: {{ .Values.pipeline.name }}
+  taskRunTemplate:
+    serviceAccountName: {{ .Values.serviceAccount.name }} 

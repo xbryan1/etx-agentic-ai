@@ -1,8 +1,10 @@
+---
+# Source: demo-pipeline/templates/job-bad.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: trigger-java-app-build-bad
-  namespace: demo-application3
+  namespace: demo-application4
 spec:
   template:
     spec:
@@ -49,7 +51,7 @@ spec:
             metadata:
               # generateName creates a unique name for each run (e.g., java-app-build-run-bad-abc12).
               generateName: java-app-build-run-bad-
-              namespace: demo-application3
+              namespace: demo-application4
             spec:
               taskRunTemplate:
                 serviceAccountName: pipeline
@@ -59,7 +61,7 @@ spec:
               # Parameters for the pipeline - using "bad" git revision
               params:
                 - name: IMAGE_NAME
-                  value: "image-registry.openshift-image-registry.svc:5000/demo-application3/undertow-servlet"
+                  value: "image-registry.openshift-image-registry.svc:5000/demo-application4/undertow-servlet"
                 - name: GIT_REPO
                   value: "https://github.com/nstrug/openshift-quickstarts.git"
                 - name: GIT_REVISION
@@ -75,6 +77,6 @@ spec:
                         - ReadWriteOnce
                       resources:
                         requests:
-                          storage: 1Gi
+                          storage: 3Gi
             EOF
-      restartPolicy: OnFailure 
+      restartPolicy: OnFailure

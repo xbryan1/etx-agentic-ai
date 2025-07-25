@@ -4,10 +4,10 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: java-app-build
-  namespace: demo-application3
+  namespace: demo-application4
 spec:
   params:
-  - default: image-registry.openshift-image-registry.svc:5000/demo-application3/undertow-servlet 
+  - default: image-registry.openshift-image-registry.svc:5000/demo-application4/undertow-servlet 
     name: IMAGE_NAME
     type: string
   - default: https://github.com/nstrug/openshift-quickstarts.git
@@ -81,7 +81,7 @@ spec:
             set -Bx
             echo "Looks like your pipeline failed dumbass, let's find where you messed up"
             failed_pod=$(oc get pods --field-selector="status.phase=Failed" --sort-by="status.startTime" | grep -v "trigger-agent" | grep "java-app-build" | tail -n 1 | awk '{print $1}')
-            curl -i -H "Content-Type: application/json" -X POST -d "{\"namespace\":\"demo-application3\",\"pod_name\":\"${failed_pod}\",\"container_name\":\"step-s2i-build\"}" http://agent-service-test-2.agent-demo.svc.cluster.local:8000/report-failure
+            curl -i -H "Content-Type: application/json" -X POST -d "{\"namespace\":\"demo-application4\",\"pod_name\":\"${failed_pod}\",\"container_name\":\"step-s2i-build\"}" http://agent-service-test-2.agent-demo.svc.cluster.local:8000/report-failure
           fi
   workspaces:
   - name: shared-workspace
