@@ -18,11 +18,11 @@ data:
     - vector_io
     - telemetry
     models:
-      - metadata: {}
-        model_id: granite-31-2b-instruct
-        provider_id: vllm
-        provider_model_id: granite-31-2b-instruct
-        model_type: llm
+      # - metadata: {}
+      #   model_id: granite-31-2b-instruct
+      #   provider_id: vllm
+      #   provider_model_id: granite-31-2b-instruct
+      #   model_type: llm
       - metadata: {}
         model_id: llama-3-2-3b
         provider_id: vllm-llama-3-2-3b
@@ -52,10 +52,10 @@ data:
             type: sqlite
             db_path: ${env.SQLITE_STORE_DIR:=~/.llama/distributions/starter}/responses_store.db
       inference:
-      - provider_id: vllm
-        provider_type: "remote::vllm"
-        config:
-          url: "https://granite-31-2b-instruct-vllm-server.apps.cluster-4xglk.4xglk.sandbox2518.opentlc.com/v1"
+      # - provider_id: vllm
+      #   provider_type: "remote::vllm"
+      #   config:
+      #     url: "https://granite-31-2b-instruct-vllm-server.apps.cluster-4xglk.4xglk.sandbox2518.opentlc.com/v1"
       - provider_id: vllm-llama-3-2-3b
         provider_type: "remote::vllm"
         config:
