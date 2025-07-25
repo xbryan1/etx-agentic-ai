@@ -818,7 +818,7 @@ Use the Playground for our actual Use Case prompting (requires pipeline failure 
 
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
-- Tools: mcp::openshift
+- Tools: **mcp::openshift**
 
 . Query the namespace pod for a pod error; copy-paste search for solution to error logs
 +
@@ -838,7 +838,7 @@ Supplying the container name means less agent turns, less error prone
 
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
-- Tools: mcp::openshift, websearch
+- Tools: **mcp::openshift, websearch**
 +
 . Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-mm4cq-build-pod' in the 'demo-application3' namespace. If the logs indicate an error search for the top OpenShift solution. Create a summary message with the category and explanation of the error.
 +
@@ -859,7 +859,7 @@ oc -n demo-application3 -c step-s2i-build logs java-app-build-run-bad-mm4cq-buil
 
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
-- Tools: mcp::github
+- Tools: **mcp::github**
 +
 . Create a GitHub issue, add add issue comments
 +
@@ -883,7 +883,7 @@ image::playground-prompt-8.png[LlamaStack Traces, 800]
 
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
-- Tools: mcp::openshift, mcp::github
+- Tools: **mcp::openshift, mcp::github**
 +
 . prompt engineering; create the final prompt 🍺
 +
