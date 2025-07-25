@@ -824,9 +824,13 @@ Use the Playground for our actual Use Case prompting (requires pipeline failure 
 +
 image::playground-prompt-1.png[LlamaStack Traces, 800]
 +
+The agent reasoned correctly about the need to format the tool call with a container name as well
++
 .. Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-mm4cq-build-pod' in the 'demo-application3' namespace.
 +
 image::playground-prompt-2.png[LlamaStack Traces, 800]
++
+Supplying the container name means less agent turns, less error prone
 +
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
@@ -837,6 +841,8 @@ image::playground-prompt-2.png[LlamaStack Traces, 800]
 image::playground-prompt-3.png[LlamaStack Traces, 800]
 +
 image::playground-prompt-4.png[LlamaStack Traces, 800]
++
+The Agent retrieved the pod logs and performed a websearch
 +
 Compare the results to the actual pod logs.
 +
@@ -863,7 +869,7 @@ image::playground-prompt-6.png[LlamaStack Traces, 800]
 +
 image::playground-prompt-7.png[LlamaStack Traces, 800]
 +
-This is finally successful but takes a few turns
+This is finally successful but takes a few turns to get the tool call right
 +
 image::playground-prompt-8.png[LlamaStack Traces, 800]
 
