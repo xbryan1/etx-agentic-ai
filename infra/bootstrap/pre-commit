@@ -13,7 +13,7 @@ do
     echo "checking $fname";
     if [[ -f ${filename} ]] && [[ $filename != *".yaml" ]] && [[ $(head -n 1 $filename) != '$ANSIBLE_VAULT;1.1;AES256' ]]; then
       echo "$fname not AES256 encoded \_(ツ)_/¯"
-      #exit 1
+      exit 1
     fi
   fi
 done
