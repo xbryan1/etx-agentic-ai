@@ -915,6 +915,12 @@ Input: Review the OpenShift logs for the pod 'java-app-build-run-bad-jplzx-build
 ONLY tail the last 10 lines of the pod, no more.
 The JSON object formatted EXACTLY as outlined above.
 ----
++
+The final prompt linking pod log errors and github
++
+video::final-prompt.webm[type=video/webm, 600]
++
+image::playground-prompt-9.png[LlamaStack Traces, 800]
 
 . Done ✅
 
