@@ -3,13 +3,10 @@ kind: Job
 metadata:
   name: trigger-java-app-build-good
   namespace: demo-application3
-  annotations:
-    argocd.argoproj.io/hook: PostSync
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
 spec:
   template:
     spec:
-      serviceAccountName: pipeline-trigger-sa
+      serviceAccountName: pipeline
       containers:
       - name: kubectl-runner
         image: registry.redhat.io/openshift4/ose-cli:latest
@@ -19,7 +16,7 @@ spec:
           - |
             # This 'here document' passes the PipelineRun YAML directly to oc.
             # It tells Tekton to start a new run of the 'java-app-build' pipeline.
-            oc apply -f - <<EOF
+            oc create -f - <<EOF
             apiVersion: tekton.dev/v1
             kind: PipelineRun
             metadata:
@@ -27,6 +24,8 @@ spec:
               generateName: java-app-build-run-good-
               namespace: demo-application3
             spec:
+              taskRunTemplate:
+                serviceAccountName: pipeline
               pipelineRef:
                 # This must match the name of your existing Tekton Pipeline.
                 name: java-app-build
@@ -52,34 +51,3 @@ spec:
                           storage: 1Gi
             EOF
       restartPolicy: OnFailure
----
-# REQUIRED: RBAC for the Job's Service Account
-# This gives the Job permission to create PipelineRuns.
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: pipeline-trigger-sa
-  namespace: demo-application3
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: pipeline-run-creator
-  namespace: demo-application3
-rules:
-- apiGroups: ["tekton.dev"]
-  resources: ["pipelineruns"]
-  verbs: ["create", "get", "list"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: pipeline-trigger-binding
-  namespace: demo-application3
-subjects:
-- kind: ServiceAccount
-  name: pipeline-trigger-sa
-roleRef:
-  kind: Role
-  name: pipeline-run-creator
-  apiGroup: rbac.authorization.k8s.io

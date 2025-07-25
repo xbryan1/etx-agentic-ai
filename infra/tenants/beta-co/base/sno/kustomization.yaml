@@ -4,6 +4,8 @@ kind: Kustomization
 
 resources:
   - demo-pipeline/templates/namespace.yaml
+  - demo-pipeline/templates/sa.yaml
+  - demo-pipeline/templates/role-binding.yaml
   - demo-pipeline/templates/job-1_initial-pipeline-run_good.yaml
   - demo-pipeline/templates/java-app-build.yaml
   - demo-pipeline/templates/pv-workspace.yaml
