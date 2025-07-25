@@ -12,7 +12,7 @@ from utils import step_printer
 
 llama_stack_url = environ.get(
     'LLAMA_STACK_URL',
-    "http://llamastack-with-config-service.default.svc.cluster.local:8321"
+    "http://llamastack-with-config-service.llama-stack.svc.cluster.local:8321"
 )
 model_id = environ.get('MODEL_ID', "granite-31-2b-instruct")
 model_prompt = """
@@ -69,8 +69,12 @@ def run_agent(pod_name, namespace):
     #     '{"owner":"redhat-ai-services","repo":"etx-agentic-ai",'
     #     '"title":"Issue with Etx pipeline","body":"summary of the error"}}}. DO NOT add any optional parameters.'
     # ]
-    user_prompts = [
-        f"""You are an expert OpenShift administrator. Your task is to analyze pod logs, summarize the error, and generate a JSON object to create a GitHub issue for tracking. Follow the format in the examples below.
+    # Build prompt safely to avoid f-string formatting issues
+    try:
+        print(f"Building prompt for pod: {pod_name}, namespace: {namespace}")
+        
+        # Use .format() to avoid f-string curly brace conflicts
+        prompt_template = """You are an expert OpenShift administrator. Your task is to analyze pod logs, summarize the error, and generate a JSON object to create a GitHub issue for tracking. Follow the format in the examples below.
         
         ---
         EXAMPLE 1:
@@ -91,25 +95,65 @@ def run_agent(pod_name, namespace):
 
         NOW, YOUR TURN:
 
-        Input: Review the OpenShift logs for the pod '{pod_name}' in the '{namespace}' namespace. If the logs indicate an error, search for the solution, create a summary message with the category and explanation of the error, and create a Github issue using {"name":"create_issue","arguments":{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"<summary of the error>"}}. DO NOT add any optional parameters.
+        Input: Review the OpenShift logs for the pod '{pod_name}' in the '{namespace}' namespace. If the logs indicate an error, search for the solution, create a summary message with the category and explanation of the error, and create a Github issue using {{"name":"create_issue","arguments":{{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"<summary of the error>"}}}}. DO NOT add any optional parameters.
 
         ONLY tail the last 10 lines of the pod, no more.
         The JSON object formatted EXACTLY as outlined above.
         """
-    ]
-    session_id = agent.create_session("agent-session")
-    for prompt in user_prompts:
-        print("\n"+"="*50)
-        print(f"Processing user query: {prompt}")
-        print("="*50)
-        response = agent.create_turn(
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt,
-                }
-            ],
-            session_id=session_id,
-            stream=False
+        
+        # Safely format the prompt with variables
+        formatted_prompt = prompt_template.format(pod_name=pod_name, namespace=namespace)
+        print("✅ Prompt built successfully")
+        print(f"Prompt length: {len(formatted_prompt)} characters")
+        
+        user_prompts = [formatted_prompt]
+        
+    except Exception as e:
+        print(f"❌ Error building prompt: {e}")
+        print(f"Error type: {type(e).__name__}")
+        # Fallback to simple prompt without examples
+        fallback_prompt = (
+            f"Review the OpenShift logs for the pod '{pod_name}' in the '{namespace}' namespace. "
+            "If the logs indicate an error, search for the solution and create a summary message. "
+            "Then create a Github issue with owner 'redhat-ai-services', repo 'etx-agentic-ai', "
+            "title 'Issue with Etx pipeline', and body containing the error summary."
         )
-        step_printer(response.steps)
+        user_prompts = [fallback_prompt]
+        print("⚠️  Using fallback prompt due to formatting error")
+    # Process prompts with error handling
+    try:
+        print("Creating agent session...")
+        session_id = agent.create_session("agent-session")
+        print(f"✅ Session created: {session_id}")
+        
+        for i, prompt in enumerate(user_prompts, 1):
+            try:
+                print(f"\n{'='*50}")
+                print(f"Processing prompt {i}/{len(user_prompts)}")
+                print(f"Prompt preview (first 200 chars): {prompt[:200]}...")
+                print('='*50)
+                
+                print("Sending prompt to agent...")
+                response = agent.create_turn(
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": prompt,
+                        }
+                    ],
+                    session_id=session_id,
+                    stream=False
+                )
+                print("✅ Agent response received")
+                step_printer(response.steps)
+                
+            except Exception as prompt_error:
+                print(f"❌ Error processing prompt {i}: {prompt_error}")
+                print(f"Error type: {type(prompt_error).__name__}")
+                print("Continuing with next prompt if available...")
+                continue
+                
+    except Exception as session_error:
+        print(f"❌ Critical error in session handling: {session_error}")
+        print(f"Error type: {type(session_error).__name__}")
+        raise  # Re-raise critical errors
