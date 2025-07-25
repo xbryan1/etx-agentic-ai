@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: undertow-servlet
+  name: {{ .Values.application_name }}
   namespace: {{ .Values.namespace }}
 spec:
   progressDeadlineSeconds: 600
@@ -9,7 +9,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      deployment: undertow-servlet
+      deployment: {{ .Values.application_name }}
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        deployment: undertow-servlet
+        deployment: {{ .Values.application_name }}
     spec:
       containers:
       - image: "{{ .Values.registry }}/{{ .Values.namespace }}/{{ .Values.application_name }}:latest"

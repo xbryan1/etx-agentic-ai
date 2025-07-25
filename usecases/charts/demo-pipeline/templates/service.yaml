@@ -2,13 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: undertow-servlet
-    app.kubernetes.io/component: undertow-servlet
-    app.kubernetes.io/instance: undertow-servlet
-    app.kubernetes.io/managed-by: Helm
+    app: {{ .Values.application_name }}
+    app.kubernetes.io/component: {{ .Values.application_name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
-    meta.helm.sh/release-name: demo-application
-    meta.helm.sh/release-namespace: demo-application
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
   name: {{ .Values.application_name }}
   namespace: {{ .Values.namespace }}
 spec:
@@ -22,4 +22,4 @@ spec:
     protocol: TCP
     targetPort: 8443
   selector:
-    deployment: undertow-servlet
+    deployment: {{ .Values.application_name }}

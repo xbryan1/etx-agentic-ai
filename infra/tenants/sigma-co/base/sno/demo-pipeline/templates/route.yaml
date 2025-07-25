@@ -6,14 +6,14 @@ metadata:
   labels:
     app: undertow-servlet
     app.kubernetes.io/component: undertow-servlet
-    app.kubernetes.io/instance: undertow-servlet
+    app.kubernetes.io/instance: demo-application5
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: demo-application3
-    meta.helm.sh/release-namespace: demo-application3
+    meta.helm.sh/release-name: demo-application5
+    meta.helm.sh/release-namespace: demo-application2
     openshift.io/host.generated: 'true'
   name: undertow-servlet
-  namespace: demo-application3
+  namespace: demo-application4
 spec:
   port:
     targetPort: 8080-tcp
