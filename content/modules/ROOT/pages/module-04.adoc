@@ -814,6 +814,8 @@ Total models: 3
 
 Use the Playground for our actual Use Case prompting (requires pipeline failure pods). We can try out various prompts to see what works best. Here are some examples - you will need to change the pod name.
 
+=== Search for pod logs
+
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
 - Tools: mcp::openshift
@@ -831,11 +833,13 @@ The agent reasoned correctly about the need to format the tool call with a conta
 image::playground-prompt-2.png[LlamaStack Traces, 800]
 +
 Supplying the container name means less agent turns, less error prone
-+
+
+=== Search for pod logs and websearch error summary
+
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
 - Tools: mcp::openshift, websearch
-
++
 . Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-mm4cq-build-pod' in the 'demo-application3' namespace. If the logs indicate an error search for the top OpenShift solution. Create a summary message with the category and explanation of the error.
 +
 image::playground-prompt-3.png[LlamaStack Traces, 800]
@@ -850,11 +854,13 @@ Compare the results to the actual pod logs.
 ----
 oc -n demo-application3 -c step-s2i-build logs java-app-build-run-bad-mm4cq-build-pod
 ----
-+
+
+=== Create a GitHub issue
+
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
 - Tools: mcp::github
-
++
 . Create a GitHub issue, add add issue comments
 +
 .. Create a github issue for a fake error in the redhat-ai-services/etx-agentic-ai repo and assign it to eformat.
@@ -873,7 +879,43 @@ This is finally successful but takes a few turns to get the tool call right
 +
 image::playground-prompt-8.png[LlamaStack Traces, 800]
 
+=== Create the Final Prompt
+
+- Model: **llama-4-scout-17b-16e-w4a16**
+- Agent Type: **ReAct**
+- Tools: mcp::openshift, mcp::github
++
 . prompt engineering; create the final prompt 🍺
++
+[source,bash,options="wrap",role="execute"]
+----
+You are an expert OpenShift administrator. Your task is to analyze pod logs, summarize the error, and generate a JSON object to create a GitHub issue for tracking. Follow the format in the examples below.
+
+---
+EXAMPLE 1:
+Input: The logs for pod 'frontend-v2-abcde' in namespace 'webapp' show: ImagePullBackOff: Back-off pulling image 'my-registry/frontend:latest'.
+
+Output:
+The pod is in an **ImagePullBackOff** state. This means Kubernetes could not pull the container image 'my-registry/frontend:latest', likely due to an incorrect image tag or authentication issues.
+{"name":"create_issue","arguments":{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"### Cluster/namespace location\\nwebapp/frontend-v2-abcde\\n\\n### Summary of the problem\\nThe pod is failing to start due to an ImagePullBackOff error.\\n\\n### Detailed error/code\\nImagePullBackOff: Back-off pulling image 'my-registry/frontend:latest'\\n\\n### Possible solutions\\n1. Verify the image tag 'latest' exists in the 'my-registry/frontend' repository.\\n2. Check for authentication errors with the image registry."}}
+
+---
+EXAMPLE 2:
+Input: The logs for pod 'data-processor-xyz' in namespace 'pipelines' show: CrashLoopBackOff. Last state: OOMKilled.
+
+Output:
+The pod is in a **CrashLoopBackOff** state because it was **OOMKilled**. The container tried to use more memory than its configured limit.
+{"name":"create_issue","arguments":{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"### Cluster/namespace location\\npipelines/data-processor-xyz\\n\\n### Summary of the problem\\nThe pod is in a CrashLoopBackOff state because it was OOMKilled (Out of Memory).\\n\\n### Detailed error/code\\nCrashLoopBackOff, Last state: OOMKilled\\n\\n### Possible solutions\\n1. Increase the memory limit in the pod's deployment configuration.\\n2. Analyze the application for memory leaks."}}
+---
+
+NOW, YOUR TURN:
+
+Input: Review the OpenShift logs for the pod 'java-app-build-run-bad-jplzx-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, search for the solution, create a summary message with the category and explanation of the error, and create a Github issue using {"name":"create_issue","arguments":{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"<summary of the error>"}}. DO NOT add any optional parameters.
+
+ONLY tail the last 10 lines of the pod, no more.
+The JSON object formatted EXACTLY as outlined above.
+----
+
 . Done ✅
 
 
