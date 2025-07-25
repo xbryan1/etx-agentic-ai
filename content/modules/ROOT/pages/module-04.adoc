@@ -812,14 +812,64 @@ Total models: 3
 
 == Using LlamaStack Playground for Use Case prompting
 
-====
-Use the Playground for our actual Use Case prompting (requires pipeline failure pods)
+Use the Playground for our actual Use Case prompting (requires pipeline failure pods). We can try out various prompts to see what works best. Here are some examples - you will need to change the pod name - or try something else like a pod label selector.
 
-. query namespace pod for a pod error; copy-paste search for solution to error logs
-. create issue, add issue comments
+- Model: **llama-4-scout-17b-16e-w4a16**
+- Agent Type: **ReAct**
+- Tools: mcp::openshift
+
+. Query the namespace pod for a pod error; copy-paste search for solution to error logs
++
+.. Review the OpenShift logs for the pod 'java-app-build-run-bad-mm4cq-build-pod', in the 'demo-application3' namespace.
++
+image::playground-prompt-1.png[LlamaStack Traces, 800]
++
+.. Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-mm4cq-build-pod' in the 'demo-application3' namespace.
++
+image::playground-prompt-2.png[LlamaStack Traces, 800]
++
+- Model: **llama-4-scout-17b-16e-w4a16**
+- Agent Type: **ReAct**
+- Tools: mcp::openshift, websearch
+
+. Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-mm4cq-build-pod' in the 'demo-application3' namespace. If the logs indicate an error search for the top OpenShift solution. Create a summary message with the category and explanation of the error.
++
+image::playground-prompt-3.png[LlamaStack Traces, 800]
++
+image::playground-prompt-4.png[LlamaStack Traces, 800]
++
+Compare the results to the actual pod logs.
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n demo-application3 -c step-s2i-build logs java-app-build-run-bad-mm4cq-build-pod
+----
++
+- Model: **llama-4-scout-17b-16e-w4a16**
+- Agent Type: **ReAct**
+- Tools: mcp::github
+
+. Create a GitHub issue, add add issue comments
++
+.. Create a github issue for a fake error in the redhat-ai-services/etx-agentic-ai repo and assign it to eformat.
++
+image::playground-prompt-5.png[LlamaStack Traces, 800]
++
+This fails due to parsing json arrays as strings
++
+.. Create a github issue using these parameters {"name":"create_issue","arguments":{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Fake Error: Agentic AI Service Unresponsive","body":"The Agentic AI service is not responding. This is a fake error report."}}} DO NOT add any optional parameters.
++
+image::playground-prompt-6.png[LlamaStack Traces, 800]
++
+image::playground-prompt-7.png[LlamaStack Traces, 800]
++
+This is finally successful but takes a few turns
++
+image::playground-prompt-8.png[LlamaStack Traces, 800]
+
 . prompt engineering; create the final prompt 🍺
 . Done ✅
-====
+
 
 
 // lightbox - for images - FIXME need to make the include::partial$lightbox.hbs WORK
