@@ -1,5 +1,5 @@
 ---
-namespace: demo-application4
+namespace: demo-pipeline
 registry: image-registry.openshift-image-registry.svc:5000
 application_name: undertow-servlet
 git_url: https://github.com/nstrug/openshift-quickstarts.git
