@@ -14,7 +14,7 @@ spec:
       port: 8321
       env:
       - name: TELEMETRY_SINKS
-        value: "console, sqlite, otel_trace, otel_metric"
+        value: 'console, sqlite, otel_trace, otel_metric'
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
         value: http://otel-collector-collector.observability-hub.svc.cluster.local:4318
       - name: OTEL_SERVICE_NAME
