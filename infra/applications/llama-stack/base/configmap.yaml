@@ -108,9 +108,6 @@ data:
         config:
           uri: http://milvus-service.milvus.svc.cluster.local:19530
           token: null
-          kvstore:
-            type: sqlite
-            db_path: ${env.SQLITE_STORE_DIR:=~/.llama/dummy}/milvus_registry.db
     tool_groups:
     - provider_id: tavily-search
       toolgroup_id: builtin::websearch
