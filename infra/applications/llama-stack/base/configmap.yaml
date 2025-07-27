@@ -36,7 +36,7 @@ data:
       - metadata:
           embedding_dimension: 384
         model_id: all-MiniLM-L6-v2
-        provider_id: sentence-transformers
+        provider_id: inline::sentence-transformers
         model_type: embedding
     providers:
       scoring:
