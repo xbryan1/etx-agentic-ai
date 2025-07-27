@@ -91,6 +91,8 @@ data:
         config:
           api_key: ${env.TAVILY_API_KEY}
           max_results: 3
+      - provider_id: rag-runtime
+        provider_type: inline::rag-runtime
       telemetry:
       - provider_id: meta-reference
         provider_type: inline::meta-reference
@@ -120,5 +122,7 @@ data:
       provider_id: model-context-protocol
       mcp_endpoint:
         uri: http://github-mcp-server.agent-demo.svc.cluster.local:80/sse
+    - toolgroup_id: builtin::rag
+      provider_id: rag-runtime
     server:
       port: 8321
