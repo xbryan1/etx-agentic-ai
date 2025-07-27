@@ -99,8 +99,8 @@ data:
         config:
           service_name: ${env.OTEL_SERVICE_NAME:=llama-stack}
           sinks: ${env.TELEMETRY_SINKS:=console, sqlite, otel_trace}
-          otel_trace_endpoint: ${env.OTEL_TRACE_ENDPOINT:=http://otel-collector-collector.observability-hub.svc.cluster.local:4318/v1/traces}
-          otel_exporter_otlp_endpoint: ${env.OTEL_METRIC_ENDPOINT:=http://otel-collector-collector.observability-hub.svc.cluster.local:4318/v1/metrics}
+          otel_trace_endpoint: http://otel-collector-collector.observability-hub.svc.cluster.local:4318/v1/traces
+          otel_exporter_otlp_endpoint: http://otel-collector-collector.observability-hub.svc.cluster.local:4318/v1/metrics
           sqlite_db_path: ${env.SQLITE_DB_PATH:=~/.llama/distributions/remote-vllm/trace_store.db}
       vector_io:
       - provider_id: milvus
