@@ -399,7 +399,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: llama-stack-config
-  namespace: default
+  namespace: llama-stack
 data:
   run.yaml: |
     apis:
@@ -459,7 +459,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: llama-stack-config
-  namespace: default
+  namespace: llama-stack
 data:
   run.yaml: |
     # Llama Stack configuration
