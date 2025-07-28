@@ -215,7 +215,7 @@ image::llama-stack-basic-pod.png[LlamaStack Basic Pod, 800]
 +
 [source,bash,options="wrap",role="execute"]
 ----
-pip install llama-stack-client==0.2.12
+pip install llama-stack-client==0.2.15
 ----
 
 . Port forward the LlamaStack port so we can connect to it (in a workbench you can use the Service as the **--endpoint** argument)
@@ -237,7 +237,7 @@ llama-stack-client inspect version
 [source,bash,options="wrap"]
 ----
 INFO:httpx:HTTP Request: GET http://localhost:8321/v1/version "HTTP/1.1 200 OK"
-VersionInfo(version='0.2.12')
+VersionInfo(version='0.2.15')
 ----
 
 . If you need help with the client commands, take a look at
@@ -732,10 +732,10 @@ image::llama-stack-sno.png[LlamaStack Telemetry, 300]
       - provider_id: meta-reference
         provider_type: inline::meta-reference
         config:
-          service_name: ${env.OTEL_SERVICE_NAME:llama-stack}
-          sinks: ${env.TELEMETRY_SINKS:console, sqlite, otel_metric}
-          otel_trace_endpoint: ${env.OTEL_TRACE_ENDPOINT:}
-          sqlite_db_path: ${env.SQLITE_DB_PATH:~/.llama/distributions/remote-vllm/trace_store.db}
+          service_name: ${env.OTEL_SERVICE_NAME:=llama-stack}
+          sinks: ${env.TELEMETRY_SINKS:=console, sqlite, otel_metric, otel_trace}
+          otel_exporter_otlp_endpoint: ${env.OTEL_EXPORTER_OTLP_ENDPOINT:=}
+          sqlite_db_path: ${env.SQLITE_DB_PATH:=~/.llama/distributions/remote-vllm/trace_store.db}
 ----
 
 . Check these files into git
@@ -765,7 +765,6 @@ llama-stack-client providers list
 +
 [source,bash,options="wrap"]
 ----
-INFO:llama_stack_client._base_client:Retrying request to /v1/providers in 0.491883 seconds
 INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK"
 ┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃ API          ┃ Provider ID            ┃ Provider Type                  ┃
@@ -776,10 +775,13 @@ INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK
 │ inference    │ vllm                   │ remote::vllm                   │
 │ inference    │ vllm-llama-3-2-3b      │ remote::vllm                   │
 │ inference    │ vllm-llama-4-guard     │ remote::vllm                   │
+│ inference    │ sentence-transformers  │ inline::sentence-transformers  │
 │ tool_runtime │ model-context-protocol │ remote::model-context-protocol │
 │ tool_runtime │ brave-search           │ remote::brave-search           │
 │ tool_runtime │ tavily-search          │ remote::tavily-search          │
+│ tool_runtime │ rag-runtime            │ inline::rag-runtime            │
 │ telemetry    │ meta-reference         │ inline::meta-reference         │
+│ vector_io    │ milvus                 │ remote::milvus                 │
 └──────────────┴────────────────────────┴────────────────────────────────┘
 ----
 +
@@ -794,17 +796,19 @@ INFO:httpx:HTTP Request: GET http://localhost:8321/v1/models "HTTP/1.1 200 OK"
 
 Available Models
 
-┏━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ model_type              ┃ identifier                                               ┃ provider_resource_id                                     ┃ metadata           ┃ provider_id                            ┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ llm                     │ granite-31-2b-instruct                                   │ granite-31-2b-instruct                                   │                    │ vllm                                   │
-├─────────────────────────┼──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼────────────────────┼────────────────────────────────────────┤
-│ llm                     │ llama-3-2-3b                                             │ llama-3-2-3b                                             │                    │ vllm-llama-3-2-3b                      │
-├─────────────────────────┼──────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼────────────────────┼────────────────────────────────────────┤
-│ llm                     │ llama-4-scout-17b-16e-w4a16                              │ llama-4-scout-17b-16e-w4a16                              │                    │ vllm-llama-4-guard                     │
-└─────────────────────────┴──────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────┴────────────────────┴────────────────────────────────────────┘
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ model_type      ┃ identifier                                                         ┃ provider_resource_id                    ┃ metadata                                    ┃ provider_id                  ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ llm             │ vllm/granite-31-2b-instruct                                        │ granite-31-2b-instruct                  │                                             │ vllm                         │
+├─────────────────┼────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────┼─────────────────────────────────────────────┼──────────────────────────────┤
+│ llm             │ vllm-llama-3-2-3b/llama-3-2-3b                                     │ llama-3-2-3b                            │                                             │ vllm-llama-3-2-3b            │
+├─────────────────┼────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────┼─────────────────────────────────────────────┼──────────────────────────────┤
+│ llm             │ vllm-llama-4-guard/llama-4-scout-17b-16e-w4a16                     │ llama-4-scout-17b-16e-w4a16             │                                             │ vllm-llama-4-guard           │
+├─────────────────┼────────────────────────────────────────────────────────────────────┼─────────────────────────────────────────┼─────────────────────────────────────────────┼──────────────────────────────┤
+│ embedding       │ sentence-transformers/all-MiniLM-L6-v2                             │ all-MiniLM-L6-v2                        │ {'embedding_dimension': 384.0}              │ sentence-transformers        │
+└─────────────────┴────────────────────────────────────────────────────────────────────┴─────────────────────────────────────────┴─────────────────────────────────────────────┴──────────────────────────────┘
 
-Total models: 3
+Total models: 4
 ----
 
 . Done ✅
