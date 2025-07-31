@@ -2,6 +2,18 @@
 
 == Getting Started
 
+=== Explore the environment
+
+Use the OpenShift Console Links to quickly navigate around the environment.
+
+- RHOAI
+- LLamaStack Playground
+- OpenShift
+- ACM
+- ArgoCD
+
+image::console-links.png[Console Links, 300]
+
 === Create a workbench
 
 . Login to OpenShift AI and select the `agent-demo` data science project.
