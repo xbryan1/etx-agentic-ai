@@ -4,7 +4,6 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: ai-agent
-  namespace: ai-agent
   labels:
     app: ai-agent
     app.kubernetes.io/component: ai-agent

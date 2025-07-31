@@ -26,4 +26,4 @@ policyDefaults:
 policies:
   - name: tenant-ai-agent
     manifests:
-      - path: sno/
+      - path: base/sno/

@@ -4,7 +4,6 @@ apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: agent-service-build
-  namespace: ai-agent
 spec:
   params:
   - default: ai-agent
