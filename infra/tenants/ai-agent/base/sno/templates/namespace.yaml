@@ -5,5 +5,5 @@ kind: Namespace
 metadata:
   name: ai-agent
   labels:
-    openshift.io/cluster-monitoring: true
+    openshift.io/cluster-monitoring: "true"
 spec: {}
