@@ -24,16 +24,17 @@ Select `Create workbench`.
 
 === Open the first notebook in your workbench
 
-Clone the code into your workbench by using the `Terminal` and entering:
-
-```bash
-git clone https://github.com/redhat-ai-services/etx-agentic-ai.git
-```
+. Clone the code into your workbench by using the `Terminal` and entering:
 +
-image::clone-code.png[Clone Code, 600]
+[source,bash,options="wrap",role="execute"]
+----
+git clone https://github.com/redhat-ai-services/etx-agentic-ai.git
+----
++
+image::clone-code2.png[Clone Code, 600]
 
-Open up the following notebook in your workspace.
-
+. Open up the following notebook in your workspace.
++
 https://github.com/redhat-ai-services/etx-agentic-ai/code/getting-started.ipynb[getting-started.ipynb,_window=_blank]
-
++
 In this notebook we will help you get started with LLamaStack.
