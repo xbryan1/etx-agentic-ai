@@ -35,6 +35,6 @@ image::clone-code2.png[Clone Code, 600]
 
 . Open up the following notebook in your workspace.
 +
-https://github.com/redhat-ai-services/etx-agentic-ai/code/getting-started.ipynb[getting-started.ipynb,_window=_blank]
+https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/code/getting-started.ipynb[getting-started.ipynb,_window=_blank]
 +
 In this notebook we will help you get started with LLamaStack.
