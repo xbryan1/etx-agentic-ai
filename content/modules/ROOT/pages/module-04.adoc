@@ -264,6 +264,10 @@ INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK
 └──────────────┴───────────────┴───────────────────────┘
 ----
 
+. Check the LlamaStack OpenAPI docs at http://localhost:8321/docs
++
+image::llama-stack-api-docs.png[LlamaStack API Docs, 800]
+
 . Done ✅
 
 === ConfigMap Basic Model Example
