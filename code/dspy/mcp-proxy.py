@@ -2,8 +2,8 @@ from fastmcp import FastMCP
 from fastmcp.server.proxy import ProxyClient
 import os
 
-TAVILY_API_KEY=os.getenv('TAVILY_API_KEY', 'fake')
-URL = "https://mcp.tavily.com/mcp/?tavilyApiKey" + TAVILY_API_KEY
+TAVILY_API_KEY=
+URL=
 
 # Bridge remote SSE server to local stdio
 #remote_proxy = FastMCP.as_proxy(
