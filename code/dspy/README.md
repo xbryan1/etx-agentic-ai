@@ -587,6 +587,35 @@ WARNING: This is a development server. Do not use it in a production deployment.
  * Running on http://127.0.0.1:8081
  * Running on http://10.0.0.3:8081
 Press CTRL+C to quit
+API request count: 1
+Query=tell me about small models and Neural Magic
+Loading searcher for index dev-red for the first time... This may take a few seconds
+[Aug 04, 09:28:03] #> Loading codec...
+[Aug 04, 09:28:03] Loading decompress_residuals_cpp extension (set COLBERT_LOAD_TORCH_EXTENSION_VERBOSE=True for more info)...
+[Aug 04, 09:28:03] Loading packbits_cpp extension (set COLBERT_LOAD_TORCH_EXTENSION_VERBOSE=True for more info)...
+[Aug 04, 09:28:03] #> Loading IVF...
+[Aug 04, 09:28:03] #> Loading doclens...
+100%|█████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 2935.13it/s]
+[Aug 04, 09:28:03] #> Loading codes and residuals...
+100%|██████████████████████████████████████████████████████████| 1/1 [00:00<00:00, 224.31it/s]
+Searcher loaded!
+
+#> QueryTokenizer.tensorize(batch_text[0], batch_background[0], bsize) ==
+#> Input: tell me about small models and Neural Magic, 		 True, 		 None
+#> Output IDs: torch.Size([32]), tensor([  101,     1,  2425,  2033,  2055,  2235,  4275,  1998, 15756,  3894,
+          102,   103,   103,   103,   103,   103,   103,   103,   103,   103,
+          103,   103,   103,   103,   103,   103,   103,   103,   103,   103,
+          103,   103], device='cuda:0')
+#> Output Mask: torch.Size([32]), tensor([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0], device='cuda:0')
+
+/home/mike/git/colbertv2.0/venv/lib64/python3.9/site-packages/colbert/utils/amp.py:15: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast() if self.activated else NullContextManager()
+127.0.0.1 - - [04/Aug/2025 09:28:04] "GET /api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3 HTTP/1.1" 200 -
+API request count: 2
+127.0.0.1 - - [04/Aug/2025 09:28:13] "GET /api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3 HTTP/1.1" 200 -
+API request count: 3
+127.0.0.1 - - [04/Aug/2025 10:04:53] "GET /api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3 HTTP/1.1" 200 -
 ```
 
 Test Query
