@@ -1161,9 +1161,133 @@ See github issue [Issue #38](https://github.com/redhat-ai-services/etx-agentic-a
 
 ![images/issue-38.png](images/issue-38.png)
 
-## Connect to LLMs, MCP, RAG using DSPy
+## Connect to LLMs, MCP, RAG
 
-FIXME
+Test RAG using the Colbertv2.0 index (see below to create this)
+
+```bash
+cd etx-agentic-ai/code/dspy/colbertv2.0
+source venv/bin/activate
+```
+
+Setup env vars
+
+```bash
+export COLBERT_LOAD_TORCH_EXTENSION_VERBOSE=True
+export LD_LIBRARY_PATH=/usr/lib64/:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda-12.3/compat
+export TORCH_CUDA_ARCH_LIST=8.9
+export INDEX_NAME=dev-red-rag
+export INDEX_ROOT=/home/mike/git/colbertv2.0/.ragatouille/colbert/indexes
+export PORT=8081
+```
+
+Run the RAG server
+
+```bash
+python server.py
+```
+
+Let's test simple RAG first
+
+```json
+'Question: Is RHOAI ready to use for Agentic AI'
+```
+
+Results
+
+```bash
+(venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#2deede5$ python dspy-rag-agent.py
+'Question: Is RHOAI ready to use for Agentic AI'
+'Retrieved Context (first 2 passages):'
+"  [1] (DSC) instance to set up the necessary services and tools for AI/ML tasks, and we will also enable GPU accelerator for RHOAI. And finally, we will generate images by running the Stable Diffusion model on RHOAI's Jupyter notebook."
+'  [2] check_rhoai_operator_pod; do\n    if [ $SECONDS -ge $end_time ]; then\n        echo "Timeout waiting for RHOAI Operator pod to be ready."\n        break\n    fi\n    echo "Waiting for RHOAI Operator pod to be ready... ($(($end_time - $SECONDS))s remaining)"\n    sleep 30\ndone\n\n# display the RHOAI Operator pod status\necho "RHOAI Operator pod status:"\noc get pods -n redhat-ods-operator\n\n# check the CSV (ClusterServiceVersion) status\necho "Checking RHOAI Operator CSV status:"\noc get csv -n redhat-ods-operator\n\n# check the Subscription status\necho "Checking RHOAI Operator Subscription status:"\noc get subscription -n redhat-ods-operator rhods-operator -o jsonpath=\'{.status.state}{"\\n"}\'\n\n# final check for operator readiness\nif check_rhoai_operator_pod; then\n    echo "RHOAI Operator is ready and running."\nelse\n    echo "RHOAI Operator deployment might have issues. Please check the pod logs and events for more information."\nfi'
+'Reasoning: The provided context discusses the setup and installation of RHOAI (Red Hat OpenShift AI) and its related tools and services, including the RHOAI operator, GPU accelerators, and the Stable Diffusion model. However, it does not explicitly mention "Agentic AI" or confirm that RHOAI is ready to use for such purposes. The context primarily focuses on the technical setup and verification of the RHOAI environment.\n\nTo determine if RHOAI is ready to use for Agentic AI, we would need to understand if the setup described includes the necessary components for Agentic AI. The text mentions setting up services and tools for AI/ML tasks, enabling GPU accelerators, and running the Stable Diffusion model, which are relevant to AI and ML tasks. However, without specific information on Agentic AI requirements, we can only infer based on the general readiness of RHOAI for AI/ML tasks.'
+'Answer: Based on the information provided, RHOAI appears to be in the process of being set up for AI/ML tasks, which could include Agentic AI. However, the text does not explicitly confirm its readiness for Agentic AI specifically. The setup includes necessary services and tools for AI/ML, enabling GPU accelerators, and testing the environment with the Stable Diffusion model.'
+'\n--- Inspecting LM History'
+
+
+[2025-08-04T19:23:34.976651]
+
+System message:
+
+Your input fields are:
+1. `context` (str): relevant passages from a knowledge base
+2. `question` (str):
+Your output fields are:
+1. `reasoning` (str): 
+2. `answer` (str):
+All interactions will be structured in the following way, with the appropriate values filled in.
+
+[[ ## context ## ]]
+{context}
+
+[[ ## question ## ]]
+{question}
+
+[[ ## reasoning ## ]]
+{reasoning}
+
+[[ ## answer ## ]]
+{answer}
+
+[[ ## completed ## ]]
+In adhering to this structure, your objective is: 
+        Answer questions based on the provided context.
+
+
+User message:
+
+[[ ## context ## ]]
+[1] «(DSC) instance to set up the necessary services and tools for AI/ML tasks, and we will also enable GPU accelerator for RHOAI. And finally, we will generate images by running the Stable Diffusion model on RHOAI's Jupyter notebook.»
+[2] «««
+    check_rhoai_operator_pod; do
+        if [ $SECONDS -ge $end_time ]; then
+            echo "Timeout waiting for RHOAI Operator pod to be ready."
+            break
+        fi
+        echo "Waiting for RHOAI Operator pod to be ready... ($(($end_time - $SECONDS))s remaining)"
+        sleep 30
+    done
+    
+    # display the RHOAI Operator pod status
+    echo "RHOAI Operator pod status:"
+    oc get pods -n redhat-ods-operator
+    
+    # check the CSV (ClusterServiceVersion) status
+    echo "Checking RHOAI Operator CSV status:"
+    oc get csv -n redhat-ods-operator
+    
+    # check the Subscription status
+    echo "Checking RHOAI Operator Subscription status:"
+    oc get subscription -n redhat-ods-operator rhods-operator -o jsonpath='{.status.state}{"\n"}'
+    
+    # final check for operator readiness
+    if check_rhoai_operator_pod; then
+        echo "RHOAI Operator is ready and running."
+    else
+        echo "RHOAI Operator deployment might have issues. Please check the pod logs and events for more information."
+    fi
+»»»
+[3] «Afterward, we will set up the RHOAI environment by installing the RHOAI operator, which automates management of AI/ML tools and services on OpenShift, creating a»
+
+[[ ## question ## ]]
+Is RHOAI ready to use for Agentic AI
+
+Respond with the corresponding output fields, starting with the field `[[ ## reasoning ## ]]`, then `[[ ## answer ## ]]`, and then ending with the marker for `[[ ## completed ## ]]`.
+
+
+Response:
+
+[[ ## reasoning ## ]]
+The provided context discusses the setup and installation of RHOAI (Red Hat OpenShift AI) and its related tools and services, including the RHOAI operator, GPU accelerators, and the Stable Diffusion model. However, it does not explicitly mention "Agentic AI" or confirm that RHOAI is ready to use for such purposes. The context primarily focuses on the technical setup and verification of the RHOAI environment.
+
+To determine if RHOAI is ready to use for Agentic AI, we would need to understand if the setup described includes the necessary components for Agentic AI. The text mentions setting up services and tools for AI/ML tasks, enabling GPU accelerators, and running the Stable Diffusion model, which are relevant to AI and ML tasks. However, without specific information on Agentic AI requirements, we can only infer based on the general readiness of RHOAI for AI/ML tasks.
+
+[[ ## answer ## ]]
+Based on the information provided, RHOAI appears to be in the process of being set up for AI/ML tasks, which could include Agentic AI. However, the text does not explicitly confirm its readiness for Agentic AI specifically. The setup includes necessary services and tools for AI/ML, enabling GPU accelerators, and testing the environment with the Stable Diffusion model.
+
+[[ ## completed ## ]]
+```
 
 ## Web scrape developers.red.hat.com
 
@@ -1373,9 +1497,37 @@ This will generate the index
 
 Test a single Retrieve of documents.
 
+Note - this will build cuda extensions toe first time it is run and cache them here.
+
+```bash
+tree /home/mike/.cache/torch_extensions/
+/home/mike/.cache/torch_extensions/
+└── py39_cu126
+    ├── decompress_residuals_cpp
+    │   ├── build.ninja
+    │   ├── decompress_residuals_cpp.so
+    │   ├── decompress_residuals.cuda.o
+    │   └── decompress_residuals.o
+    └── packbits_cpp
+        ├── build.ninja
+        ├── packbits_cpp.so
+        ├── packbits.cuda.o
+        └── packbits.o
+
+4 directories, 8 files
+```
+
+Code
+
 ```python
 query = "tell me about small models and Neural Magic"
 RAG = RAGPretrainedModel.from_index("/home/mike/git/colbertv2.0/.ragatouille/colbert/indexes/dev-red-rag")
+```
+
+Run It
+
+```bash
+python retrieve2.py 
 ```
 
 Results:
