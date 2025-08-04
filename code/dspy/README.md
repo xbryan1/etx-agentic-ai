@@ -7,10 +7,10 @@
     -   [Full E2E Agent SDLC Use Case](#full-e2e-agent-sdlc-use-case)
     -   [Connect to LLMs, MCP, RAG](#connect-to-llms-mcp-rag)
     -   [Web scrape
-        developers.red.hat.com](#web-scrape-developers.red.hat.com)
-    -   [Create a Colbertv2.0 index for
-        RAG](#create-a-colbertv2.0-index-for-rag)
-    -   [Host a Colbertv2.0 server](#host-a-colbertv2.0-server)
+        developers redhat com](#web-scrape-developers-red-hat-com)
+    -   [Create a Colbertv2 index for
+        RAG](#create-a-colbertv2-index-for-rag)
+    -   [Host a Colbertv2 server](#host-a-colbertv2.0-server)
 
 # 🧪 DSPy experiments 🧪
 
@@ -1325,7 +1325,7 @@ Based on the information provided, RHOAI appears to be in the process of being s
 [[ ## completed ## ]]
 ```
 
-## Web scrape developers.red.hat.com
+## Web scrape developers red hat com
 
 Grab the list or URLs for all articles from developers.redhat.com
 
@@ -1355,7 +1355,7 @@ user    4m31.672s
 sys 0m2.857s
 ```
 
-## Create a Colbertv2.0 index for RAG
+## Create a Colbertv2 index for RAG
 
 You need a working NVIDIA GPU and CUDA here. I am using my laptop which
 has `cuda-toolkit-12.9.1-1.x86_64` and a `NVIDIA GeForce RTX 4070`.
@@ -1843,7 +1843,7 @@ vLLM and distributed inference. If you prefer, you can watch the full',
 ]
 ```
 
-## Host a Colbertv2.0 server
+## Host a Colbertv2 server
 
 We are going to host a flask server with the index, then query it using
 MCP from DSPy
