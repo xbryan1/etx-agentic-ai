@@ -1919,62 +1919,56 @@ k: 3
 ```
 
 ``` bash
-time curl -s 'http://localhost:8081/api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3' | jq .
-[
-  {
-    "content": "Neural Magic is doubling down on this challenge with sparse LLMs—reducing the model size by removing unneeded connections while retaining accuracy. Sparse models, though underexplored in the LLM space due to the high compute demands of pretraining, offer an increasingly promising dimension in model compression and efficiency.",
-    "document_id": "2391ac26-01f8-49ef-b654-c15e0f6e975a",
-    "document_metadata": [
-      {
-        "entity": "url",
-        "source": "https://developers.redhat.com/articles/2025/02/28/24-sparse-llama-smaller-models-efficient-gpu-inference"
-      },
-      {
-        "entity": "title",
-        "source": "2:4 Sparse Llama: Smaller models for efficient GPU inference | Red Hat Developer"
-      }
-    ],
-    "passage_id": 501,
-    "rank": 1,
-    "score": 20.09375
-  },
-  {
-    "content": "Neural networks are a class of machine learning models inspired by the human brain. They are made up of layers of interconnected units called neurons, or nodes, which process input data and learn patterns to make predictions or decisions. Neural networks are the foundation of many artificial intelligence applications, including image recognition, speech processing, and natural language understanding (Figure 6).",
-    "document_id": "88c26d65-dcd8-44ac-a668-c9bd327b6b2c",
-    "document_metadata": [
-      {
-        "entity": "url",
-        "source": "https://developers.redhat.com/articles/2025/04/10/road-ai-guide-understanding-aiml-models"
-      },
-      {
-        "entity": "title",
-        "source": "The road to AI: A guide to understanding AI/ML models | Red Hat Developer"
-      }
-    ],
-    "passage_id": 89,
-    "rank": 2,
-    "score": 16.0
-  },
-  {
-    "content": "These considerations led us to explore techniques that enhance the small language model-powered agent's ability to orchestrate multiple tool calls and reason dynamically.",
-    "document_id": "4e7af5df-deb1-4529-b0a9-f10df7633c01",
-    "document_metadata": [
-      {
-        "entity": "url",
-        "source": "https://developers.redhat.com/articles/2025/07/22/react-vs-naive-prompt-chaining-llama-stack"
-      },
-      {
-        "entity": "title",
-        "source": "ReAct vs. naive prompt chaining on Llama Stack | Red Hat Developer"
-      }
-    ],
-    "passage_id": 1462,
-    "rank": 3,
-    "score": 15.453125
-  }
-]
-
-real    0m0.008s
-user    0m0.002s
-sys 0m0.006s
+(venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#30df14d$ curl -vv 'http://localhost:8081/api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3' | jq .
+* Host localhost:8081 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8081...
+* connect to ::1 port 8081 from ::1 port 37344 failed: Connection refused
+*   Trying 127.0.0.1:8081...
+* Connected to localhost (127.0.0.1) port 8081
+> GET /api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3 HTTP/1.1
+> Host: localhost:8081
+> User-Agent: curl/8.9.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Server: Werkzeug/3.1.3 Python/3.9.23
+< Date: Mon, 04 Aug 2025 22:16:01 GMT
+< Content-Type: application/json
+< Content-Length: 1492
+< Connection: close
+< 
+{ [1492 bytes data]
+100  1492  100  1492    0     0   389k      0 --:--:-- --:--:-- --:--:--  485k
+* shutting down connection #0
+{
+  "query": "tell me about small models and Neural Magic",
+  "topk": [
+    {
+      "pid": 516510,
+      "prob": 0.7924096094164889,
+      "rank": 1,
+      "score": 22.9375,
+      "text": "Weight sparsity, which consists of pruning individual weights from a neural network by setting them to zero, can be combined with quantization to compress models even more. In the past, Neural Magic has pruned smaller models like BERT to >90% sparsity, but it had not been confirmed whether these techniques can be applied to the scale of LLMs."
+    },
+    {
+      "pid": 511643,
+      "prob": 0.15849189268040462,
+      "rank": 2,
+      "score": 21.328125,
+      "text": "Neural Magic is doubling down on this challenge with sparse LLMs—reducing the model size by removing unneeded connections while retaining accuracy. Sparse models, though underexplored in the LLM space due to the high compute demands of pretraining, offer an increasingly promising dimension in model compression and efficiency."
+    },
+    {
+      "pid": 521917,
+      "prob": 0.04909849790310651,
+      "rank": 3,
+      "score": 20.15625,
+      "text": "Neural Magic, now part of Red Hat, is a top commercial contributor to vLLM, working extensively on model and systems optimizations to improve vLLM performance at scale. The framework supports multimodal models, embeddings, and reward modeling, and is increasingly used in reinforcement learning with human feedback (RLHF) workflows. With features such as advanced scheduling, chunk prefill, Multi-LoRA batching, and structured outputs, vLLM is optimized for both inference acceleration and enterprise-scale deployment."
+    }
+  ]
+}
 ```
