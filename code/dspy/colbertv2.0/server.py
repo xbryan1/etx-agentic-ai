@@ -31,9 +31,14 @@ def api_search_query(query, k):
     if k == None: k = 10
     k = min(int(k), 100)
     results = engine.search(query, k=k)
-    topk = []
+    scores = []
     for r in results:
-        d = {'text': r['content'], 'pid': r['passage_id'], 'rank': r['rank'], 'score': r['score'], 'prob': 1}
+        scores.append(r['score'])
+    probs = [math.exp(score) for score in scores]
+    probs = [prob / sum(probs) for prob in probs]
+    topk = []
+    for r, prob in zip(results, probs):
+        d = {'text': r['content'], 'pid': r['passage_id'], 'rank': r['rank'], 'score': r['score'], 'prob': prob}
         topk.append(d)
     topk = list(sorted(topk, key=lambda p: (-1 * p['score'], p['pid'])))
     return {"query" : query, "topk": topk}
@@ -49,4 +54,3 @@ def api_search():
 
 if __name__ == "__main__":
     app.run("0.0.0.0", int(os.getenv("PORT")))
-
