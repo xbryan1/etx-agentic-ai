@@ -4,6 +4,23 @@
 
 An experiment to try out DSPy with our setup.
 
+<!-- vscode-markdown-toc -->
+1. [Getting Started](#GettingStarted)
+2. [Local development](#Localdevelopment)
+3. [Connect to LLMs using DSPy](#ConnecttoLLMsusingDSPy)
+4. [Connect to LLMs, MCP using DSPy](#ConnecttoLLMsMCPusingDSPy)
+5. [Full E2E Agent SDLC Use Case](#FullE2EAgentSDLCUseCase)
+6. [Connect to LLMs, MCP, RAG](#ConnecttoLLMsMCPRAG)
+7. [Web scrape developers.red.hat.com](#Webscrapedevelopers.red.hat.com)
+8. [Create a Colbertv2.0 index for RAG](#CreateaColbertv2.0indexforRAG)
+9. [Host a Colbertv2.0 server](#HostaColbertv2.0server)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
 My plan was to test these use cases out with DSPy
 
 - DSPy -> LlamaStack (model) using openai
@@ -26,7 +43,7 @@ If you're looking for the DSP framework for composing ColBERTv2 and LLMs, it's a
 
 [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) Beautiful Soup is a Python library for pulling data out of HTML and XML files.
 
-## Getting Started
+##  1. <a name='GettingStarted'></a>Getting Started
 
 Install python environment.
 
@@ -64,7 +81,7 @@ pip install mlflow
 mlflow ui --port 5500 &
 ```
 
-## Local development
+##  2. <a name='Localdevelopment'></a>Local development
 
 We can port forward LLamaStack and MCP servers for local development.
 
@@ -80,7 +97,7 @@ You can check these work using mcp llama stack client.
 python mcp-llama-stack-client.py
 ```
 
-## Connect to LLMs using DSPy
+##  3. <a name='ConnecttoLLMsusingDSPy'></a>Connect to LLMs using DSPy
 
 Do a Chain of Thought question and answer with remote LLM exposed via LlamaStack.
 
@@ -156,7 +173,7 @@ Absorb light for photosynthesis
 [[ ## completed ## ]]
 ```
 
-## Connect to LLMs, MCP using DSPy
+##  4. <a name='ConnecttoLLMsMCPusingDSPy'></a>Connect to LLMs, MCP using DSPy
 
 Connect and list our MCP tools using DSPy. For this we need to proxy the mcp tools directly to DSPy. i cannot seem to use any LLS api's for this.
 
@@ -846,7 +863,7 @@ Explanation: The `setHandlers` method cannot be found in the `io.undertow.Undert
 [[ ## completed ## ]]
 ```
 
-## Full E2E Agent SDLC Use Case
+##  5. <a name='FullE2EAgentSDLCUseCase'></a>Full E2E Agent SDLC Use Case
 
 Run mcp::openshift, mcp::github, inbuilt::websearch MCP with
 
@@ -1161,7 +1178,7 @@ See github issue [Issue #38](https://github.com/redhat-ai-services/etx-agentic-a
 
 ![images/issue-38.png](images/issue-38.png)
 
-## Connect to LLMs, MCP, RAG
+##  6. <a name='ConnecttoLLMsMCPRAG'></a>Connect to LLMs, MCP, RAG
 
 Test RAG using the Colbertv2.0 index (see below to create this)
 
@@ -1289,7 +1306,7 @@ Based on the information provided, RHOAI appears to be in the process of being s
 [[ ## completed ## ]]
 ```
 
-## Web scrape developers.red.hat.com
+##  7. <a name='Webscrapedevelopers.red.hat.com'></a>Web scrape developers.red.hat.com
 
 Grab the list or URLs for all articles from developers.redhat.com
 
@@ -1316,7 +1333,7 @@ user	4m31.672s
 sys	0m2.857s
 ```
 
-## Create a Colbertv2.0 index for RAG
+##  8. <a name='CreateaColbertv2.0indexforRAG'></a>Create a Colbertv2.0 index for RAG
 
 You need a working NVIDIA GPU and CUDA here. I am using my laptop which has `cuda-toolkit-12.9.1-1.x86_64` and a `NVIDIA GeForce RTX 4070`.
 
@@ -1801,7 +1818,7 @@ vLLM and distributed inference. If you prefer, you can watch the full',
 ]
 ```
 
-## Host a Colbertv2.0 server
+##  9. <a name='HostaColbertv2.0server'></a>Host a Colbertv2.0 server
 
 We are going to host a flask server with the index, then query it using MCP from DSPy
 
@@ -1935,3 +1952,5 @@ real	0m0.008s
 user	0m0.002s
 sys	0m0.006s
 ```
+
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
