@@ -219,7 +219,7 @@ Number of Tools: 93
 Now try out our actual business use case !
 
 ```bash
-python dspy-mcp-agent2.py
+python dspy-mcp-agent.py
 ```
 
 Result
