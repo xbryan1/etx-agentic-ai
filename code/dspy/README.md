@@ -1611,6 +1611,31 @@ See github issue [Issue#43](https://github.com/redhat-ai-services/etx-agentic-ai
 
 ![images/issue-43.png](images/issue-43.png)
 
+We can also see in the colbert server the search being called as expected.
+
+```bash
+Loading extension module packbits_cpp...
+[Aug 05, 09:06:47] #> Loading IVF...
+[Aug 05, 09:06:47] #> Loading doclens...
+100%|███████████████████████████████████████████████████████████████████████| 22/22 [00:00<00:00, 1692.00it/s]
+[Aug 05, 09:06:47] #> Loading codes and residuals...
+100%|████████████████████████████████████████████████████████████████████████| 22/22 [00:00<00:00, 158.51it/s]
+Searcher loaded!
+
+#> QueryTokenizer.tensorize(batch_text[0], batch_background[0], bsize) ==
+#> Input: Maven compilation error: cannot find symbol method setHandlers(io.undertow.server.handlers.PathHandler), 		 True, 		 None
+#> Output IDs: torch.Size([32]), tensor([  101,     1,  5003,  8159,  6268,  7561,  1024,  3685,  2424,  6454,
+         4118,  6662,  5685, 12910,  1006, 22834,  1012,  2104, 18790,  1012,
+         8241,  1012, 28213,  2015,  1012,  4130, 11774,  3917,  1007,   102,
+          103,   103], device='cuda:0')
+#> Output Mask: torch.Size([32]), tensor([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 0, 0], device='cuda:0')
+
+/home/mike/git/etx-agentic-ai/code/dspy/colbertv2.0/venv/lib64/python3.9/site-packages/colbert/utils/amp.py:15: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast() if self.activated else NullContextManager()
+127.0.0.1 - - [05/Aug/2025 09:06:48] "GET /api/search?query=Maven+compilation+error:+cannot+find+symbol+method+setHandlers(io.undertow.server.handlers.PathHandler)&k=5 HTTP/1.1" 200 -
+```
+
 ## Web scrape developers red hat com
 
 Grab the list or URLs for all articles from developers.redhat.com
