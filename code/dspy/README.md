@@ -1157,7 +1157,7 @@ Explanation: The Java application compilation failed due to a change in the Unde
 [[ ## completed ## ]]
 ```
 
-See github issue [Issue #37](https://github.com/redhat-ai-services/etx-agentic-ai/issues/38)
+See github issue [Issue #38](https://github.com/redhat-ai-services/etx-agentic-ai/issues/38)
 
 ![images/issue-38.png](images/issue-38.png)
 
