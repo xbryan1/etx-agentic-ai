@@ -1,9 +1,10 @@
 from fastmcp import FastMCP
 from fastmcp.server.proxy import ProxyClient
+from rich.pretty import pprint
 import os
 
-TAVILY_API_KEY=
-URL=
+TAVILY_API_KEY = os.getenv('TAVILY_API_KEY', 'fake')
+URL = os.getenv('URL', 'fake')
 
 config = {
     "mcpServers": {
@@ -21,6 +22,8 @@ config = {
         }
     }
 }
+
+print(config)
 
 # Create a unified proxy to multiple servers
 composite_proxy = FastMCP.as_proxy(config, name="Composite Proxy")

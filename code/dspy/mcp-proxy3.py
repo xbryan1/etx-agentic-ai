@@ -5,12 +5,6 @@ import os
 TAVILY_API_KEY = os.getenv('TAVILY_API_KEY', 'fake')
 URL = os.getenv('URL', 'fake')
 
-# Bridge remote SSE server to local stdio
-#remote_proxy = FastMCP.as_proxy(
-#    ProxyClient("http://localhost:8321/v1"), # http://example.com/mcp/sse
-#    name="Remote-to-Local Bridge"
-#)
-
 config = {
     "mcpServers": {
         "mcp::openshift": {
@@ -21,10 +15,10 @@ config = {
             "url": "http://localhost:8080/sse",
             "transport": "sse"
         },
-        # "websearch": {
-        #     "url": URL,
-        #     "transport": "http"
-        # }
+        "websearch": {
+            "url": URL,
+            "transport": "http"
+        }
     }
 }
 
