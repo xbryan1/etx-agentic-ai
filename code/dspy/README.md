@@ -57,6 +57,13 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+MLFLow - we are using this for tracing. Run locally.
+
+```bash
+pip install mlflow
+mlflow ui --port 5500 &
+```
+
 ## Local development
 
 We can port forward LLamaStack and MCP servers for local development.
@@ -65,6 +72,88 @@ We can port forward LLamaStack and MCP servers for local development.
 oc -n llama-stack port-forward svc/llamastack-with-config-service 8321:8321 2>&1>/dev/null &
 oc -n agent-demo port-forward svc/ocp-mcp-server 8000:8000 2>&1>/dev/null &
 oc -n agent-demo port-forward svc/github-mcp-server 8080:80 2>&1>/dev/null &
+```
+
+You can check these work using mcp llama stack client.
+
+```bash
+python mcp-llama-stack-client.py
+```
+
+## Connect to LLMs using DSPy
+
+Do a Chain of Thought question and answer with remote LLM exposed via LlamaStack.
+
+Export in your environment.
+
+```bash
+export LLM_URL=http://localhost:8321/v1/openai/v1  # port forward llama-stack api
+export API_KEY=d2...  # you maas key
+export LLM_MODEL="openai/llama-4-scout-17b-16e-w4a16"  # llm in maas we using
+export MAX_TOKENS=110000
+```
+
+Try it out.
+
+```bash
+python dspy-llm.py
+```
+
+Response
+
+```bash
+--- Using dspy.ChainOfThought for Enhanced QA ---
+(venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#8d809ba$ python dspy-llm.py 
+
+--- Using dspy.ChainOfThought for Enhanced QA ---
+Question: What is the primary function of chlorophyll in plants?
+Reasoning: To determine the primary function of chlorophyll in plants, we should consider the role of chlorophyll in the process of photosynthesis. Photosynthesis is how plants convert light energy into chemical energy. Chlorophyll is known to absorb light, particularly in the blue and red spectrum, which is crucial for initiating the photosynthetic process.
+Answer: Absorb light for photosynthesis
+
+--- Inspecting LM History ---
+
+[2025-08-04T11:29:43.321309]
+
+System message:
+
+Your input fields are:
+1. `question` (str):
+Your output fields are:
+1. `reasoning` (str): 
+2. `answer` (str): often between 1 and 5 words
+All interactions will be structured in the following way, with the appropriate values filled in.
+
+[[ ## question ## ]]
+{question}
+
+[[ ## reasoning ## ]]
+{reasoning}
+
+[[ ## answer ## ]]
+{answer}
+
+[[ ## completed ## ]]
+In adhering to this structure, your objective is: 
+        Answer questions with short factoid answers.
+
+
+User message:
+
+[[ ## question ## ]]
+What is the primary function of chlorophyll in plants?
+
+Respond with the corresponding output fields, starting with the field `[[ ## reasoning ## ]]`, then `[[ ## answer ## ]]`, and then ending with the marker for `[[ ## completed ## ]]`.
+
+
+Response:
+
+[[ ## reasoning ## ]]
+To determine the primary function of chlorophyll in plants, we should consider the role of chlorophyll in the process of photosynthesis. Photosynthesis is how plants convert light energy into chemical energy. Chlorophyll is known to absorb light, particularly in the blue and red spectrum, which is crucial for initiating the photosynthetic process.
+
+[[ ## answer ## ]]
+Absorb light for photosynthesis
+
+[[ ## completed ## ]]
 ```
 
 ## Web scrape developers.red.hat.com
