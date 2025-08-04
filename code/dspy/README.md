@@ -158,7 +158,63 @@ Absorb light for photosynthesis
 
 ## Connect to LLMs, MCP using DSPy
 
-FIXME
+Connect and list our MCP tools using DSPy. For this we need to proxy the mcp tools directly to DSPy. i cannot seem to use any LLS api's for this.
+
+We using FastMCP to proxy.
+
+```bash
+python mcp-dspy.py
+```
+
+Results (big list of mcp tools).
+
+```bash
+(venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#df4d993$ python mcp-dspy.py 
+
+
+╭─ FastMCP 2.0 ──────────────────────────────────────────────────────────────╮
+│                                                                            │
+│        _ __ ___ ______           __  __  _____________    ____    ____     │
+│       _ __ ___ / ____/___ ______/ /_/  |/  / ____/ __ \  |___ \  / __ \    │
+│      _ __ ___ / /_  / __ `/ ___/ __/ /|_/ / /   / /_/ /  ___/ / / / / /    │
+│     _ __ ___ / __/ / /_/ (__  ) /_/ /  / / /___/ ____/  /  __/_/ /_/ /     │
+│    _ __ ___ /_/    \__,_/____/\__/_/  /_/\____/_/      /_____(_)____/      │
+│                                                                            │
+│                                                                            │
+│                                                                            │
+│    🖥️  Server name:     Composite Proxy                                     │
+│    📦 Transport:       STDIO                                               │
+│                                                                            │
+│    📚 Docs:            https://gofastmcp.com                               │
+│    🚀 Deploy:          https://fastmcp.cloud                               │
+│                                                                            │
+│    🏎️  FastMCP version: 2.11.0                                              │
+│    🤝 MCP version:     1.12.2                                              │
+│                                                                            │
+╰────────────────────────────────────────────────────────────────────────────╯
+
+
+[08/04/25 11:38:34] INFO     Starting MCP server 'Composite Proxy' with transport 'stdio'                                                                                       server.py:1442
+Number of Tools: 93
+[
+│   Tool(
+│   │   func=<function convert_mcp_tool.<locals>.func at 0x7fb1f8ff18a0>,
+│   │   name='mcp::openshift_configuration_view',
+│   │   desc='Get the current Kubernetes configuration content as a kubeconfig YAML',
+│   │   args={
+│   │   │   'minified': {
+│   │   │   │   'description': 'Return a minified version of the configuration. If set to true, keeps only the current-context and the relevant pieces of the configuration for that context. If set to false, all contexts, clusters, auth-infos, and users are returned in the configuration. (Optional, default true)',
+│   │   │   │   'type': 'boolean'
+│   │   │   }
+│   │   },
+│   │   arg_types={'minified': <class 'bool'>},
+│   │   arg_desc={
+│   │   │   'minified': 'Return a minified version of the configuration. If set to true, keeps only the current-context and the relevant pieces of the configuration for that context. If set to false, all contexts, clusters, auth-infos, and users are returned in the configuration. (Optional, default true)'
+│   │   },
+│   │   has_kwargs=True
+│   ),
+... 
+```
 
 ## Connect to LLMs, MCP, RAG using DSPy
 
