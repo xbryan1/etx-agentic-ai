@@ -156,6 +156,14 @@ Absorb light for photosynthesis
 [[ ## completed ## ]]
 ```
 
+## Connect to LLMs, MCP using DSPy
+
+FIXME
+
+## Connect to LLMs, MCP, RAG using DSPy
+
+FIXME
+
 ## Web scrape developers.red.hat.com
 
 Grab the list or URLs for all articles from developers.redhat.com
