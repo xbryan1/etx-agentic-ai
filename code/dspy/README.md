@@ -10,7 +10,7 @@
         developers redhat com](#web-scrape-developers-red-hat-com)
     -   [Create a Colbertv2 index for
         RAG](#create-a-colbertv2-index-for-rag)
-    -   [Host a Colbertv2 server](#host-a-colbertv2.0-server)
+    -   [Host a Colbertv2 server](#host-a-colbertv2-server)
 
 # 🧪 DSPy experiments 🧪
 
