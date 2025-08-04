@@ -591,6 +591,11 @@ Press CTRL+C to quit
 
 Test Query
 
+```json
+prompt: "tell me about small models and Neural Magic"
+k: 3
+```
+
 ```bash
 time curl -s 'http://localhost:8081/api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3' | jq .
 [
