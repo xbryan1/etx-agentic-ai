@@ -86,7 +86,7 @@ async def run(user_request):
             #pprint(dspy_tools)
 
             # Create the agent
-            react = dspy.ReAct(PodLogsSummarize, tools=dspy_tools)
+            react = dspy.ReAct(PodLogsSummarize, tools=dspy_tools, max_iters=20)
 
             result = await react.acall(user_request=user_request, logs=logs)
             pprint(result)

@@ -62,9 +62,9 @@ class BasicRAG(dspy.Module):
         )  # Generate answer using ChainOfThought
 
     def forward(self, question):
-        # 4. Perform retrieval
+        # Perform retrieval
         context = self.retrieve(question).passages
-        # 5. Generate answer using the retrieved context
+        # Generate answer using the retrieved context
         prediction = self.generate_answer(context=context, question=question)
         return prediction
 
