@@ -1978,7 +1978,3 @@ real    0m0.008s
 user    0m0.002s
 sys 0m0.006s
 ```
-
-```{=html}
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-```
