@@ -26,6 +26,7 @@ API_KEY=os.getenv('API_KEY', 'fake')
 LLM_MODEL=os.getenv('LLM_MODEL', 'openai/models/Llama-3.2-3B-Instruct-Q8_0.gguf')
 MAX_TOKENS=os.getenv('MAX_TOKENS', 3000)
 TEMPERATURE=os.getenv('TEMPERATURE', 0.2)
+
 dspy.enable_logging()
 
 lm = dspy.LM(model=LLM_MODEL,

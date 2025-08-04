@@ -43,25 +43,13 @@ dspy.settings.configure(track_usage=True)
 
 server_params = StdioServerParameters(
     command="python",
-    args=["mcp-proxy2.py"],
+    args=["mcp-proxy3.py"],
     env={"TAVILY_API_KEY": TAVILY_API_KEY, "URL": URL, "DEBUG_MODE": "False"},
 )
 
-file_path = "java-app-build-1sqsla-build-pod.logs"
-logs = ""
-
-try:
-    with open(file_path, 'r', encoding='utf-8') as file:
-        logs = file.read()
-except FileNotFoundError:
-    print(f"Error: The file '{file_path}' was not found.")
-except Exception as e:
-    print(f"An error occurred: {e}")
-
 class PodLogsSummarize(dspy.Signature):
-    "logs -> summary: str"
+    """You are an expert OpenShift administrator. Your task is to analyze pod logs and summarize the error. Review the OpenShift logs for the pod 'java-app-build-run-bad-80uy3b-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, create a summary message with the category and explanation of the error."""
 
-    logs: str = dspy.InputField()
     user_request: str = dspy.InputField()
     process_result: str = dspy.OutputField(
         desc=(
@@ -88,14 +76,11 @@ async def run(user_request):
             # Create the agent
             react = dspy.ReAct(PodLogsSummarize, tools=dspy_tools)
 
-            result = await react.acall(user_request=user_request, logs=logs)
+            result = await react.acall(user_request=user_request)
             pprint(result)
 
             dspy.inspect_history()
 
 if __name__ == "__main__":
     import asyncio
-    #(1) summarize pod logs error
-    # asyncio.run(run("""You are an expert OpenShift administrator. Your task is to analyze pod logs and summarize the error. Review the OpenShift logs for the pod 'java-app-build-run-bad-80uy3b-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, create a summary message with the category and explanation of the error."""))
-    #(2) summarize, search for solution (with only mcp::github, mcp::openshift - agent uses mcp::github_search_issues)
-    asyncio.run(run("""You are an expert OpenShift administrator. Your task is to analyze pod logs, search for a solution and summarize the error."""))
+    asyncio.run(run("""You are an expert OpenShift administrator. Your task is to analyze pod logs and summarize the error. Review the OpenShift logs for the container 'step-s2i-build' in the pod 'java-app-build-run-bad-80uy3b-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, search for the top OpenShift solution. Create a summary message with the category and explanation of the error. Create a Github issue using {"name":"create_issue","arguments":{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"<summary of the error>"}} DO NOT add any optional parameters."""))
