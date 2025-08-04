@@ -1,3 +1,17 @@
+-   [🧪 DSPy experiments 🧪](#dspy-experiments)
+    -   [Getting Started](#getting-started)
+    -   [Local development](#local-development)
+    -   [Connect to LLMs using DSPy](#connect-to-llms-using-dspy)
+    -   [Connect to LLMs, MCP using
+        DSPy](#connect-to-llms-mcp-using-dspy)
+    -   [Full E2E Agent SDLC Use Case](#full-e2e-agent-sdlc-use-case)
+    -   [Connect to LLMs, MCP, RAG](#connect-to-llms-mcp-rag)
+    -   [Web scrape
+        developers.red.hat.com](#web-scrape-developers.red.hat.com)
+    -   [Create a Colbertv2.0 index for
+        RAG](#create-a-colbertv2.0-index-for-rag)
+    -   [Host a Colbertv2.0 server](#host-a-colbertv2.0-server)
+
 # 🧪 DSPy experiments 🧪
 
 💥 THIS IS EXPERIMENTAL 💥
@@ -6,25 +20,44 @@ An experiment to try out DSPy with our setup.
 
 My plan was to test these use cases out with DSPy
 
-- DSPy -> LlamaStack (model) using openai
-- DSPy -> LlamaStack (model) using openai, MCP servers
-- DSPy -> LlamaStack (model) using openai, MCP servers, RAG
+-   DSPy -\> LlamaStack (model) using openai
+-   DSPy -\> LlamaStack (model) using openai, MCP servers
+-   DSPy -\> LlamaStack (model) using openai, MCP servers, RAG
 
 Tools in use:
 
-[DSPy](https://dspy.ai/) is a declarative framework for building modular AI software. It allows you to iterate fast on structured code, rather than brittle strings, and offers algorithms that compile AI programs into effective prompts and weights for your language models, whether you're building simple classifiers, sophisticated RAG pipelines, or Agent loops.
+[DSPy](https://dspy.ai/) is a declarative framework for building modular
+AI software. It allows you to iterate fast on structured code, rather
+than brittle strings, and offers algorithms that compile AI programs
+into effective prompts and weights for your language models, whether
+you're building simple classifiers, sophisticated RAG pipelines, or
+Agent loops.
 
-[ColBERT](https://huggingface.co/colbert-ir/colbertv2.0) is a fast and accurate retrieval model, enabling scalable BERT-based search over large text collections in tens of milliseconds.
+[ColBERT](https://huggingface.co/colbert-ir/colbertv2.0) is a fast and
+accurate retrieval model, enabling scalable BERT-based search over large
+text collections in tens of milliseconds.
 
-If you're looking for the DSP framework for composing ColBERTv2 and LLMs, it's at: https://github.com/stanfordnlp/dsp
+If you're looking for the DSP framework for composing ColBERTv2 and
+LLMs, it's at: https://github.com/stanfordnlp/dsp
 
-[PyLate](https://github.com/lightonai/pylate) PyLate is a library built on top of Sentence Transformers, designed to simplify and optimize fine-tuning, inference, and retrieval with state-of-the-art ColBERT models.
+[PyLate](https://github.com/lightonai/pylate) PyLate is a library built
+on top of Sentence Transformers, designed to simplify and optimize
+fine-tuning, inference, and retrieval with state-of-the-art ColBERT
+models.
 
-[FastMCP](https://gofastmcp.com/servers/proxy#multi-server-configurations) Use FastMCP to act as an intermediary or change transport for other MCP servers.
+[FastMCP](https://gofastmcp.com/servers/proxy#multi-server-configurations)
+Use FastMCP to act as an intermediary or change transport for other MCP
+servers.
 
-[Scrapy](https://docs.scrapy.org/en/latest/intro/overview.html) Scrapy is an application framework for crawling web sites and extracting structured data which can be used for a wide range of useful applications, like data mining, information processing or historical archival.
+[Scrapy](https://docs.scrapy.org/en/latest/intro/overview.html) Scrapy
+is an application framework for crawling web sites and extracting
+structured data which can be used for a wide range of useful
+applications, like data mining, information processing or historical
+archival.
 
-[Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) Beautiful Soup is a Python library for pulling data out of HTML and XML files.
+[Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+Beautiful Soup is a Python library for pulling data out of HTML and XML
+files.
 
 ## Getting Started
 
@@ -32,7 +65,7 @@ Install python environment.
 
 DSPy (running dspy experiments)
 
-```bash
+``` bash
 cd dspy
 python3.13 -m venv venv
 source venv/bin/activate
@@ -41,7 +74,7 @@ pip install -r requirements.txt
 
 Colbertv2.0 (optional - this is for developing RAG from scratch)
 
-```bash
+``` bash
 cd dspy/colbertv2.0
 python3.9 -m venv venv
 source venv/bin/activate
@@ -50,7 +83,7 @@ pip install -r requirements.txt
 
 Scrapy (optional - this is for web scraping developers.redhat.com)
 
-```bash
+``` bash
 cd dspy/scrapy
 python3.13 -m venv venv
 source venv/bin/activate
@@ -59,7 +92,7 @@ pip install -r requirements.txt
 
 MLFLow - we are using this for tracing. Run locally.
 
-```bash
+``` bash
 pip install mlflow
 mlflow ui --port 5500 &
 ```
@@ -68,7 +101,7 @@ mlflow ui --port 5500 &
 
 We can port forward LLamaStack and MCP servers for local development.
 
-```bash
+``` bash
 oc -n llama-stack port-forward svc/llamastack-with-config-service 8321:8321 2>&1>/dev/null &
 oc -n agent-demo port-forward svc/ocp-mcp-server 8000:8000 2>&1>/dev/null &
 oc -n agent-demo port-forward svc/github-mcp-server 8080:80 2>&1>/dev/null &
@@ -76,17 +109,18 @@ oc -n agent-demo port-forward svc/github-mcp-server 8080:80 2>&1>/dev/null &
 
 You can check these work using mcp llama stack client.
 
-```bash
+``` bash
 python mcp-llama-stack-client.py
 ```
 
 ## Connect to LLMs using DSPy
 
-Do a Chain of Thought question and answer with remote LLM exposed via LlamaStack.
+Do a Chain of Thought question and answer with remote LLM exposed via
+LlamaStack.
 
 Export in your environment.
 
-```bash
+``` bash
 export LLM_URL=http://localhost:8321/v1/openai/v1  # port forward llama-stack api
 export API_KEY=d2...  # you maas key
 export LLM_MODEL="openai/llama-4-scout-17b-16e-w4a16"  # llm in maas we using
@@ -95,13 +129,13 @@ export MAX_TOKENS=110000
 
 Try it out.
 
-```bash
+``` bash
 python dspy-llm.py
 ```
 
 Response
 
-```bash
+``` bash
 --- Using dspy.ChainOfThought for Enhanced QA ---
 (venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#8d809ba$ python dspy-llm.py 
 
@@ -158,17 +192,18 @@ Absorb light for photosynthesis
 
 ## Connect to LLMs, MCP using DSPy
 
-Connect and list our MCP tools using DSPy. For this we need to proxy the mcp tools directly to DSPy. i cannot seem to use any LLS api's for this.
+Connect and list our MCP tools using DSPy. For this we need to proxy the
+mcp tools directly to DSPy. i cannot seem to use any LLS api's for this.
 
 We using FastMCP to proxy.
 
-```bash
+``` bash
 python mcp-dspy.py
 ```
 
 Results (big list of mcp tools).
 
-```bash
+``` bash
 (venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#df4d993$ python mcp-dspy.py 
 
 
@@ -218,13 +253,13 @@ Number of Tools: 93
 
 Now try out our actual business use case !
 
-```bash
+``` bash
 python dspy-mcp-agent.py
 ```
 
 Result
 
-```bash
+``` bash
 ╭─ FastMCP 2.0 ──────────────────────────────────────────────────────────────╮
 │                                                                            │
 │        _ __ ___ ______           __  __  _____________    ____    ____     │
@@ -538,13 +573,13 @@ The error is likely due to a version mismatch or a change in the Undertow librar
 
 Let's try out websearch directly using logfile and tavily.
 
-```bash
+``` bash
 python dspy-mcp-agent2.py
 ```
 
 Result.
 
-```bash
+``` bash
 ╭─ FastMCP 2.0 ──────────────────────────────────────────────────────────────╮
 │                                                                            │
 │        _ __ ___ ______           __  __  _____________    ____    ____     │
@@ -850,19 +885,19 @@ Explanation: The `setHandlers` method cannot be found in the `io.undertow.Undert
 
 Run mcp::openshift, mcp::github, inbuilt::websearch MCP with
 
-```json
+``` json
 prompt: "You are an expert OpenShift administrator. Your task is to analyze pod logs and summarize the error. Review the OpenShift logs for the container 'step-s2i-build' in the pod 'java-app-build-run-bad-80uy3b-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, search for the top OpenShift solution. Create a summary message with the category and explanation of the error. Create a Github issue using {"name":"create_issue","arguments":{"owner":"redhat-ai-services","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"<summary of the error>"}} DO NOT add any optional parameters."
 ```
 
 Run it.
 
-```bash
+``` bash
 python dspy-mcp-agent3.py
 ```
 
 Result.
 
-```bash
+``` bash
 (venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#041f637$ python dspy-mcp-agent3.py 
 
 ╭─ FastMCP 2.0 ──────────────────────────────────────────────────────────────╮
@@ -1157,22 +1192,23 @@ Explanation: The Java application compilation failed due to a change in the Unde
 [[ ## completed ## ]]
 ```
 
-See github issue [Issue #38](https://github.com/redhat-ai-services/etx-agentic-ai/issues/38)
+See github issue [Issue
+#38](https://github.com/redhat-ai-services/etx-agentic-ai/issues/38)
 
-![images/issue-38.png](images/issue-38.png)
+![](images/issue-38.png)
 
 ## Connect to LLMs, MCP, RAG
 
 Test RAG using the Colbertv2.0 index (see below to create this)
 
-```bash
+``` bash
 cd etx-agentic-ai/code/dspy/colbertv2.0
 source venv/bin/activate
 ```
 
 Setup env vars
 
-```bash
+``` bash
 export COLBERT_LOAD_TORCH_EXTENSION_VERBOSE=True
 export LD_LIBRARY_PATH=/usr/lib64/:/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda-12.3/compat
 export TORCH_CUDA_ARCH_LIST=8.9
@@ -1183,19 +1219,19 @@ export PORT=8081
 
 Run the RAG server
 
-```bash
+``` bash
 python server.py
 ```
 
 Let's test simple RAG first
 
-```json
+``` json
 'Question: Is RHOAI ready to use for Agentic AI'
 ```
 
 Results
 
-```bash
+``` bash
 (venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#2deede5$ python dspy-rag-agent.py
 'Question: Is RHOAI ready to use for Agentic AI'
 'Retrieved Context (first 2 passages):'
@@ -1293,36 +1329,41 @@ Based on the information provided, RHOAI appears to be in the process of being s
 
 Grab the list or URLs for all articles from developers.redhat.com
 
-```bash
+``` bash
 wget https://raw.githubusercontent.com/eformat/dev-rh-rag-loader/refs/heads/main/developers-redhat-com.sh
 chmod 755 developers-redhat-com.sh
 ./developers-redhat-com.sh
 ```
 
-This will create a file `/tmp/developers.redhat.com-2025-08-03-07-12-41.uri` or URIs
+This will create a file
+`/tmp/developers.redhat.com-2025-08-03-07-12-41.uri` or URIs
 
-Run scrapy spider against this file or urls for all titles, paragraphs, code blocks. Adjust the spider to get the content you want to then index.
+Run scrapy spider against this file or urls for all titles, paragraphs,
+code blocks. Adjust the spider to get the content you want to then
+index.
 
-```bash
+``` bash
 scrapy runspider spider-dev-red.py -o dev-red-rag.jsonl
 ```
 
 Should generate a `dev-red-rag.jsonl` file. It took me this long ...
 
-```bash
+``` bash
 2025-08-04 08:14:35 [scrapy.core.engine] INFO: Spider closed (finished)
-real	16m57.287s
-user	4m31.672s
-sys	0m2.857s
+real    16m57.287s
+user    4m31.672s
+sys 0m2.857s
 ```
 
 ## Create a Colbertv2.0 index for RAG
 
-You need a working NVIDIA GPU and CUDA here. I am using my laptop which has `cuda-toolkit-12.9.1-1.x86_64` and a `NVIDIA GeForce RTX 4070`.
+You need a working NVIDIA GPU and CUDA here. I am using my laptop which
+has `cuda-toolkit-12.9.1-1.x86_64` and a `NVIDIA GeForce RTX 4070`.
 
-We are going to use the [jsonl](https://jsonlines.org/) file to create the Colbertv2.0 index.
+We are going to use the [jsonl](https://jsonlines.org/) file to create
+the Colbertv2.0 index.
 
-```bash
+``` bash
 (venv) virt:~/git/colbertv2.0$ python index2.py 
 /home/mike/git/colbertv2.0/index2.py:1: UserWarning: 
 ********************************************************************************
@@ -1339,44 +1380,44 @@ However, please pin version <0.0.10 if you require the Stanford ColBERT backend.
 /home/mike/git/colbertv2.0/venv/lib64/python3.9/site-packages/colbert/utils/amp.py:12: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
   self.scaler = torch.cuda.amp.GradScaler()
 [Aug 04, 08:38:18] #> Creating directory .ragatouille/colbert/indexes/dev-red-rag 
-[Aug 04, 08:38:22] [0] 		 #> Encoding 129880 passages..
+[Aug 04, 08:38:22] [0]       #> Encoding 129880 passages..
 /home/mike/git/colbertv2.0/venv/lib64/python3.9/site-packages/colbert/utils/amp.py:15: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
   return torch.cuda.amp.autocast() if self.activated else NullContextManager()
-[Aug 04, 08:45:38] [0] 		 avg_doclen_est = 20.08635711669922 	 len(local_sample) = 129,880
-[Aug 04, 08:45:39] [0] 		 Creating 32,768 partitions.
-[Aug 04, 08:45:39] [0] 		 *Estimated* 11,029,579 embeddings.
-[Aug 04, 08:45:39] [0] 		 #> Saving the indexing plan to .ragatouille/colbert/indexes/dev-red-rag/plan.json ..
+[Aug 04, 08:45:38] [0]       avg_doclen_est = 20.08635711669922      len(local_sample) = 129,880
+[Aug 04, 08:45:39] [0]       Creating 32,768 partitions.
+[Aug 04, 08:45:39] [0]       *Estimated* 11,029,579 embeddings.
+[Aug 04, 08:45:39] [0]       #> Saving the indexing plan to .ragatouille/colbert/indexes/dev-red-rag/plan.json ..
 Clustering 2558816 points in 128D to 32768 clusters, redo 1 times, 4 iterations
   Preprocessing in 0.23 s
   Iteration 3 (37.17 s, search 34.92 s): objective=432944 imbalance=2.130 nsplit=4         
 [Aug 04, 08:46:18] Loading decompress_residuals_cpp extension (set COLBERT_LOAD_TORCH_EXTENSION_VERBOSE=True for more info)...
 [Aug 04, 08:46:19] Loading packbits_cpp extension (set COLBERT_LOAD_TORCH_EXTENSION_VERBOSE=True for more info)...
 [0.026, 0.028, 0.026, 0.025, 0.024, 0.027, 0.027, 0.024, 0.025, 0.026, 0.026, 0.025, 0.026, 0.026, 0.026, 0.028, 0.024, 0.025, 0.025, 0.026, 0.026, 0.027, 0.026, 0.025, 0.025, 0.025, 0.027, 0.026, 0.027, 0.027, 0.026, 0.027, 0.027, 0.026, 0.025, 0.023, 0.027, 0.025, 0.025, 0.03, 0.026, 0.027, 0.027, 0.027, 0.027, 0.025, 0.024, 0.03, 0.027, 0.025, 0.025, 0.025, 0.027, 0.028, 0.024, 0.026, 0.028, 0.027, 0.03, 0.025, 0.026, 0.028, 0.026, 0.026, 0.028, 0.026, 0.027, 0.026, 0.025, 0.026, 0.028, 0.024, 0.025, 0.027, 0.025, 0.027, 0.026, 0.027, 0.026, 0.026, 0.028, 0.027, 0.026, 0.026, 0.026, 0.027, 0.026, 0.025, 0.025, 0.028, 0.025, 0.027, 0.025, 0.028, 0.026, 0.026, 0.029, 0.024, 0.027, 0.026, 0.027, 0.027, 0.026, 0.025, 0.027, 0.025, 0.026, 0.025, 0.026, 0.024, 0.027, 0.026, 0.026, 0.025, 0.026, 0.024, 0.026, 0.027, 0.026, 0.027, 0.025, 0.025, 0.026, 0.026, 0.026, 0.029, 0.028, 0.025]
-0it [00:00, ?it/s][Aug 04, 08:46:20] [0] 		 #> Encoding 25000 passages..
+0it [00:00, ?it/s][Aug 04, 08:46:20] [0]         #> Encoding 25000 passages..
 /home/mike/git/colbertv2.0/venv/lib64/python3.9/site-packages/colbert/utils/amp.py:15: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
   return torch.cuda.amp.autocast() if self.activated else NullContextManager()
-1it [01:22, 82.12s/it][Aug 04, 08:47:42] [0] 		 #> Encoding 25000 passages..
-2it [02:35, 77.23s/it][Aug 04, 08:48:56] [0] 		 #> Encoding 25000 passages..
-3it [03:25, 64.64s/it][Aug 04, 08:49:45] [0] 		 #> Encoding 25000 passages..
-4it [04:23, 62.09s/it][Aug 04, 08:50:44] [0] 		 #> Encoding 25000 passages..
-5it [05:30, 63.92s/it][Aug 04, 08:51:51] [0] 		 #> Encoding 25000 passages..
-6it [06:40, 65.97s/it][Aug 04, 08:53:01] [0] 		 #> Encoding 25000 passages..
-7it [08:05, 72.19s/it][Aug 04, 08:54:26] [0] 		 #> Encoding 25000 passages..
+1it [01:22, 82.12s/it][Aug 04, 08:47:42] [0]         #> Encoding 25000 passages..
+2it [02:35, 77.23s/it][Aug 04, 08:48:56] [0]         #> Encoding 25000 passages..
+3it [03:25, 64.64s/it][Aug 04, 08:49:45] [0]         #> Encoding 25000 passages..
+4it [04:23, 62.09s/it][Aug 04, 08:50:44] [0]         #> Encoding 25000 passages..
+5it [05:30, 63.92s/it][Aug 04, 08:51:51] [0]         #> Encoding 25000 passages..
+6it [06:40, 65.97s/it][Aug 04, 08:53:01] [0]         #> Encoding 25000 passages..
+7it [08:05, 72.19s/it][Aug 04, 08:54:26] [0]         #> Encoding 25000 passages..
 
-8it [09:37, 78.52s/it][Aug 04, 08:55:58] [0] 		 #> Encoding 25000 passages..
-9it [11:07, 82.02s/it][Aug 04, 08:57:28] [0] 		 #> Encoding 25000 passages..
-10it [12:41, 85.66s/it][Aug 04, 08:59:01] [0] 		 #> Encoding 25000 passages..
-11it [14:14, 87.85s/it][Aug 04, 09:00:34] [0] 		 #> Encoding 25000 passages..
-12it [15:48, 89.81s/it][Aug 04, 09:02:08] [0] 		 #> Encoding 25000 passages..
-13it [17:24, 91.73s/it][Aug 04, 09:03:45] [0] 		 #> Encoding 25000 passages..
-14it [18:57, 91.95s/it][Aug 04, 09:05:17] [0] 		 #> Encoding 25000 passages..
-15it [20:32, 92.83s/it][Aug 04, 09:06:52] [0] 		 #> Encoding 25000 passages..
-16it [22:03, 92.55s/it][Aug 04, 09:08:24] [0] 		 #> Encoding 25000 passages..
-17it [23:40, 93.73s/it][Aug 04, 09:10:00] [0] 		 #> Encoding 25000 passages..
-18it [25:11, 93.01s/it][Aug 04, 09:11:32] [0] 		 #> Encoding 25000 passages..
-19it [26:46, 93.46s/it][Aug 04, 09:13:06] [0] 		 #> Encoding 25000 passages..
-20it [28:18, 93.03s/it][Aug 04, 09:14:38] [0] 		 #> Encoding 25000 passages..
-21it [29:55, 94.18s/it][Aug 04, 09:16:15] [0] 		 #> Encoding 24108 passages..
+8it [09:37, 78.52s/it][Aug 04, 08:55:58] [0]         #> Encoding 25000 passages..
+9it [11:07, 82.02s/it][Aug 04, 08:57:28] [0]         #> Encoding 25000 passages..
+10it [12:41, 85.66s/it][Aug 04, 08:59:01] [0]        #> Encoding 25000 passages..
+11it [14:14, 87.85s/it][Aug 04, 09:00:34] [0]        #> Encoding 25000 passages..
+12it [15:48, 89.81s/it][Aug 04, 09:02:08] [0]        #> Encoding 25000 passages..
+13it [17:24, 91.73s/it][Aug 04, 09:03:45] [0]        #> Encoding 25000 passages..
+14it [18:57, 91.95s/it][Aug 04, 09:05:17] [0]        #> Encoding 25000 passages..
+15it [20:32, 92.83s/it][Aug 04, 09:06:52] [0]        #> Encoding 25000 passages..
+16it [22:03, 92.55s/it][Aug 04, 09:08:24] [0]        #> Encoding 25000 passages..
+17it [23:40, 93.73s/it][Aug 04, 09:10:00] [0]        #> Encoding 25000 passages..
+18it [25:11, 93.01s/it][Aug 04, 09:11:32] [0]        #> Encoding 25000 passages..
+19it [26:46, 93.46s/it][Aug 04, 09:13:06] [0]        #> Encoding 25000 passages..
+20it [28:18, 93.03s/it][Aug 04, 09:14:38] [0]        #> Encoding 25000 passages..
+21it [29:55, 94.18s/it][Aug 04, 09:16:15] [0]        #> Encoding 24108 passages..
 22it [31:24, 85.68s/it]
 100%|████████████████████████████████████████████████████████| 22/22 [00:00<00:00, 210.42it/s]
 [Aug 04, 09:17:46] #> Optimizing IVF to store map from centroids to list of pids..
@@ -1387,11 +1428,11 @@ Clustering 2558816 points in 128D to 32768 clusters, redo 1 times, 4 iterations
 Done indexing!
 ```
 
-![images/colbert-index.png](images/colbert-index.png)
+![](images/colbert-index.png)
 
 This will generate the index
 
-```bash
+``` bash
 (venv) virt:~/git/colbertv2.0$ tree .ragatouille/colbert/indexes/dev-red-rag/
 .ragatouille/colbert/indexes/dev-red-rag/
 ├── 0.codes.pt
@@ -1497,9 +1538,10 @@ This will generate the index
 
 Test a single Retrieve of documents.
 
-Note - this will build cuda extensions toe first time it is run and cache them here.
+Note - this will build cuda extensions toe first time it is run and
+cache them here.
 
-```bash
+``` bash
 tree /home/mike/.cache/torch_extensions/
 /home/mike/.cache/torch_extensions/
 └── py39_cu126
@@ -1519,20 +1561,20 @@ tree /home/mike/.cache/torch_extensions/
 
 Code
 
-```python
+``` python
 query = "tell me about small models and Neural Magic"
 RAG = RAGPretrainedModel.from_index("/home/mike/git/colbertv2.0/.ragatouille/colbert/indexes/dev-red-rag")
 ```
 
 Run It
 
-```bash
+``` bash
 python retrieve2.py 
 ```
 
 Results:
 
-```bash
+``` bash
 (venv) virt:~/git/colbertv2.0$ python retrieve2.py 
 /home/mike/git/colbertv2.0/retrieve2.py:1: UserWarning: 
 ********************************************************************************
@@ -1560,7 +1602,7 @@ Loading searcher for index dev-red-rag for the first time... This may take a few
 Searcher loaded!
 
 #> QueryTokenizer.tensorize(batch_text[0], batch_background[0], bsize) ==
-#> Input: tell me about small models and Neural Magic, 		 True, 		 None
+#> Input: tell me about small models and Neural Magic,       True,       None
 #> Output IDs: torch.Size([32]), tensor([  101,     1,  2425,  2033,  2055,  2235,  4275,  1998, 15756,  3894,
           102,   103,   103,   103,   103,   103,   103,   103,   103,   103,
           103,   103,   103,   103,   103,   103,   103,   103,   103,   103,
@@ -1803,15 +1845,16 @@ vLLM and distributed inference. If you prefer, you can watch the full',
 
 ## Host a Colbertv2.0 server
 
-We are going to host a flask server with the index, then query it using MCP from DSPy
+We are going to host a flask server with the index, then query it using
+MCP from DSPy
 
-```bash
+``` bash
 python server.py 
 ```
 
 Server starts up.
 
-```bash
+``` bash
 Importing RAGPretrainedModel from ragatouille (this might take a while)...
 /home/mike/git/colbertv2.0/server.py:12: UserWarning: 
 ********************************************************************************
@@ -1851,7 +1894,7 @@ Loading searcher for index dev-red for the first time... This may take a few sec
 Searcher loaded!
 
 #> QueryTokenizer.tensorize(batch_text[0], batch_background[0], bsize) ==
-#> Input: tell me about small models and Neural Magic, 		 True, 		 None
+#> Input: tell me about small models and Neural Magic,       True,       None
 #> Output IDs: torch.Size([32]), tensor([  101,     1,  2425,  2033,  2055,  2235,  4275,  1998, 15756,  3894,
           102,   103,   103,   103,   103,   103,   103,   103,   103,   103,
           103,   103,   103,   103,   103,   103,   103,   103,   103,   103,
@@ -1870,12 +1913,12 @@ API request count: 3
 
 Test Query
 
-```json
+``` json
 prompt: "tell me about small models and Neural Magic"
 k: 3
 ```
 
-```bash
+``` bash
 time curl -s 'http://localhost:8081/api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3' | jq .
 [
   {
@@ -1931,9 +1974,11 @@ time curl -s 'http://localhost:8081/api/search?query=tell%20me%20about%20small%2
   }
 ]
 
-real	0m0.008s
-user	0m0.002s
-sys	0m0.006s
+real    0m0.008s
+user    0m0.002s
+sys 0m0.006s
 ```
 
+```{=html}
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+```
