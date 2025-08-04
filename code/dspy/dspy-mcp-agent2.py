@@ -93,6 +93,6 @@ async def run(user_request):
 if __name__ == "__main__":
     import asyncio
     #(1) summarize pod logs error
-    # asyncio.run(run("""You are an expert OpenShift administrator. Your task is to analyze pod logs and summarize the error. Review the OpenShift logs for the pod 'java-app-build-run-bad-80uy3b-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, create a summary message with the category and explanation of the error."""))
+    asyncio.run(run("""You are an expert OpenShift administrator. Your task is to analyze pod logs and summarize the error. Review the OpenShift logs for the pod 'java-app-build-run-bad-80uy3b-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, create a summary message with the category and explanation of the error."""))
     #(2) summarize, search for solution (with only mcp::github, mcp::openshift - agent uses mcp::github_search_issues)
-    asyncio.run(run("""You are an expert OpenShift administrator. Your task is to analyze pod logs, search for a solution and summarize the error."""))
+    #asyncio.run(run("""You are an expert OpenShift administrator. Your task is to analyze pod logs, search for a solution and summarize the error."""))
