@@ -62,7 +62,7 @@ archival.
 Beautiful Soup is a Python library for pulling data out of HTML and XML
 files.
 
-## For the Impatient 🍔
+## For the Impatient
 
 Deploy a Colbert Server Pod (developer-red-hat-com RAG) in OpenShift (you need a nvidia GPU)
 
