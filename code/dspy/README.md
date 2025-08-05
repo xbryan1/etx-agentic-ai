@@ -2246,14 +2246,14 @@ k: 3
 ```
 
 ``` bash
-(venv) virt:~/git/etx-agentic-ai/code/dspy ⎇ main#30df14d$ curl -vv 'http://localhost:8081/api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3' | jq .
+curl -vv 'http://localhost:8081/api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3' | jq .
 * Host localhost:8081 was resolved.
 * IPv6: ::1
 * IPv4: 127.0.0.1
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8081...
-* connect to ::1 port 8081 from ::1 port 37344 failed: Connection refused
+* connect to ::1 port 8081 from ::1 port 56560 failed: Connection refused
 *   Trying 127.0.0.1:8081...
 * Connected to localhost (127.0.0.1) port 8081
 > GET /api/search?query=tell%20me%20about%20small%20models%20and%20Neural%20Magic&k=3 HTTP/1.1
@@ -2262,20 +2262,30 @@ k: 3
 > Accept: */*
 > 
 * Request completely sent off
-< HTTP/1.1 200 OK
+  0     0    0     0    0     0      0      0 --:--:--  0:00:03 --:--:--     0< HTTP/1.1 200 OK
 < Server: Werkzeug/3.1.3 Python/3.9.23
-< Date: Mon, 04 Aug 2025 22:16:01 GMT
+< Date: Tue, 05 Aug 2025 03:29:32 GMT
 < Content-Type: application/json
-< Content-Length: 1492
+< Content-Length: 2257
 < Connection: close
 < 
-{ [1492 bytes data]
-100  1492  100  1492    0     0   389k      0 --:--:-- --:--:-- --:--:--  485k
+{ [2257 bytes data]
+100  2257  100  2257    0     0    582      0  0:00:03  0:00:03 --:--:--   582
 * shutting down connection #0
 {
   "query": "tell me about small models and Neural Magic",
   "topk": [
     {
+      "document_metadata": [
+        {
+          "entity": "url",
+          "source": "https://developers.redhat.com/articles/2023/10/12/sparse-fine-tuning-accelerating-llms-with-deepsparse"
+        },
+        {
+          "entity": "title",
+          "source": "Sparse fine-tuning for accelerating large language models with DeepSparse | Red Hat Developer"
+        }
+      ],
       "pid": 516510,
       "prob": 0.7924096094164889,
       "rank": 1,
@@ -2283,6 +2293,16 @@ k: 3
       "text": "Weight sparsity, which consists of pruning individual weights from a neural network by setting them to zero, can be combined with quantization to compress models even more. In the past, Neural Magic has pruned smaller models like BERT to >90% sparsity, but it had not been confirmed whether these techniques can be applied to the scale of LLMs."
     },
     {
+      "document_metadata": [
+        {
+          "entity": "url",
+          "source": "https://developers.redhat.com/articles/2025/02/28/24-sparse-llama-smaller-models-efficient-gpu-inference"
+        },
+        {
+          "entity": "title",
+          "source": "2:4 Sparse Llama: Smaller models for efficient GPU inference | Red Hat Developer"
+        }
+      ],
       "pid": 511643,
       "prob": 0.15849189268040462,
       "rank": 2,
@@ -2290,6 +2310,16 @@ k: 3
       "text": "Neural Magic is doubling down on this challenge with sparse LLMs—reducing the model size by removing unneeded connections while retaining accuracy. Sparse models, though underexplored in the LLM space due to the high compute demands of pretraining, offer an increasingly promising dimension in model compression and efficiency."
     },
     {
+      "document_metadata": [
+        {
+          "entity": "url",
+          "source": "https://developers.redhat.com/articles/2025/03/19/how-we-optimized-vllm-deepseek-r1"
+        },
+        {
+          "entity": "title",
+          "source": "How we optimized vLLM for DeepSeek-R1 | Red Hat Developer"
+        }
+      ],
       "pid": 521917,
       "prob": 0.04909849790310651,
       "rank": 3,
