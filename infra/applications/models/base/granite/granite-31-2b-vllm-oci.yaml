@@ -101,5 +101,5 @@ metadata:
     openshift.io/description: ''
     openshift.io/display-name: granite-3.1-8b-instruct
 stringData:
-  URI: oci://quay.io/redhat-ai-services/modelcar-catalog:granite-3.1-2b-instructvirt:~/git/etx-agentic-ai
+  URI: oci://quay.io/redhat-ai-services/modelcar-catalog:granite-3.1-2b-instruct
 type: Opaque
