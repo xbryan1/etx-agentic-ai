@@ -3,16 +3,12 @@
     -   [Getting Started](#getting-started)
     -   [Local development](#local-development)
     -   [Connect to LLMs using DSPy](#connect-to-llms-using-dspy)
-    -   [Connect to LLMs, MCP using
-        DSPy](#connect-to-llms-mcp-using-dspy)
+    -   [Connect to LLMs, MCP using DSPy](#connect-to-llms-mcp-using-dspy)
     -   [E2E Agent SDLC Use Case](#e2e-agent-sdlc-use-case)
     -   [Connect to LLMs, RAG](#connect-to-llms-rag)
-    -   [Full E2E Agent SDLC Use Case using Search Developer
-        RAG](#full-e2e-agent-sdlc-use-case-using-search-developer-rag)
-    -   [Web scrape developers red hat
-        com](#web-scrape-developers-red-hat-com)
-    -   [Create a Colbertv2 index for
-        RAG](#create-a-colbertv2-index-for-rag)
+    -   [Full E2E Agent SDLC Use Case using Search Developer RAG](#full-e2e-agent-sdlc-use-case-using-search-developer-rag)
+    -   [Web scrape developers red hat com](#web-scrape-developers-red-hat-com)
+    -   [Create a Colbertv2 index for RAG](#create-a-colbertv2-index-for-rag)
     -   [Host a Colbertv2 server](#host-a-colbertv2-server)
 
 # 🧪 DSPy experiments 🧪
