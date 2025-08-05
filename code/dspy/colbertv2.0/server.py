@@ -38,7 +38,7 @@ def api_search_query(query, k):
     probs = [prob / sum(probs) for prob in probs]
     topk = []
     for r, prob in zip(results, probs):
-        d = {'text': r['content'], 'pid': r['passage_id'], 'rank': r['rank'], 'score': r['score'], 'prob': prob}
+        d = {'text': r['content'], 'pid': r['passage_id'], 'rank': r['rank'], 'score': r['score'], 'prob': prob, 'document_metadata': r['document_metadata']}
         topk.append(d)
     topk = list(sorted(topk, key=lambda p: (-1 * p['score'], p['pid'])))
     return {"query" : query, "topk": topk}

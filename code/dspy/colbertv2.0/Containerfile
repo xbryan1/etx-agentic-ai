@@ -1,0 +1,11 @@
+FROM registry.redhat.io/ubi9/python-39:9.6-1754271155 as builder
+ADD requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+ADD dev-red-rag.tar.gz .
+
+FROM builder
+ENV INDEX_NAME=dev-red-rag
+ENV INDEX_ROOT=/opt/app-root/src
+ENV PORT=8081
+ADD server.py server.py
+ENTRYPOINT [ "python", "server.py" ]
