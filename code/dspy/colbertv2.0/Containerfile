@@ -1,5 +1,7 @@
 # registry.redhat.io/ubi9/python-39:9.6-1754271155
-FROM quay.io/modh/cuda-notebooks:3.9 as builder
+# podman tag quay.io/modh/cuda-notebooks:3.9 quay.io/eformat/cuda-notebooks:3.9
+# 🍔 this is an older image with 3.9, cuda - not effort has been made to put this on a diet 🍔
+FROM quay.io/eformat/cuda-notebooks:3.9 as builder
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 ADD dev-red-rag.tar.gz .
