@@ -63,7 +63,7 @@ files.
 Deploy a Colbert Server Pod (developer-red-hat-com RAG) in OpenShift (you need a nvidia GPU)
 
 ```bash
-oc apply -f deploy-colbert.yaml
+oc apply -f colbertv2.0/deploy-colbert.yaml
 ```
 
 Search RAG
