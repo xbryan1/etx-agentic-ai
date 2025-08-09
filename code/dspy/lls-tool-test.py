@@ -60,8 +60,8 @@ def lls_get_tools():
     for tool in mcp_tools:
         if (tool.provider_id == "model-context-protocol"):
             tool_list[tool.identifier] = tool.mcp_endpoint.uri
-        else:
-            tool_list[tool.identifier] = None
+        elif (tool.provider_id == "tavily-search"):
+            tool_list[tool.identifier] = 'websearch'
     return tool_list
 
 def builtin_websearch(query: str):
@@ -76,7 +76,7 @@ async def convert_tools_dspy() -> list[dspy.adapters.types.tool.Tool]:
     dspy_tools = []
 
     for tool in tools_list:
-        if tools_list[tool] is None:
+        if tools_list[tool] == 'websearch':
             dspy_tools.append(dspy.Tool(builtin_websearch))
             continue
 
