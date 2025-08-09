@@ -7,7 +7,7 @@ import asyncio
 from dotenv import load_dotenv
 from fastmcp import Client
 from fastmcp.client.logging import LogMessage
-from fastmcp.client.transports import SSEClientTransport
+from fastmcp.client.transports import SSETransport # deprecated now https://mcp-framework.com/docs/Transports/sse/ - use https://mcp-framework.com/docs/Transports/http-stream-transport - StreamableHttpTransport
 from llama_stack_client import LlamaStackClient
 
 
@@ -63,7 +63,7 @@ async def convert_tools_dspy() -> list[dspy.adapters.types.tool.Tool]:
     for tool in tools_list:
         print(tools_list[tool])
         mcp_client = Client(
-            SSEClientTransport(url=tools_list[tool]), log_handler=log_handler
+            SSETransport(url=tools_list[tool]), log_handler=log_handler
         )
         await mcp_client._connect()
         print(
