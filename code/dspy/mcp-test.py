@@ -3,16 +3,19 @@ import dspy
 import logging
 import os
 import asyncio
+import re
 
 from dotenv import load_dotenv
 from fastmcp import Client
 from fastmcp.client.logging import LogMessage
-from fastmcp.client.transports import SSETransport # deprecated now https://mcp-framework.com/docs/Transports/sse/ - use https://mcp-framework.com/docs/Transports/http-stream-transport - StreamableHttpTransport
+from fastmcp.client.transports import SSETransport # deprecated now https://mcp-framework.com/docs/Transports/sse
+from fastmcp.client.transports import StreamableHttpTransport
 from llama_stack_client import LlamaStackClient
 
+from rich import print
 
 load_dotenv()
-LLAMA_STACK_URL = os.getenv("LLAMA_STACK_URL") # export LLAMA_STACK_URL=http://localhost:8321
+LLAMA_STACK_URL = os.getenv("LLAMA_STACK_URL") # LLAMA_STACK_URL=http://localhost:8321, LLAMA_STACK_URL=http://llamastack-with-config-service.llama-stack.svc.cluster.local:8321
 
 
 root = logging.getLogger()
@@ -47,7 +50,7 @@ def lls_get_tools():
     tool_group = lls_client.toolgroups.list()
 
     mcp_tools = [
-        tool for tool in tool_group if tool.provider_id == "model-context-protocol"
+        tool for tool in tool_group if tool.provider_id == "model-context-protocol" || "builtin::websearch" in tool.provider_id
     ]
 
     tool_list = {}
@@ -55,6 +58,12 @@ def lls_get_tools():
         tool_list[tool.identifier] = tool.mcp_endpoint.uri
     return tool_list
 
+def builtin_websearch():
+    lls_client = LlamaStackClient(base_url=LLAMA_STACK_URL)
+    response = client.tool_runtime.invoke_tool(
+        tool_name="web_search", kwargs={"query": "What is the capital of France?"}
+    )
+    print(response.json())
 
 async def convert_tools_dspy() -> list[dspy.adapters.types.tool.Tool]:
     tools_list = lls_get_tools()
@@ -62,9 +71,18 @@ async def convert_tools_dspy() -> list[dspy.adapters.types.tool.Tool]:
 
     for tool in tools_list:
         print(tools_list[tool])
-        mcp_client = Client(
-            SSETransport(url=tools_list[tool]), log_handler=log_handler
-        )
+        match = re.search(r"/sse", tools_list[tool])
+        if tools_list[tool] is None:
+            dspy_tools.append(dspy.Tool(builtin_websearch))
+            continue
+        elif match:
+            mcp_client = Client(
+                SSETransport(url=tools_list[tool]), log_handler=log_handler
+            )
+        else:
+            mcp_client = Client(
+                StreamableHttpTransport(url=tools_list[tool]), log_handler=log_handler
+            )
         await mcp_client._connect()
         print(
             f" Connected:{mcp_client.is_connected()} Init result:{mcp_client.initialize_result}\n"

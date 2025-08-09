@@ -64,12 +64,13 @@ def lls_get_tools():
             tool_list[tool.identifier] = 'websearch'
     return tool_list
 
-def builtin_websearch(query: str):
+async def builtin_websearch(query: str):
     lls_client = LlamaStackClient(base_url=LLAMA_STACK_URL)
     response = lls_client.tool_runtime.invoke_tool(
         tool_name="web_search", kwargs={"query": query}
     )
     print(response.json())
+    return response
 
 async def convert_tools_dspy() -> list[dspy.adapters.types.tool.Tool]:
     tools_list = lls_get_tools()
