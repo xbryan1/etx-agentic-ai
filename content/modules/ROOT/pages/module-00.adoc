@@ -1,73 +1,174 @@
-= Environment Prerequisites
+= Lab Setup and Prerequisites
+
+== Prerequisites
+
+Before starting this lab, ensure you have the following:
+
+=== Required Tools
+* **GitHub Account**: You'll need access to fork repositories and collaborate
+* **Git CLI**: Installed and configured on your local machine
+* **OpenShift CLI (oc)**: Download from https://mirror.openshift.com/pub/openshift-v4/clients/ocp[OpenShift client downloads,window=_blank]
+* **HashiCorp Vault CLI**: Download from https://developer.hashicorp.com/vault/install[Vault installation guide,window=_blank]
+* **Terminal/Command Line**: Bash shell with basic utilities (openssl, curl)
+* **Ansible Vault**: Part of Ansible toolkit for secret management
+* **Web Browser**: For accessing OpenShift console, MaaS portal, and documentation
+
+=== Required Skills
+* **Basic Git Knowledge**: Cloning repositories, basic version control concepts
+* **Command Line Basics**: Navigating directories, running commands
+* **Container Concepts**: Understanding of containers and Kubernetes/OpenShift (helpful but not required)
+
+=== Provided by Instructors
+* **OpenShift Cluster Access**: GPU-enabled cluster with admin credentials
+* **Red Hat MaaS Access**: Model-as-a-Service credentials for LLaMA models
+* **Workshop Materials**: All necessary configuration files and scripts
+* **Environment Variables**: Cluster-specific configuration values
+* **Support**: Technical assistance throughout the lab
+
+== Getting Started
+
+Before diving into the agentic AI lab, we need to set up our development environment. This involves two key steps:
+
+1. **Setting up GitOps**: Configure automated deployment pipelines that manage our infrastructure and applications
+2. **Configuring Secret Management**: Set up secure handling of API keys and credentials using HashiCorp Vault
+
+**Why this matters**: This approach keeps sensitive information (like API keys) separate from our code, following security best practices while enabling automated deployments.
 
 [IMPORTANT]
-.Getting started
 ====
-We need to bootstrap our GitOps environment so that we can hydrate secrets from vault using a single source of truth as well as keeping our source code clean and free of any secret variables.
+**For this lab**: We'll use the automated https://github.com/redhat-ai-services/etx-agentic-ai/tree/main/infra/bootstrap[bootstrap scripts,window=_blank] to handle setup quickly so we can focus on building AI agents.
 ====
 
-We have created some scripts to automate the heavy lifting (see the https://github.com/redhat-ai-services/etx-agentic-ai/tree/main/infra/bootstrap[__bootstrap__,window=_blank] folder), however it is instructive to run through the steps manually to learn what the scripts do.
+**For later exploration** (after the lab):
+
+* **Manual setup**: The step-by-step instructions below show how each component works - perfect for understanding GitOps and secret management in detail
+
+
 
 == Team Setup
 
-. Teams of 2 people per cluster
+. **You'll be working in teams of 2 people per cluster**
 +
-NOTE: We are trying to https://openpracticelibrary.com/practice/pair-programming/[increase knowledge sharing and communication,window=_blank] between your team members
+[NOTE]
+====
+**Why teams of two?**
 
-. Login credentials for the OpenShift cluster will be provided 🔐
-. One of the Team members: https://github.com/redhat-ai-services/etx-agentic-ai[Fork the etx-agentic-ai git repository,window=_blank] and make sure the other Team member has access to the fork i.e. add them as collaborators.
+* **Resource optimization**: GPU-enabled OpenShift clusters are expensive - sharing clusters allows us to provide everyone with powerful hardware
+* **Better learning**: https://openpracticelibrary.com/practice/pair-programming/[Pair programming,window=_blank] increases knowledge sharing and helps troubleshoot issues faster
+* **Real-world practice**: Most production AI/ML teams work collaboratively on shared infrastructure and have a mixture of roles and expertise
+
+This setup mirrors how teams work with shared cloud resources in enterprise environments.
+====
+
+. **Receive your cluster credentials** 🔐
++
+Your instructor will provide OpenShift login credentials for your team's shared cluster.
+
+. **Set up your shared repository** (choose one team member to do this):
+.. https://github.com/redhat-ai-services/etx-agentic-ai[Fork the etx-agentic-ai repository,window=_blank] to your personal GitHub account
 +
 .GitHub Repo Fork
 image::github-fork.png[GitHub Repo Fork, 400]
+.. Add your teammate as a collaborator with write access
 +
-.GitHub Repo Collaborators
+.GitHub Repo Collaborators  
 image::github-collaborators.png[GitHub Repo Collaborators, 400]
 
-. Clone your forked repo locally onto your Laptop - be sure to use your GitHub user fork
+. **Both team members: Clone the forked repository locally**
 +
 [source,bash,options="wrap",role="execute"]
 ----
 git clone git@github.com:your-gh-user/etx-agentic-ai.git
+cd etx-agentic-ai
 ----
 +
 .GitHub Repo Clone
 image::github-clone.png[GitHub Repo Clone, 400]
++
+[TIP]
+====
+Replace `your-gh-user` with the actual GitHub username of whoever forked the repository.
+====
 
-. Done ✅
+. **Verify your setup** ✅
++
+You should now have:
++
+* Access to your team's OpenShift cluster
+* A shared fork of the repository with both teammates as collaborators  
+* Local copies of the code on both laptops
 
 == Cluster Environment
-The workshop environment includes:
 
-* Red Hat OpenShift AI (RHOAI) with GPU support
-* Node Feature Discovery (NFD) for GPU detection
-* Bootstrap components:
-** Advanced Cluster Management (ACM) + ArgoCD
-** Vault for secrets management
-** Observability stack
-** LLM Granite model with MaaS integration
-** Pipeline infrastructure in failing state
-** Containerfile + BuildConfig/Tekton Pipeline for as a Service (initially disabled)
-** Workbench creation with RBAC
+Your team has access to a fully-featured OpenShift cluster designed for AI workloads. This cluster mimics many customer production environments. Here's how the platform is architected:
 
-We need to perform some bootstrapping of the environment. All of the instructions in this module set us up for what comes next. Our environment configuration philosophy can be summarized as follows.
+=== Bootstrap Components
+These foundational components are deployed first to establish the platform's operational baseline:
+
+* **Red Hat OpenShift**: Enterprise Kubernetes platform providing container orchestration
+* **Advanced Cluster Management (ACM)**: Multi-cluster governance and GitOps orchestration
+* **ArgoCD**: Declarative, Git-driven application deployments
+* **HashiCorp Vault**: Secure credential storage and automated secret injection
+
+=== Security & Governance
+Built on the bootstrap foundation, these components enforce enterprise policies:
 
 [IMPORTANT]
 .Policy as Code
 ====
-> Policies are one key way that organizations ensure software is high quality, easy to use, and secure. Manual reviews are one method to check software is
-compliant, but they are time-consuming, error-prone, and impossible to scale. Policy as code (PaC) automates this decision-making process by codifying
-and enforcing policies. It can be used to automate validation procedures to control and manage infrastructure.
+**Everything is managed through automated policy enforcement:**
+
+* **Zero Configuration Drift**: What's in Git is exactly what runs in production
+* **Automated Compliance**: Policies are enforced automatically, not through manual reviews
+* **Scalable Governance**: Manage hundreds of clusters with the same effort as one
+* **Declarative Security**: Security policies are versioned, tested, and automatically applied
+
+**How this differs from standard GitOps**: While traditional GitOps deploys applications, Policy as Code deploys and enforces the _rules_ that govern how applications can behave, what resources they can access, and how they must be configured. The policies themselves are GitOps-managed, creating a "governance layer" above your applications.
+
+**Green from GO** ✅: We start compliant from day one. Rather than building systems and retrofitting security and compliance later, our development environment mirrors production with all policies active from the beginning. This means teams learn to work within enterprise guardrails naturally.
+
+This approach ensures software quality, security, and consistency at enterprise scale.
 ====
-
-The other benefits include:
-
-* ZERO configuration drift - what's in git is real
-* Integrates into the Governance Dashboard in ACM for SRE
-* We start as we mean to go on - we are _Green from GO_ so that our dev environment looks like prod only smaller
-* All our clusters and environments are Kubernetes Native once bootstrapped
 
 .Policy as Code using GitOps and ACM
 image::policy-as-code.png[Policy as Code, 600]
+
+* **Policy Enforcement**: ACM automatically applies and monitors compliance across all workloads in all clusters (particularly useful for large-scale multi-cluster environments)
+* **Observability Stack**: Comprehensive monitoring, logging, and tracing for security insights
+* **GPU Resource Management**: Node Feature Discovery (NFD) for specialized compute allocation
+
+=== Developer Platform Services
+Self-service capabilities that enable development teams:
+
+* **CI/CD Pipelines**: Tekton for automated container builds, testing, and deployments
+* **Source Control Integration**: Git-based workflows with automated quality gates
+* **Container Registry**: Secure image storage with vulnerability scanning and promotion workflows
+
+=== Tenant & Workload Services
+Multi-tenant capabilities providing isolated, secure environments:
+
+* **Namespace Management**: Multi-tenant isolation with RBAC and resource quotas
+* **Development Workbenches**: Self-service Jupyter environments for data science teams
+* **Service Mesh**: Secure service-to-service communication and traffic management
+
+=== AI/ML Platform Services
+Specialized services for AI/ML workloads and agentic applications:
+
+* **Red Hat OpenShift AI (RHOAI)**: Managed AI/ML platform with GPU acceleration
+* **Model Serving Infrastructure**: Scalable inference endpoints with model lifecycle management
+* **Agentic AI Runtime**: Environment for deploying AI agents with external service integrations
+
+[TIP]
+====
+**LLaMA Stack Integration**: Our agentic AI workloads leverage https://github.com/meta-llama/llama-stack[LLaMA Stack,window=_blank], a composable framework that provides standardized APIs for model inference, safety guardrails, and tool integration. This allows our AI agents to seamlessly interact with large language models while maintaining consistent interfaces for memory management, tool calling, and safety controls across different model providers.
+====
+
+**The Benefits:**
+
+* **ZERO configuration drift** - what's in git is real
+* **Integrates into the Governance Dashboard in ACM for SRE**
+* **We start as we mean to go on** - we are Green from GO so that our dev environment looks like prod only smaller
+* **All our clusters and environments are Kubernetes Native once bootstrapped**
 
 == Required Applications
 
