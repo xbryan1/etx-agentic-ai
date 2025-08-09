@@ -130,6 +130,6 @@ if __name__ == "__main__":
     dspy.configure(lm=llm)
     asyncio.run(
         dspy_mcp(
-            "help me find the recipe for cupcakes? I've already done a basic search and that didn't work. I also tried an advanced search and that didn't give great results"
+            "help me find the recipe for spicy mexican tacos? just do a basic search"
         )
     )
