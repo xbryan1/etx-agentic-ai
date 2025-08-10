@@ -33,6 +33,8 @@ into effective prompts and weights for your language models, whether
 you're building simple classifiers, sophisticated RAG pipelines, or
 Agent loops.
 
+If you want to [learn DSPY](https://github.com/eformat/20_days_dspy) try this.
+
 [ColBERT](https://huggingface.co/colbert-ir/colbertv2.0) is a fast and
 accurate retrieval model, enabling scalable BERT-based search over large
 text collections in tens of milliseconds.
