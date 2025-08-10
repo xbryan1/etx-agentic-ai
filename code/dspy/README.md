@@ -1,6 +1,6 @@
 -   [🧪 DSPy experiments 🧪](#dspy-experiments)
-    -   [For the Impatient 🍔](#for-the-impatient)
     -   [LlamaStack MCP Tool Test](#llamastack-mcp-tool-test)
+    -   [For the Impatient 🍔](#for-the-impatient)
     -   [Getting Started](#getting-started)
     -   [Local development](#local-development)
     -   [Connect to LLMs using DSPy](#connect-to-llms-using-dspy)
@@ -59,25 +59,6 @@ archival.
 Beautiful Soup is a Python library for pulling data out of HTML and XML
 files.
 
-## For the Impatient
-
-Deploy a Colbert Server Pod (developer-red-hat-com RAG) in OpenShift (you need a nvidia GPU)
-
-```bash
-oc apply -f colbertv2.0/deploy-colbert.yaml
-```
-
-Search RAG
-
-```bash
-HOST=$(oc get route dev-red-rag-colbert --template='{{ .spec.host }}')
-curl -qs "https://$HOST/api/search?query=Why+use+python+for+ai&k=10" | jq .
-```
-
-Get cracking with coding
-
-- https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/code/dspy/dspy-rag-agent.py
-
 ## LlamaStack MCP Tool Test
 
 Interact with LlamaStack, MCP and built in tool.
@@ -98,7 +79,7 @@ pip install \
 run
 
 ```bash
-python mcp-test.py 
+python lls-tool-test.py
 ```
 
 output
@@ -183,6 +164,25 @@ You can visit the corresponding websites for detailed recipes and instructions.
 
 [[ ## completed ## ]]
 ```
+
+## For the Impatient
+
+Deploy a Colbert Server Pod (developer-red-hat-com RAG) in OpenShift (you need a nvidia GPU)
+
+```bash
+oc apply -f colbertv2.0/deploy-colbert.yaml
+```
+
+Search RAG
+
+```bash
+HOST=$(oc get route dev-red-rag-colbert --template='{{ .spec.host }}')
+curl -qs "https://$HOST/api/search?query=Why+use+python+for+ai&k=10" | jq .
+```
+
+Get cracking with coding
+
+- https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/code/dspy/dspy-rag-agent.py
 
 ## Getting Started
 
