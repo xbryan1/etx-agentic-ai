@@ -1,5 +1,6 @@
 -   [🧪 DSPy experiments 🧪](#dspy-experiments)
     -   [For the Impatient 🍔](#for-the-impatient)
+    -   [LlamaStack MCP Tool Test](#llamastack-mcp-tool-test)
     -   [Getting Started](#getting-started)
     -   [Local development](#local-development)
     -   [Connect to LLMs using DSPy](#connect-to-llms-using-dspy)
@@ -76,6 +77,112 @@ curl -qs "https://$HOST/api/search?query=Why+use+python+for+ai&k=10" | jq .
 Get cracking with coding
 
 - https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/code/dspy/dspy-rag-agent.py
+
+## LlamaStack MCP Tool Test
+
+Interact with LlamaStack, MCP and built in tool.
+
+in a CUDA notebook
+
+```bash
+pip install \
+    dspy \
+    fastmcp \
+    llama_stack_client \
+    fire \
+    litellm \
+    litellm[proxy] \
+    fastapi
+```
+
+run
+
+```bash
+python mcp-test.py 
+```
+
+output
+
+```bash
+System message:
+
+Your input fields are:
+1. `user_request` (str): 
+2. `trajectory` (str):
+Your output fields are:
+1. `reasoning` (str): 
+2. `process_result` (str): Message that summarizes the process result, and the information users need,
+All interactions will be structured in the following way, with the appropriate values filled in.
+
+[[ ## user_request ## ]]
+{user_request}
+
+[[ ## trajectory ## ]]
+{trajectory}
+
+[[ ## reasoning ## ]]
+{reasoning}
+
+[[ ## process_result ## ]]
+{process_result}
+
+[[ ## completed ## ]]
+In adhering to this structure, your objective is: 
+        You are a helpful customer service agent. You are given a list of tools to handle user requests.
+        You should decide the right tool to use in order to fulfill users' requests.
+
+
+User message:
+
+[[ ## user_request ## ]]
+help me find the recipe for spicy mexican tacos? just do a basic search
+
+[[ ## trajectory ## ]]
+[[ ## thought_0 ## ]]
+To find the recipe for spicy Mexican tacos, I will perform a basic search using the `builtin_websearch` tool.
+
+[[ ## tool_name_0 ## ]]
+builtin_websearch
+
+[[ ## tool_args_0 ## ]]
+{"query": "spicy mexican tacos recipe"}
+
+[[ ## observation_0 ## ]]
+{"content": "{\"query\": \"spicy mexican tacos recipe\", \"top_k\": [{\"url\": \"https://markbegocooks.weebly.com/mark-bego-cooks/spicy-mexican-tacos\", \"title\": \"Spicy Mexican Tacos - Cook Like A Rock Star - Weebly\", \"content\": \"The perfect Taco includes: spicy meat on the bottom, shredded cheddar cheese on top of that, followed by sour cream, tomato salsa, shredded iceberg lettuce,\", \"score\": 0.8173562, \"raw_content\": null}, {\"url\": \"https://www.chilipeppermadness.com/recipes/chorizo-tacos/\", \"title\": \"Spicy Chorizo Tacos - Recipes - Chili Pepper Madness\", \"content\": \"This is my favorite chorizo tacos recipe with spicy Mexican chorizo served over warmed corn tortillas with red onion, fresh cilantro, sliced peppers and creamy\", \"score\": 0.79580134, \"raw_content\": null}, {\"url\": \"https://www.countrysidecravings.com/spicy-chicken-tacos/\", \"title\": \"Spicy Chicken Tacos - Countryside Cravings\", \"content\": \"Ingredients \\u00b7 2 large chicken breasts, cut into bite sized pieces \\u00b7 1 small onion, chopped \\u00b7 1 large jalapeno, finely chopped \\u00b7 4-6 cloves garlic,\", \"score\": 0.56661874, \"raw_content\": null}, {\"url\": \"https://www.deepfriedhoney.com/spicy-chicken-tacos/\", \"title\": \"Spicy Chicken Tacos: 30 Minute Meal - deepfriedhoney\", \"content\": \"Spicy Chicken Tacos: crispy corn tortillas stuffed with a cheesy chicken filling spiced with jalapenos and hot green chiles.\", \"score\": 0.5299209, \"raw_content\": null}, {\"url\": \"https://www.kitchenwrangler.com/recipes/spicy-taco-meat-for-the-best-tacos/\", \"title\": \"Spicy Taco Meat for the best tacos - Kitchen Wrangler | Melissa Guerra\", \"content\": \"Spicy Taco Meat should be is an essential recipe in your kitchen repertoire - Easily made and even easier to devour!\", \"score\": 0.4622066, \"raw_content\": null}]}", "error_code": null, "error_message": null, "metadata": null}
+
+[[ ## thought_1 ## ]]
+I have found several recipes for spicy Mexican tacos from a web search. I will now provide a summary of the search results.
+
+[[ ## tool_name_1 ## ]]
+finish
+
+[[ ## tool_args_1 ## ]]
+{}
+
+[[ ## observation_1 ## ]]
+Completed.
+
+Respond with the corresponding output fields, starting with the field `[[ ## reasoning ## ]]`, then `[[ ## process_result ## ]]`, and then ending with the marker for `[[ ## completed ## ]]`.
+
+
+Response:
+
+[[ ## reasoning ## ]]
+I used the `builtin_websearch` tool to perform a basic search for "spicy mexican tacos recipe". The search returned several relevant results, including recipes for spicy Mexican tacos from various websites.
+
+[[ ## process_result ## ]]
+The search results provided several recipes for spicy Mexican tacos. Here are some of the top results:
+
+1. **Spicy Mexican Tacos** by Mark Bego Cooks: This recipe includes spicy meat, shredded cheddar cheese, sour cream, tomato salsa, and shredded iceberg lettuce.
+2. **Spicy Chorizo Tacos** by Chili Pepper Madness: This recipe features spicy Mexican chorizo served over warmed corn tortillas with red onion, fresh cilantro, sliced peppers, and creamy sauce.
+3. **Spicy Chicken Tacos** by Countryside Cravings: This recipe includes ingredients like chicken breasts, onion, jalapeno, garlic, and more.
+4. **Spicy Chicken Tacos** by Deep Fried Honey: This recipe features crispy corn tortillas stuffed with a cheesy chicken filling spiced with jalapenos and hot green chiles.
+5. **Spicy Taco Meat** by Kitchen Wrangler: This recipe provides a basic spicy taco meat recipe that's easy to make and devour.
+
+You can visit the corresponding websites for detailed recipes and instructions.
+
+[[ ## completed ## ]]
+```
 
 ## Getting Started
 
