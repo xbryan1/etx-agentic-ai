@@ -40,6 +40,10 @@ text collections in tens of milliseconds.
 If you're looking for the DSP framework for composing ColBERTv2 and
 LLMs, it's at: https://github.com/stanfordnlp/dsp
 
+For a discussion about trade-offs related to using ColBERT 
+[this](https://qdrant.tech/documentation/fastembed/fastembed-colbert/)
+is a good bit of doco.
+
 [PyLate](https://github.com/lightonai/pylate) PyLate is a library built
 on top of Sentence Transformers, designed to simplify and optimize
 fine-tuning, inference, and retrieval with state-of-the-art ColBERT
