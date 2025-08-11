@@ -7,7 +7,7 @@ Before starting this lab, ensure you have the following:
 === Required Tools
 * **GitHub Account**: You'll need access to fork repositories and collaborate
 * **Git CLI**: Installed and configured on your local machine
-* **OpenShift CLI (oc)**: Download from https://mirror.openshift.com/pub/openshift-v4/clients/ocp[OpenShift client downloads,window=_blank]
+* **OpenShift CLI (oc)**: Download from https://mirror.openshift.com/pub/openshift-v4/clients/ocp/[OpenShift client downloads,window=_blank]
 * **HashiCorp Vault CLI**: Download from https://developer.hashicorp.com/vault/install[Vault installation guide,window=_blank]
 * **Terminal/Command Line**: Bash shell with basic utilities (openssl, curl)
 * **Ansible Vault**: Part of Ansible toolkit for secret management
