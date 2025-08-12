@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: mcp-fast-tools
-  namespace: openshift-gitops
+  namespace: openshift-policy
 spec:
   goTemplate: true
   generators:

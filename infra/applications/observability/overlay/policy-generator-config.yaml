@@ -16,7 +16,7 @@ policyDefaults:
   consolidateManifests: false
   copyPolicyMetadata: false
   disabled: false
-  namespace: openshift-gitops
+  namespace: openshift-policy
   pruneObjectBehavior: "None"
   remediationAction: enforce
   severity: medium

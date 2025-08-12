@@ -279,7 +279,7 @@ vault login token=${ROOT_TOKEN}
 [source,bash,options="wrap",role="execute"]
 ----
 export APP_NAME=vault
-export PROJECT_NAME=openshift-gitops
+export PROJECT_NAME=openshift-policy
 export CLUSTER_DOMAIN=apps.${CLUSTER_NAME}.${BASE_DOMAIN}
 ----
 
@@ -493,7 +493,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: team-avp-credentials
-  namespace: openshift-gitops
+  namespace: openshift-policy
 stringData:
   AVP_AUTH_TYPE: "k8s"
   AVP_K8S_MOUNT_PATH: "auth/apps.${CLUSTER_NAME}.${BASE_DOMAIN}"

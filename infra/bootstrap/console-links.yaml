@@ -7,7 +7,7 @@ spec:
   applicationMenu:
     section: SRE
     imageURL: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
-  href: https://global-policy-server-openshift-gitops.apps.$CLUSTER_NAME.$BASE_DOMAIN
+  href: https://global-policy-server-openshift-policy.apps.$CLUSTER_NAME.$BASE_DOMAIN
   location: ApplicationMenu
   text: argocd
 ---

@@ -27,7 +27,7 @@ force_argocd_sync() {
 
     # these apps need vault secrets
     for x in mcp-github-local-cluster policy-collection-sno llama-stack-playground-local-cluster; do
-    oc -n openshift-gitops patch applications.argoproj.io $x --type=merge --patch '
+    oc -n openshift-policy patch applications.argoproj.io $x --type=merge --patch '
 operation:
   initiatedBy:
     username: admin
@@ -37,7 +37,7 @@ operation:
 '
     done
     for x in mcp-github-local-cluster policy-collection-sno llama-stack-playground-local-cluster; do
-        oc -n openshift-gitops annotate applications.argoproj.io/$x argocd.argoproj.io/refresh="hard"
+        oc -n openshift-policy annotate applications.argoproj.io/$x argocd.argoproj.io/refresh="hard"
     done
     echo "🌴 force_argocd_sync ran OK"
 }

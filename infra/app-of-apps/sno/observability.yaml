@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: observability
-  namespace: openshift-gitops
+  namespace: openshift-policy
 spec:
   goTemplate: true
   generators:
@@ -24,7 +24,7 @@ spec:
       project: default
       destination:
         server: "{{.server}}"
-        namespace: openshift-gitops
+        namespace: openshift-policy
       source:
         repoURL: https://github.com/redhat-ai-services/etx-agentic-ai.git
         path: infra/applications/observability/overlay

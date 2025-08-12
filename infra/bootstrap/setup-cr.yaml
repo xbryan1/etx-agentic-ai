@@ -1,4 +1,11 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openshift-policy
+  labels:
+    openshift.io/cluster-monitoring: "true"
+---
 apiVersion: operator.open-cluster-management.io/v1
 kind: MultiClusterHub
 metadata:
@@ -9,7 +16,7 @@ spec: {}
 apiVersion: cluster.open-cluster-management.io/v1beta2
 kind: ManagedClusterSetBinding
 metadata:
-  namespace: openshift-gitops
+  namespace: openshift-policy
   name: default
 spec:
   clusterSet: default
@@ -18,16 +25,16 @@ apiVersion: apps.open-cluster-management.io/v1beta1
 kind: GitOpsCluster
 metadata:
   name: global-policy
-  namespace: openshift-gitops
+  namespace: openshift-policy
 spec:
   argoServer:
     cluster: local-cluster
-    argoNamespace: openshift-gitops
+    argoNamespace: openshift-policy
   placementRef:
     kind: Placement
     apiVersion: cluster.open-cluster-management.io/v1beta1
     name: placement-hub-openshift
-    namespace: openshift-gitops
+    namespace: openshift-policy
 ---
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
@@ -35,7 +42,7 @@ metadata:
   labels:
     custom: gitops-operator-policy
   name: placement-hub-openshift
-  namespace: openshift-gitops
+  namespace: openshift-policy
 spec:
   clusterSets:
     - default
@@ -56,7 +63,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: vault
-  namespace: openshift-gitops
+  namespace: openshift-policy
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -65,7 +72,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: vault
-    namespace: openshift-gitops
+    namespace: openshift-policy
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -78,7 +85,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: vault
-    namespace: openshift-gitops
+    namespace: openshift-policy
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -88,7 +95,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: argocd-vault-plugins
-  namespace: openshift-gitops
+  namespace: openshift-policy
 data:
   helm-plugin.yaml: |
     apiVersion: argoproj.io/v1alpha1
@@ -101,7 +108,7 @@ data:
         args: ["helm dependency build"]
       generate:
         command: ["bash", "-c"]
-        args: ['helm template "$ARGOCD_APP_NAME" -n "$ARGOCD_APP_NAMESPACE" -f <(echo "$ARGOCD_ENV_HELM_VALUES") . | argocd-vault-plugin generate -s openshift-gitops:team-avp-credentials -']
+        args: ['helm template "$ARGOCD_APP_NAME" -n "$ARGOCD_APP_NAMESPACE" -f <(echo "$ARGOCD_ENV_HELM_VALUES") . | argocd-vault-plugin generate -s openshift-policy:team-avp-credentials -']
   kustomize-plugin.yaml: |
     apiVersion: argoproj.io/v1alpha1
     kind: ConfigManagementPlugin
@@ -110,7 +117,7 @@ data:
     spec:
       generate:
         command: ["sh", "-c"]
-        args: ["kustomize --enable-alpha-plugins --enable-helm build . | argocd-vault-plugin -s openshift-gitops:team-avp-credentials generate -"]
+        args: ["kustomize --enable-alpha-plugins --enable-helm build . | argocd-vault-plugin -s openshift-policy:team-avp-credentials generate -"]
   vault-plugin.yaml: |
     apiVersion: argoproj.io/v1alpha1
     kind: ConfigManagementPlugin
@@ -119,7 +126,7 @@ data:
     spec:
       generate:
         command: ["sh", "-c"]
-        args: ["argocd-vault-plugin -s openshift-gitops:team-avp-credentials generate ./"]
+        args: ["argocd-vault-plugin -s openshift-policy:team-avp-credentials generate ./"]
   kustomize-novault-plugin.yaml: |
     apiVersion: argoproj.io/v1alpha1
     kind: ConfigManagementPlugin
@@ -155,7 +162,7 @@ apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   name: global-policy
-  namespace: openshift-gitops
+  namespace: openshift-policy
 spec:
   server:
     autoscale:
@@ -452,7 +459,7 @@ spec:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  namespace: openshift-gitops
+  namespace: openshift-policy
   name: permissions
 rules:
   - apiGroups: ["apps.open-cluster-management.io", "cluster.open-cluster-management.io"]
@@ -463,15 +470,15 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: appset-rolebinding
-  namespace: openshift-gitops
+  namespace: openshift-policy
 subjects:
   - kind: ServiceAccount
     name: global-policy-applicationset-controller
-    namespace: openshift-gitops
+    namespace: openshift-policy
 roleRef:
   kind: Role
   name: permissions
-  namespace: openshift-gitops
+  namespace: openshift-policy
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -485,5 +492,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: global-policy-argocd-application-controller
-    namespace: openshift-gitops
+    namespace: openshift-policy
 

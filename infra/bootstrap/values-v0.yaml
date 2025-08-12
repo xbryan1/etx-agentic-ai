@@ -1,7 +1,7 @@
 # list of operators
 operators:
-  # openshift-gitops
-  - name: openshift-gitops-operator
+  # openshift-policy
+  - name: openshift-policy-operator
     namespace:
       name: openshift-operators
       create: false
@@ -16,7 +16,7 @@ operators:
         - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
           value: "true"
         - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
-          value: openshift-gitops
+          value: openshift-policy
 
   # acm
   - name: advanced-cluster-management

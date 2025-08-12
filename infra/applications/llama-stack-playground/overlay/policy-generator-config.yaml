@@ -16,14 +16,14 @@ policyDefaults:
   consolidateManifests: false
   copyPolicyMetadata: false
   disabled: false
-  namespace: openshift-gitops
+  namespace: openshift-policy
   pruneObjectBehavior: "None"
   remediationAction: enforce
   severity: medium
   standards:
     - NIST SP 800-53
   policyAnnotations: {"argocd.argoproj.io/compare-options": "IgnoreExtraneous",
-                      "avp.kubernetes.io/path": "kv/data/ocp/sno/openshift-gitops/llama-stack-playground"}
+                      "avp.kubernetes.io/path": "kv/data/ocp/sno/openshift-policy/llama-stack-playground"}
 policies:
   - name: llama-stack-playground-sno
     manifests:

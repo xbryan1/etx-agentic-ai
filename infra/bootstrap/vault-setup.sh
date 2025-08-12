@@ -183,7 +183,7 @@ login() {
 login
 
 export APP_NAME=vault
-export PROJECT_NAME=openshift-gitops
+export PROJECT_NAME=openshift-policy
 export CLUSTER_DOMAIN=apps.${CLUSTER_NAME}.${BASE_DOMAIN}
 
 vault auth enable -path=$CLUSTER_DOMAIN-${PROJECT_NAME} kubernetes
