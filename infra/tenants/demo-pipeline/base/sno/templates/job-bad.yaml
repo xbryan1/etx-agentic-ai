@@ -68,6 +68,8 @@ spec:
                   value: "bad"
                 - name: SUBDIRECTORY
                   value: "undertow-servlet"
+                - name: IMAGE_SCRIPTS_URL
+                  value: "image:///usr/local/s2i"
               # Required workspace for the pipeline
               workspaces:
                 - name: shared-workspace
