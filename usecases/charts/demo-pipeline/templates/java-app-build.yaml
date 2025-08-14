@@ -57,7 +57,7 @@ spec:
       - name: name
         value: s2i-java
       - name: namespace
-        value: openshift-pipelines
+        value: demo-pipeline
       resolver: cluster
     workspaces:
     - name: source
