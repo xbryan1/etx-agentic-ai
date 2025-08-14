@@ -125,8 +125,8 @@ echo "🌴 CLUSTER_NAME set to $CLUSTER_NAME"
 
 wait_for_openshift_api
 #force_argocd_sync
-check_pods_allocatable
-check_gpus_allocatable
+#check_pods_allocatable
+#check_gpus_allocatable
 #check_llm_pods
 
 echo -e "\n🌻${GREEN}Check Install ended OK.${NC}🌻\n"

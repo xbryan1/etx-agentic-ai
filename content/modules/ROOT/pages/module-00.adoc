@@ -184,6 +184,7 @@ As a Team, you need to do each of these Prerequisites.
 +
 [source,bash,options="wrap",role="execute"]
 ----
+export ADMIN_PASSWORD=password # replace with yours
 export CLUSTER_NAME=cluster-4xglk.4xglk # replace with yours
 export BASE_DOMAIN=sandbox2518.opentlc.com # replace with yours
 ----
@@ -409,7 +410,7 @@ The secrets file is just a bash shell script that uses the vault cli.
 +
 [source,bash,options="wrap",role="execute"]
 ----
-cp infra/secrets/vault-example infra/secrets/vault-sno
+cp infra/secrets/vault-sno-example infra/secrets/vault-sno
 ----
 +
 TIP: If the secrets file was encrypted we could unencrypt is as follows

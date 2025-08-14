@@ -2,10 +2,10 @@
 apiVersion: console.openshift.io/v1
 kind: ConsoleLink
 metadata:
-  name: argocd
+  name: argocd-agentic
 spec:
   applicationMenu:
-    section: SRE
+    section: GenAI
     imageURL: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
   href: https://global-policy-server-openshift-policy.apps.$CLUSTER_NAME.$BASE_DOMAIN
   location: ApplicationMenu
@@ -34,29 +34,3 @@ spec:
   href: https://vault-vault.apps.$CLUSTER_NAME.$BASE_DOMAIN
   location: ApplicationMenu
   text: vault
-
-
-# ---
-# apiVersion: console.openshift.io/v1
-# kind: ConsoleLink
-# metadata:
-#   name: minio
-# spec:
-#   applicationMenu:
-#     section: SRE
-#     imageURL: https://min.io/resources/img/logo/MINIO_Bird.png
-#   href: https://minio-minio.apps.$CLUSTER_NAME.$BASE_DOMAIN
-#   location: ApplicationMenu
-#   text: minio
-# ---
-# apiVersion: console.openshift.io/v1
-# kind: ConsoleLink
-# metadata:
-#   name: milvus
-# spec:
-#   applicationMenu:
-#     imageURL: https://raw.githubusercontent.com/milvus-io/artwork/refs/heads/master/icon/color/milvus-icon-color.svg
-#     section: SRE
-#   href: https://milvus-console-milvus.apps.$CLUSTER_NAME.$BASE_DOMAIN/webui
-#   location: ApplicationMenu
-#   text: milvus
