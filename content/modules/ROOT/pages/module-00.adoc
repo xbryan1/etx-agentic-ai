@@ -512,7 +512,7 @@ metadata:
   namespace: openshift-policy
 stringData:
   AVP_AUTH_TYPE: "k8s"
-  AVP_K8S_MOUNT_PATH: "auth/apps.${CLUSTER_DOMAIN}-${PROJECT_NAME}.${BASE_DOMAIN}"
+  AVP_K8S_MOUNT_PATH: "auth/apps.${CLUSTER_DOMAIN}.${BASE_DOMAIN}-${PROJECT_NAME}"
   AVP_K8S_ROLE: "vault"
   AVP_TYPE: "vault"
   VAULT_ADDR: "https://vault.vault.svc:8200"
