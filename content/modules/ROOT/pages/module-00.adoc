@@ -407,6 +407,30 @@ image::github-pat.png[GitHub Repo Token, 400]
 
 . Done ✅
 
+=== GitHub Webhook
+
+Create a webhook that fires from your GitHub repo fork to ArgoCD on the OpenShift Cluster. This ensures the applications are synced whenever you push a change into git (rather than wait the 3min default sync time).
+
+. Login to GitHub in a browser, go to your **etx-agentic-ai** fork > **Settings**
+
+. Select **Webhooks**
+
+. Select **Add Webhook**. Add the following details
++
+**Payload URL:** https://global-policy-server-openshift-policy.apps.${CLUSTER_NAME}.${BASE_DOMAIN}/api/webhook
++
+**Content Type:** application/json
++
+**SSL Verification:** Enable SSL Verification
++
+**Which events:** Send me everything
+
+. Click **Add Webhook**
+.GitHub Webhook
+image::github-webhook.png[GitHub Webhook, 400]
+
+. Done ✅
+
 === The Secrets File
 
 [IMPORTANT]
