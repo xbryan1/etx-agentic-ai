@@ -30,6 +30,18 @@ git add .; git commit -m "deploy default models"; git push
 + 
 image::models-etx-app-of-apps.png[Models GitOps, 800]
 
+. Navigate to ACM by clicking the dropdown in the top left of the OpenShift console to select `All Clusters`
++
+image::acm-all-clusters.png[ACM All Clusters, 800]
+
+. Then select `Governance` from the left hand menu
++
+image::acm-governance.png[ACM Governance, 800]
+
+. Then select `Policies` from the left hand menu
++
+image::acm-policies.png[ACM Policies, 800]
+
 . Check ACM Policies that **models-serving** has appeared with the expected results. Note that we can see default granite model only at this point in time as the MaaS secrets will not yet succeed (we create the *llama-stack* namespace in the next section).
 + 
 image::models-policy2.png[Models Policy, 800]
@@ -45,15 +57,25 @@ TIP: Check the pod status
 oc get pods -n vllm-server
 ----
 
-. Check that the external route becomes available in RHOAI - the model's OpenAI docs can be seen in OpenAPI - you need to append **/docs** to the URL to browse them
+. Check that the external route becomes available in RHOAI.
++
+image::model-available.png[Model available,800]
+
+
+. Next, check that the model's OpenAI docs can be seen in OpenAPI. Copy the external endpoint as shown
++
+image::model-external-endpoint.png[Model external endpoint,800]
+
+
+. Paste the external endpoint into your browser and append **/docs** to the URL to browse them
 + 
 image::models-granite-swagger.png[Models OpenAI, 800]
 
-. Check the call to the models endpoint **/v1/models** returns OK
+. Check the call to the models endpoint **/v1/models** returns OK by selecting "Try it out" and then "Execute"
 + 
 image::models-swagger-v1-models.png[Models OpenAI v1/models, 800]
 
-. You can checkout the model deployment code here https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml[**infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml**,window=_blank]
+. To learn more about the model deployment, you can checkout the code here https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml[**infra/applications/models/base/granite/granite-31-2b-vllm-oci.yaml**,window=_blank]
 + 
 image::models-deploy-code.png[Models Code, 300]
 
@@ -80,6 +102,23 @@ The Llama Stack K8s Operator is a Kubernetes operator that automates the deploym
 With the latest version of RHOAI 2.22.0+ we can use the built in DSC (Data Science Cluster) mechanism to deploy the operator.
 
 . Ensure the DataScienceCluster resource has the **llamastackoperator** component as **Managed**
+
+. First, navigate to the correct project via
++
+[source,bash,options="wrap",role="execute"]
+----
+oc project agent-demo
+----
+
+. Check the DataScienceCluster resource
++
+[source,bash,options="wrap",role="execute"]
+----
+oc get dsc -o yaml
+----
+
+
+. Finally, review the DataScienceCluster resource to ensure the **llamastackoperator** component is set to **Managed**
 +
 [source,yaml,options="wrap"]
 ----
@@ -150,7 +189,7 @@ spec:
 
 == Using ConfigMap for run.yaml Configuration
 
-The operator supports using ConfigMaps to store the https://github.com/meta-llama/llama-stack/blob/main/llama_stack/templates/nvidia/run.yaml[run.yaml,window=_blank] configuration file. 
+The operator supports using ConfigMaps to store the https://github.com/llamastack/llama-stack/blob/main/llama_stack/distributions/nvidia/run.yaml[run.yaml,window=_blank] configuration file. 
 
 * **Centralized Configuration**: Store all Llama Stack settings in one place
 * **Dynamic Updates**: Changes to the ConfigMap automatically restart pods to load new configuration
