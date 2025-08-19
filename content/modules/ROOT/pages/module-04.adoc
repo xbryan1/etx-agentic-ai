@@ -263,8 +263,10 @@ image::llama-stack-basic-pod.png[LlamaStack Basic Pod, 800]
 ----
 pip install llama-stack-client==0.2.15
 ----
++
+TIP: If you are doing this with an older version of python (3.11 or less) you may not be able to install the matching version. Run using this instead **pip install llama-stack-client fire**
 
-. Port forward the LlamaStack port so we can connect to it (in a workbench you can use the Service as the **--endpoint** argument)
+. Port forward the LlamaStack port so we can connect to it (in a workbench you can use the Service as the **--endpoint** argument or just **oc login** and port forward)
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -313,6 +315,8 @@ INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK
 . Check the LlamaStack OpenAPI docs at http://localhost:8321/docs
 +
 image::llama-stack-api-docs.png[LlamaStack API Docs, 800]
++
+TIP: Browsing will not work in a workbench
 
 . Done ✅
 
