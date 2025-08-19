@@ -348,10 +348,6 @@ kubernetes_ca_cert="$CA_CRT"
 
 . Done ✅
 
-Your _cluster_ ArgoCD will now be able to read secrets from Vault and should be in a healthy state.
-
-image::vault-health.png[Vault Health, 600]
-
 ==== Create a CronJob
 
 [TIP]
@@ -520,6 +516,10 @@ stringData:
 type: Opaque
 EOF
 ----
+
+Your _cluster_ ArgoCD will now be able to read secrets from Vault and should be in a healthy state.
+
+image::vault-health.png[Vault Health, 600]
 
 . You can also login to Vault using the Vault UI and $ROOT_TOKEN from the OpenShift web console to check out the configuration
 +
