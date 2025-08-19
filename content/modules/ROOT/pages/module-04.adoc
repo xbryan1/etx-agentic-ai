@@ -30,13 +30,20 @@ git add .; git commit -m "deploy default models"; git push
 + 
 image::models-etx-app-of-apps.png[Models GitOps, 800]
 
-. Check ACM Policies that **models-serving** has appeared with the expected results - we can see the MaaS secrets and the default granite model
+. Check ACM Policies that **models-serving** has appeared with the expected results. Note that we can see default granite model only at this point in time as the MaaS secrets will not yet succeed (we create the *llama-stack* namespace in the next section).
 + 
-image::models-policy.png[Models Policy, 800]
+image::models-policy2.png[Models Policy, 800]
 
 . Check in RHOAI that there is a model deployment in the **vllm-server** namespace
 + 
 image::models-rhoai.png[Models RHOAI, 800]
++
+TIP: Check the pod status
++
+[source,bash,options="wrap",role="execute"]
+----
+oc get pods -n vllm-server
+----
 
 . Check that the external route becomes available in RHOAI - the model's OpenAI docs can be seen in OpenAPI - you need to append **/docs** to the URL to browse them
 + 
