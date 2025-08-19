@@ -429,6 +429,14 @@ Total models: 1
 + 
 image::llama-stack-playground-deploy.png[LlamaStack Deploy, 300]
 
+. Check these files into git
++
+[source,bash,options="wrap",role="execute"]
+----
+# Its not real unless its in git
+git add .; git commit -m "deploy llama-stack-playground"; git push
+----
+
 . Check ArgoCD, ACM and the **llama-stack-playground** Deployment in the **llama-stack** Namespace
 +
 image::llama-stack-playground-argocd.png[LlamaStack Playground ArgoCD, 800]
