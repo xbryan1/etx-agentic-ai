@@ -562,7 +562,6 @@ export BASE_DOMAIN=sandbox2518.opentlc.com # replace with yours
 . Create https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/console_apis/consolelink-console-openshift-io-v1[OpenShift ConsoleLinks,window=_blank] (some of which may already exist)
 
 image::add-console-links.png[Console Links, 600]
-
 +
 [source,bash,options="wrap",role="execute"]
 ----
