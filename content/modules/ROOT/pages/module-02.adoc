@@ -23,7 +23,7 @@ image::create-workbench2.png[Create Workbench, 600]
 . We are going to `Create a workbench` using the following parameters:
 
     Name: agent-tools
-    Image Selection: CUDA
+    Image Selection: Standard Data Science
     Version: 2025.1 (select the latest version)
 +
 Leave all the other fields as defaults. You should see the `Hardware profile` auto-selected to use the GPU Accelerator `Nvidida L4 (Shared)`.
@@ -47,6 +47,6 @@ image::clone-code2.png[Clone Code, 600]
 
 . Open up the following notebook in your workspace.
 +
-https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/code/getting-started.ipynb[getting-started.ipynb,window=_blank]
+https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/code/getting-started.ipynb[etx-agentic-ai/code/getting-started.ipynb,window=_blank]
 +
 In this notebook we will help you get started with LLamaStack.
