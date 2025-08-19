@@ -222,7 +222,7 @@ export MODEL_LLAMA3_NAME=llama-3-2-3b
 
 export MODEL_LLAMA4_API_KEY=ce...
 export MODEL_LLAMA4_ENDPOINT_URL=https://llama-4-scout-17b-16e-w4a16-maas-apicast-production.apps.prod.rhoai.rh-aiservices-bu.com:443
-MODEL_LLAMA4_NAME=llama-4-scout-17b-16e-w4a16
+export MODEL_LLAMA4_NAME=llama-4-scout-17b-16e-w4a16
 
 export MODEL_EMBED_API_KEY=95...
 export MODEL_EMBED_URL=https://nomic-embed-text-v1-5-maas-apicast-production.apps.prod.rhoai.rh-aiservices-bu.com:443
@@ -247,6 +247,10 @@ oc -n vault exec -ti vault-0 -- vault operator init -key-threshold=1 -key-shares
 export UNSEAL_KEY=EGbx...
 export ROOT_TOKEN=hvs.wnz...
 ----
+
+After running the vault initialization command, you'll see output containing the unseal key and root token. Copy these values and export them as environment variables as shown.
+
+image::vault-init.png[Vault initialization output showing unseal key and root token]
 
 . Unseal the Vault.
 +
@@ -275,6 +279,11 @@ export VAULT_SKIP_VERIFY=true
 vault login token=${ROOT_TOKEN}
 ----
 
+You should see the following output:
++
+.Vault Login
+image::vault-login.png[Vault Login, 400]
+
 . Setup env vars
 +
 [source,bash,options="wrap",role="execute"]
@@ -288,7 +297,7 @@ export CLUSTER_DOMAIN=apps.${CLUSTER_NAME}.${BASE_DOMAIN}
 +
 [source,bash,options="wrap",role="execute"]
 ----
-vault auth enable -path=$CLUSTER_DOMAIN-${PROJECT_NAME} kubernetes
+vault auth enable -path=${CLUSTER_DOMAIN}-${PROJECT_NAME} kubernetes
 export MOUNT_ACCESSOR=$(vault auth list -format=json | jq -r ".\"$CLUSTER_DOMAIN-$PROJECT_NAME/\".accessor")
 ----
 
@@ -332,12 +341,16 @@ CA_CRT=$(openssl s_client -showcerts -connect api.${CLUSTER_NAME}.${BASE_DOMAIN}
 +
 [source,bash,options="wrap",role="execute"]
 ----
-vault write auth/$CLUSTER_DOMAIN-${PROJECT_NAME}/config \
+vault write auth/${CLUSTER_DOMAIN}-${PROJECT_NAME}/config \
 kubernetes_host="$(oc whoami --show-server)" \
 kubernetes_ca_cert="$CA_CRT"
 ----
 
 . Done ✅
+
+Your _cluster_ ArgoCD will now be able to read secrets from Vault and should be in a healthy state.
+
+image::vault-health.png[Vault Health, 600]
 
 ==== Create a CronJob
 
@@ -354,6 +367,8 @@ export UNSEAL_KEY=EGbx...
 ----
 cat infra/bootstrap/vault-unseal-cronjob.yaml | envsubst | oc apply -f-
 ----
+
+image::vault-cronjob.png[Vault Cronjob Created, 600]
 
 Done ✅
 ====
@@ -420,7 +435,7 @@ TIP: If the secrets file was encrypted we could unencrypt is as follows
 ansible-vault decrypt infra/secrets/vault-sno
 ----
 
-. Add the gathered api tokens as env vars to the secrets file
+. Add the gathered api tokens as env vars to the secrets file and save it.
 +
 .Add API Tokens
 image::add-apikeys-secrets.png[Add API Tokens, 300]
@@ -441,7 +456,7 @@ export VAULT_SKIP_VERIFY=true
 vault login token=${ROOT_TOKEN}
 ----
 
-. Hydrate the vault by running the secrets file as a script
+. Hydrate the vault by running the secrets file as a script. When prompted to enter the root token, use the $ROOT_TOKEN you exported earlier.
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -540,11 +555,14 @@ Done ✅
 +
 [source,bash,options="wrap",role="execute"]
 ----
-export CLUSTER_NAME=cluster-4xglk.4xglk
-export BASE_DOMAIN=sandbox2518.opentlc.com
+export CLUSTER_NAME=cluster-4xglk.4xglk # replace with yours
+export BASE_DOMAIN=sandbox2518.opentlc.com # replace with yours
 ----
 
-. Create https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/console_apis/consolelink-console-openshift-io-v1[OpenShift ConsoleLinks,window=_blank]
+. Create https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/console_apis/consolelink-console-openshift-io-v1[OpenShift ConsoleLinks,window=_blank] (some of which may already exist)
+
+image::add-console-links.png[Console Links, 600]
+
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -557,13 +575,17 @@ cat infra/bootstrap/console-links.yaml | envsubst | oc apply -f-
 ----
 # We need to update our ArgoCD Apps to point to your team fork
 export YOUR_GITHUB_USER=your-gh-user  # the Team member who forked the GitHub Repo
-cd etx-agentic-ai   # Root directory of code base
+cd etx-agentic-ai   # Navigate to root directory of code base if not already there
 ----
+
+. Replace the `redhat-ai-services` throughout the file with your GitHub username.
 +
 [source,bash,options="wrap",role="execute"]
 ----
 sed -i "s/redhat-ai-services/${YOUR_GITHUB_USER}/g" infra/app-of-apps/etx-app-of-apps.yaml
 ----
+
+. Update the `redhat-ai-services` to your GitHub username in the `etx-app-of-apps.yaml` file.
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -571,12 +593,16 @@ for x in $(ls infra/app-of-apps/sno); do
     sed -i "s/redhat-ai-services/${YOUR_GITHUB_USER}/g" infra/app-of-apps/sno/$x
 done
 ----
+
+. Now we can save, commit, and push the changes to your GitHub fork.
 +
 [source,bash,options="wrap",role="execute"]
 ----
 # Its not real unless its in git
 git add .; git commit -m "using my github fork"; git push
 ----
+
+. Finally, we can bootstrap the apps into our cluster.
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -601,7 +627,15 @@ export BASE_DOMAIN=sandbox2518.opentlc.com
 ./infra/bootstrap/check-install.sh
 ----
 
+image::bootstrap-begin.png[bootstrap-begin, 400]
+
 . Done ✅
+
+After a few minutes, you should see the following output to show that the apps have been installed.
+
+image::bootstrap-complete.png[bootstrap-complete, 400]
+
+Next, you will need to wait for the individual apps to be installed. This may take a few minutes.
 
 == Workbench
 
