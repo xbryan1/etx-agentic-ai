@@ -1,5 +1,4 @@
 ---
-# Source: ai-agent/templates/namespace.yaml
 apiVersion: v1
 kind: Namespace
 metadata:
