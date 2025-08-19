@@ -631,11 +631,11 @@ image::bootstrap-begin.png[bootstrap-begin, 400]
 
 . Done ✅
 
-After a few minutes, you should see the following output to show that the apps have been installed.
+. You will need to wait for the individual apps to be installed. This may take a few minutes. After a few minutes, you should see the following output to show that the apps have been installed.
 
 image::bootstrap-complete.png[bootstrap-complete, 400]
 
-Next, you will need to wait for the individual apps to be installed. This may take a few minutes.
+Also, notice that the `tenant-ai-agent-local-cluster` app is constantly in a progressing state. This is something we will address later in this course.
 
 == Workbench
 
