@@ -465,7 +465,7 @@ The secrets file is just a bash shell script that uses the vault cli.
 cp infra/secrets/vault-sno-example infra/secrets/vault-sno
 ----
 +
-TIP: If the secrets file was encrypted we could unencrypt is as follows
+TIP: If the secrets file was encrypted we could unencrypt is as follows (the instructor will provide the key)
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -534,6 +534,7 @@ You can add a pre-commit git hook client side so that you do not check in an une
 chmod 755 infra/bootstrap/pre-commit
 cd .git/hooks
 ln -s ../../infra/bootstrap/pre-commit pre-commit
+cd ../../
 ----
 ====
 
@@ -558,11 +559,11 @@ type: Opaque
 EOF
 ----
 
-Your _cluster_ ArgoCD will now be able to read secrets from Vault and should be in a healthy state.
-
+. Your _Agentic_ ArgoCD is now setup to read secrets from Vault and should be in a healthy state.
++
 image::vault-health.png[Vault Health, 600]
 
-. You can also login to Vault using the Vault UI and $ROOT_TOKEN from the OpenShift web console to check out the configuration
+. You can also login to Vault using the Vault UI and $ROOT_TOKEN from the OpenShift web console to check out the configuration if it is unfamiliar.
 +
 .Login to Vault
 image::vault-console.png[Login to Vault, 400]
