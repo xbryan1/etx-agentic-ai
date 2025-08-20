@@ -356,11 +356,6 @@ In case the vault pod, or the node it runs on, reboots, it is always handy to au
 
 [source,bash,options="wrap",role="execute"]
 ----
-export UNSEAL_KEY=EGbx...
-----
-
-[source,bash,options="wrap",role="execute"]
-----
 cat infra/bootstrap/vault-unseal-cronjob.yaml | envsubst | oc apply -f-
 ----
 
@@ -390,14 +385,11 @@ Create a fine-grained GitHub Personal Access (PAT) Token.
 
 . Select Button **Generate a new token** - give it a token name e.g. __etx-ai__
 
-. Set **Repository access** > **Use Only select repositories**
-+
-.GitHub Repo Access
-image::github-access.png[GitHub Repo Access, 400]
-
-. Give it the following permissions:
+. Set **Repository access**
 +
 **All repositories**: allow access to your repositories including read-only public repos.
+
+. Give it the following permissions:
 +
 **Commit statuses**: Read-Only
 +
