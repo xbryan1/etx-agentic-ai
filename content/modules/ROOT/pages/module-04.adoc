@@ -805,7 +805,6 @@ INFO:httpx:HTTP Request: GET http://localhost:8321/v1/providers "HTTP/1.1 200 OK
 │ tool_runtime │ tavily-search          │ remote::tavily-search          │
 │ tool_runtime │ rag-runtime            │ inline::rag-runtime            │
 │ telemetry    │ meta-reference         │ inline::meta-reference         │
-│ vector_io    │ milvus                 │ remote::milvus                 │
 └──────────────┴────────────────────────┴────────────────────────────────┘
 ----
 +
