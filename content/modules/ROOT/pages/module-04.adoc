@@ -756,7 +756,7 @@ git add .; git commit -m "deploy llama-stack with mcp-github"; git push
 +
 [source,bash,options="wrap",role="execute"]
 ----
-Get the README.adoc from the ocp-eformat/etx-agentic-ai repo. give me the resource:text that contains the file contents. format the response as asciidoc and not json. remove any json keys and formatting.
+Get the README.adoc from the ${YOUR_GITHUB_USER}/etx-agentic-ai repo. give me the resource:text that contains the file contents. format the response as asciidoc and not json. remove any json keys and formatting.
 ----
 +
 image::llama-playground-mcp-github-chat.png[LlamaStack MCP GitHub, 800]
