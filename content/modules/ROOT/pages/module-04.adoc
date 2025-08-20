@@ -668,24 +668,36 @@ image::llama-stack-mcp-openshift.png[LlamaStack MCP OpenShift, 300]
 git add .; git commit -m "deploy llama-stack with mcp-openshift"; git push
 ----
 
-. Refresh the playground in the browser. Select the Tools playground with the MCP Server openshift, ReAct agent and Llama4 model. Try the prompt **list pods using the label app=ocp-mcp-server in the agent-demo namespace**
+. Refresh the playground in the browser. Select the **Tools** playground with the **MCP Servers openshift**, **ReAct agent** and **Llama4 model**. Try the prompt:
++
+[source,bash,options="wrap",role="execute"]
+----
+list pods using the label app=ocp-mcp-server in the agent-demo namespace
+----
 +
 image::llama-playground-mcp-openshift-chat.png[LlamaStack MCP OpenShift, 800]
 
-. You will notice the the response has the Pod yaml included that fails to parse properly in the llamastack-playground. 
+. You will notice the the response has the Pod yaml included OK but fails to parse correctly in the llamastack-playground UI.
 
-. The pydantic errors are in the playground pod logs.
+. The pydantic errors can be seen in the playground pod logs.
 +
 [source,bash,options="wrap",role="execute"]
 ----
 oc -n llama-stack -c llama-stack-playground logs -l app.kubernetes.io/instance=llama-stack-playground
 ----
 
-. Try this prompt instead - **list pods using the label app=ocp-mcp-server in the agent-demo namespace. dont give me the pod yaml, rather just give me the pod name**
+. Try this prompt instead using the same settings **MCP Servers openshift**, **ReAct agent** and **Llama4 model**
++
+[source,bash,options="wrap",role="execute"]
+----
+ list pods using the label app=ocp-mcp-server in the agent-demo namespace. dont give me the pod yaml, rather just give me the pod name
+----
 +
 image::llamastack-playground-pod-search-no-error.png[LlamaStack MCP OpenShift No Error, 400]
++
+This works without any parsing errors in the playground OK
 
-. Try different models, agents and prompts. Not all of them work all of the time. This is a common problem with Tool calling and LLMs
+. Try different models, agents and prompts. Not all of them work all of the time. This is a common problem with Tool calling and LLMs.
 
 . Done ✅
 
