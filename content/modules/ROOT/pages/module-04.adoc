@@ -264,16 +264,21 @@ image::llama-stack-basic-pod.png[LlamaStack Basic Pod, 800]
 pip install llama-stack-client==0.2.15
 ----
 +
-TIP: If you are doing this with an older version of python (3.11 or less) you may not be able to install the matching version. Run using this instead **pip install llama-stack-client fire**
+WARNING: If you are doing this with an older version of python (3.11 or less) you may not be able to install the matching version. Run using this instead **pip install llama-stack-client fire**
 
-. Port forward the LlamaStack port so we can connect to it (in a workbench you can use the Service as the **--endpoint** argument or just **oc login** and port forward)
+. Port forward the LlamaStack port so we can connect to it (in a workbench you can use the Service as the **--endpoint** argument or just **oc login** and then port-forward)
 +
 [source,bash,options="wrap",role="execute"]
 ----
 oc -n llama-stack port-forward svc/llamastack-with-config-service 8321:8321 2>&1>/dev/null &
 ----
 +
-TIP: You will need to restart this port-forward when the LlamaStack pod restarts
+[IMPORTANT]
+====
+You will need to restart this port-forward every time the LlamaStack pod restarts.
+
+Each new change to the LlamaStack ConfigMap (overlay path in the policy generator) causes the LlamaStack pod to restart. So keep the port-forward command handy in your history as you will need it!.
+====
 
 . Check the connection by listing the version - ideally we match client and server versions
 +
