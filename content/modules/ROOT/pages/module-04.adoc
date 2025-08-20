@@ -223,6 +223,13 @@ pip install llama-stack-client==0.2.15
 +
 WARNING: If you are doing this with an older version of python (3.11 or less) you may not be able to install the matching version. Run using this instead **pip install llama-stack-client fire**
 
+. Login to OpenShift if you are not already logged in
++
+[source,bash,options="wrap",role="execute"]
+----
+oc login --server=https://api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 -u admin -p ${ADMIN_PASSWORD}
+----
+
 . Port forward the LlamaStack port so we can connect to it (in a workbench you can use the Service as the **--endpoint** argument or just **oc login** and then port-forward)
 +
 [source,bash,options="wrap",role="execute"]

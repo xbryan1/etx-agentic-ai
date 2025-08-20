@@ -192,7 +192,7 @@ As a Team, you need to do each of these Prerequisites.
 ** Download and https://developer.hashicorp.com/vault/install[Install the Hashi Vault Client binary,window=_blank]
 ** Login to your OpenShift cluster using the https://mirror.openshift.com/pub/openshift-v4/clients/ocp/[OpenShift client,window=_blank] as the cluster-admin user
 
-. Setup env vars
+. Setup env vars and login to OpenShift
 +
 [source,bash,options="wrap",role="execute"]
 ----
