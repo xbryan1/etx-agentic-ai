@@ -644,17 +644,6 @@ image::bootstrap-initial.png[bootstrap-initial, 400]
 
 . Check Install
 +
-[source,bash,options="wrap",role="execute"]
-----
-export CLUSTER_NAME=cluster-4xglk.4xglk
-export BASE_DOMAIN=sandbox2518.opentlc.com
-----
-+
-[source,bash,options="wrap",role="execute"]
-----
-./infra/bootstrap/check-install.sh
-----
-
 image::bootstrap-begin.png[bootstrap-begin, 400]
 
 . Done ✅
