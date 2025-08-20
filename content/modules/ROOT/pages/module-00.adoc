@@ -73,6 +73,11 @@ image::github-fork.png[GitHub Repo Fork, 400]
 +
 .GitHub Repo Collaborators  
 image::github-collaborators.png[GitHub Repo Collaborators, 400]
++
+.. Ensure that you **Enable Issues** for your fork under **General** > **Features** > **Issues** as they are disabled for forked repos by default
++
+.GitHub Repo Enable Issues
+image::github-repo-enable-issues.png[GitHub Repo Enable Issues, 400]
 
 . **Both team members: Clone the forked repository locally**
 +
