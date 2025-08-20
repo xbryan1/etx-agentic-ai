@@ -421,7 +421,12 @@ Create a webhook that fires from your GitHub repo fork to ArgoCD on the OpenShif
 
 . Select **Add Webhook**. Add the following details
 +
-**Payload URL:** https://global-policy-server-openshift-policy.apps.${CLUSTER_NAME}.${BASE_DOMAIN}/api/webhook
+**Payload URL:** https://global-policy-server-openshift-policy.apps.${CLUSTER_NAME}.${BASE_DOMAIN}/api/webhook - You can get the correct URL by echoing this out on the command line:
++
+[source,bash,options="wrap",role="execute"]
+----
+echo https://global-policy-server-openshift-policy.apps.${CLUSTER_NAME}.${BASE_DOMAIN}/api/webhook
+----
 +
 **Content Type:** application/json
 +
