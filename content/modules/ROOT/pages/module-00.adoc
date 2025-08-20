@@ -585,22 +585,17 @@ Done ✅
 
 == Complete the Bootstrap
 
-. Setup env vars
+. The following https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/console_apis/consolelink-console-openshift-io-v1[OpenShift ConsoleLinks,window=_blank] should already exist in your cluster:
 +
-[source,bash,options="wrap",role="execute"]
-----
-export CLUSTER_NAME=cluster-4xglk.4xglk # replace with yours
-export BASE_DOMAIN=sandbox2518.opentlc.com # replace with yours
-----
-
-. Create https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/console_apis/consolelink-console-openshift-io-v1[OpenShift ConsoleLinks,window=_blank] (some of which may already exist)
-
-image::add-console-links.png[Console Links, 600]
+image::add-console-links.png[Console Links, 300]
 +
-[source,bash,options="wrap",role="execute"]
-----
-cat infra/bootstrap/console-links.yaml | envsubst | oc apply -f-
-----
+**Red Hat Applications** - these are cloud services provided by Red Hat for your cluster.
++
+**GenAI** - these are the GenAI applications that we will be using in the exercises. The **Agentic ArgoCD** should be running but is empty (no apps deployed yet) and is our GitOps application. The **LLamaStack Playground** is not deployed yet, but will be the link for the LlamaStack UI for integrating Tools and Agents. **Vault** is running but not yet initialized or unsealed and is the app that stores our secrets.
++
+**OpenShift GitOps** - this is the cluster bootstrap ArgoCD GitOps. This has all of the setup to get started for our cluster. It does not include the Agentic applications that we cover in the exercises.
++
+**RHOAI** - the UI for Red Hat OpenShift AI. Login here to access your Data Science workbenches, models, pipelines and experiments.
 
 . Bootstrap https://argo-cd.readthedocs.io/en/latest/operator-manual/cluster-bootstrapping/#app-of-apps-pattern[App-of-Apps,window=_blank]
 +
