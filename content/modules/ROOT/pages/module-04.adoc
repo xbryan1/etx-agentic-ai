@@ -752,7 +752,7 @@ git add .; git commit -m "deploy llama-stack with mcp-github"; git push
 
 . Try this prompt instead using the same settings **MCP Servers openshift**, **ReAct agent** and **Llama4 model**
 
-. Refresh the playground in the browser. Select the **Tools** playground with the **MCP Servers github**, **ReAct agent** and **Llama4 model**. Try the prompt
+. Refresh the playground in the browser. Select the **Tools** playground with the **MCP Servers github**, **ReAct agent** and **Llama4 model**. Try the prompt (replace the github user with your user).
 +
 [source,bash,options="wrap",role="execute"]
 ----
