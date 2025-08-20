@@ -141,7 +141,7 @@ spec:
         # reference to the configmap that contains Llama stack configuration.
        configMapName: llama-stack-config 
 ----
-
+e
 NOTE: We maintain a https://github.com/eformat/distribution-remote-vllm[build of LlamaStack,window=_blank] that https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/llama-stack.yaml#L39[pins the image version,window=_blank] so we can ensure stability whilst the upstream rapidly changes. We expect to use the **rh-dev** distribution once <<Using the DataScienceCluster Resource to configure the LlamaStack Operator>> is resolved.
 
 == Using ConfigMap for run.yaml Configuration
@@ -881,6 +881,21 @@ status: {}
 . Check the LlamaStack controller manager pod is running in the **redhat-ods-applications** Namespace
 + 
 image::llama-stack-controller-manager.png[LlamaStack Controller Manager Pod, 800]
+====
+
+=== (Optional) Bonus Extension Exercise
+
+⛷️ For the adventurous who like to go off-piste. Try to configure the RAG tool in LlamaStack and LlamaStack Playground using https://milvus.io/[milvus] as the vector store provider. ⛷️
+
+[TIP]
+====
+We have left some code that is commented out and undeployed to help you get to the bottom of the ski run. Good Luck 🫡
+
+- https://github.com/redhat-ai-services/etx-agentic-ai/tree/main/infra/applications/milvus[milvus] standalone application
+- https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/milvus.yaml.undeploy[milvus app-of-apps] undeployed
+- https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/configmap.yaml#L105-L113[vector-io] LlamaStack configuration
+- https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/configmap.yaml#L95-L96[rag provider] LlamaStack configuration
+- https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/configmap.yaml#L125-L126[built-in rag toolgroup] LlamaStack configuration
 ====
 
 == Using LlamaStack Playground for Use Case prompting
