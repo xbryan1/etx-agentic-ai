@@ -896,6 +896,7 @@ We have left some code that is commented out and undeployed to help you get to t
 - https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/configmap.yaml#L105-L113[vector-io,window=_blank] LlamaStack configuration
 - https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/configmap.yaml#L95-L96[rag provider,window=_blank] LlamaStack configuration
 - https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/configmap.yaml#L125-L126[built-in rag toolgroup,window=_blank] LlamaStack configuration
+- https://github.com/opendatahub-io/llama-stack-demosp[LlamaStack demo,window=_blank] repository from RedHat documentation
 ====
 
 == Using LlamaStack Playground for Use Case prompting
