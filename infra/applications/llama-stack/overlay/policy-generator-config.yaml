@@ -23,7 +23,8 @@ policyDefaults:
   severity: medium
   standards:
     - NIST SP 800-53
-  policyAnnotations: {"argocd.argoproj.io/compare-options": "IgnoreExtraneous"}
+  policyAnnotations: {"argocd.argoproj.io/compare-options": "IgnoreExtraneous",
+                      "avp.kubernetes.io/path": "kv/data/ocp/sno/openshift-policy/llama-stack"}
 policies:
   - name: llama-stack-sno
     manifests:
