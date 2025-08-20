@@ -128,6 +128,13 @@ Built on the bootstrap foundation, these components enforce enterprise policies:
 **Green from GO** ✅: We start compliant from day one. Rather than building systems and retrofitting security and compliance later, our development environment mirrors production with all policies active from the beginning. This means teams learn to work within enterprise guardrails naturally.
 
 This approach ensures software quality, security, and consistency at enterprise scale.
+
+You can read more about Configuration Policies here.
+
+- https://open-cluster-management.io/docs/getting-started/integration/policy-controllers/policy/[Policy API Concepts]
+- https://github.com/open-cluster-management-io/policy-collection[Policy Collection]
+- https://github.com/open-cluster-management-io/policy-generator-pluginp[Policy Generator]
+
 ====
 
 .Policy as Code using GitOps and ACM
