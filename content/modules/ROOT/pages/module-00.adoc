@@ -658,7 +658,7 @@ Also, notice that the `tenant-ai-agent-local-cluster` app is constantly in a pro
 
 It seems there is only limited GPUs in the cluster. In this example **1** GPU. We already have an LLM Model deployed at bootstrap time using this GPU.
 
-The Data Science team have also requested to use GPUs in their Data Science Workbenches e.g. when they use a Pytorch, CUDA or other stack image that can directly access an accelerator.
+The Data Science team 🤓 have also requested to use GPUs for their Data Science Workbenches e.g. when they use a Pytorch, CUDA or other stack image that can directly access an accelerator.
 
 Given the cluster already has access to one GPU node let's quickly set up this access for them. Note that your cluster may be configured with more GPU nodes.
 
