@@ -95,51 +95,6 @@ The Llama Stack K8s Operator is a Kubernetes operator that automates the deploym
 
 == DataScienceCluster Custom Resource
 
-[WARNING]
-====
-**VERSION 2.22 DOES NOT HAVE USERCONFIG MAP OVERRIDE SO DO NOT USE DSC YET - SCHEDULED FOR 2.23 **
-
-With the latest version of RHOAI 2.22.0+ we can use the built in DSC (Data Science Cluster) mechanism to deploy the operator.
-
-. Ensure the DataScienceCluster resource has the **llamastackoperator** component as **Managed**
-
-. First, navigate to the correct project via
-+
-[source,bash,options="wrap",role="execute"]
-----
-oc project agent-demo
-----
-
-. Check the DataScienceCluster resource
-+
-[source,bash,options="wrap",role="execute"]
-----
-oc get dsc -o yaml
-----
-
-
-. Finally, review the DataScienceCluster resource to ensure the **llamastackoperator** component is set to **Managed**
-+
-[source,yaml,options="wrap"]
-----
-apiVersion: datasciencecluster.opendatahub.io/v1
-kind: DataScienceCluster
-metadata:
-  name: default-dsc
-spec:
-  components:
-    ...
-    llamastackoperator:
-      managementState: Managed
-    ...
-status: {}
-----
-
-. Check the LlamaStack controller manager pod is running in the **redhat-ods-applications** Namespace
-+ 
-image::llama-stack-controller-manager.png[LlamaStack Controller Manager Pod, 800]
-====
-
 . Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack-operator.yaml.undeploy[**infra/app-of-apps/sno/llama-stack-operator.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/llama-stack-operator.yaml[**infra/app-of-apps/sno/llama-stack-operator.yaml**,window=_blank]
 + 
 image::llama-stack-operator-deploy.png[LlamaStack Operator, 300]
@@ -880,6 +835,53 @@ Total models: 4
 
 . Done ✅
 
+=== Using the DataScienceCluster Resource to configure the LlamaStack Operator
+
+This section is for information only and should be supported in 2.23+ of RHOAI.
+
+[NOTE]
+====
+**VERSION 2.22 DOES NOT HAVE USERCONFIG MAP OVERRIDE SO DO NOT USE DSC YET - SCHEDULED FOR 2.23 **
+
+With the latest version of RHOAI 2.22.0+ we can use the built in DSC (Data Science Cluster) mechanism to deploy the operator.
+
+. Ensure the DataScienceCluster resource has the **llamastackoperator** component as **Managed**
+
+. First, navigate to the correct project via
++
+[source,bash,options="wrap",role="execute"]
+----
+oc project agent-demo
+----
+
+. Check the DataScienceCluster resource
++
+[source,bash,options="wrap",role="execute"]
+----
+oc get dsc -o yaml
+----
+
+. Finally, review the DataScienceCluster resource to ensure the **llamastackoperator** component is set to **Managed**
++
+[source,yaml,options="wrap"]
+----
+apiVersion: datasciencecluster.opendatahub.io/v1
+kind: DataScienceCluster
+metadata:
+  name: default-dsc
+spec:
+  components:
+    ...
+    llamastackoperator:
+      managementState: Managed
+    ...
+status: {}
+----
+
+. Check the LlamaStack controller manager pod is running in the **redhat-ods-applications** Namespace
++ 
+image::llama-stack-controller-manager.png[LlamaStack Controller Manager Pod, 800]
+====
 
 == Using LlamaStack Playground for Use Case prompting
 
