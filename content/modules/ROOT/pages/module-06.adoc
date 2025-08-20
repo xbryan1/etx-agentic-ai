@@ -1,3 +1,23 @@
+= Prototyping with Tool Calling
+
+== Basic Tool Calling
+
+Open up the following notebook in your workspace.
+
+In this notebook we will introduce how to build a simple agent using Llama Stack's agent framework, enhanced with a single tool: the builtin web search tool.
+
+We will cover the agent basics. This is an important step toward developing a more capable and autonomous agent.
+
+== Prompt Chaining
+
+Open up the following notebook in your workspace.
+
+These approaches allow the agent to complete multi-step tasks, dynamically choose tools, and adjust its behavior based on context.
+
+== ReAct
+
+Open up the following notebook in your workspace.
+
 = Prototyping with MCP
 
 Open up the following notebook in your workspace.
