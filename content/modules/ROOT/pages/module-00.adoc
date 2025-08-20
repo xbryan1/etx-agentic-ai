@@ -185,7 +185,7 @@ As a Team, you need to do each of these Prerequisites.
 [source,bash,options="wrap",role="execute"]
 ----
 export ADMIN_PASSWORD=password # replace with yours
-export CLUSTER_NAME=cluster-4xglk.4xglk # replace with yours
+export CLUSTER_NAME=ocp.4ldrd # replace with yours
 export BASE_DOMAIN=sandbox2518.opentlc.com # replace with yours
 ----
 +
@@ -334,7 +334,7 @@ period=120s
 +
 [source,bash,options="wrap",role="execute"]
 ----
-CA_CRT=$(openssl s_client -showcerts -connect api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 2>&1 | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/ {print $0}')
+CA_CRT=$(echo "Q" | openssl s_client -showcerts -connect api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 2>&1 | awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/ {print $0}')
 ----
 
 . Add the initial token and CA cert to the Vault Auth Config.
