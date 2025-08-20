@@ -142,7 +142,7 @@ spec:
        configMapName: llama-stack-config 
 ----
 
-NOTE: We maintain a https://github.com/eformat/distribution-remote-vllm[build of LlamaStack] that https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/llama-stack.yaml#L39[pins the image version] so we can ensure stability whilst the upstream rapidly changes. We expect to use the **rh-dev** distribution once <<Using the DataScienceCluster Resource to configure the LlamaStack Operator>> is resolved.
+NOTE: We maintain a https://github.com/eformat/distribution-remote-vllm[build of LlamaStack,window=_blank] that https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/applications/llama-stack/base/llama-stack.yaml#L39[pins the image version,window=_blank] so we can ensure stability whilst the upstream rapidly changes. We expect to use the **rh-dev** distribution once <<Using the DataScienceCluster Resource to configure the LlamaStack Operator>> is resolved.
 
 == Using ConfigMap for run.yaml Configuration
 
