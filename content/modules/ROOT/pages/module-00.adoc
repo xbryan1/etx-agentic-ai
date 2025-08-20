@@ -642,17 +642,17 @@ This will install the tenant pipeline app and observability stack into our clust
 +
 image::bootstrap-initial.png[bootstrap-initial, 400]
 
-. Check Install
+. Check the Install progress of the app-of-apps in ArgoCD
 +
 image::bootstrap-begin.png[bootstrap-begin, 400]
 
-. Done ✅
-
 . You will need to wait for the individual apps to be installed. This may take a few minutes. After a few minutes, you should see the following output to show that the apps have been installed.
-
++
 image::bootstrap-complete.png[bootstrap-complete, 400]
-
++
 Also, notice that the `tenant-ai-agent-local-cluster` app is constantly in a progressing state. This is something we will address later in this course.
+
+. Done ✅
 
 == Our Data Science Team Have A Request
 
@@ -714,8 +714,7 @@ oc label --overwrite node \
     nvidia.com/device-plugin.config=NVIDIA-L40S
 ----
 +
-TIP: If your instance type has different accelerators, you will need to adjust the label and ConfigMap in the next step.
-
+TIP: If your instance type has different accelerators, you will need to adjust the label used here and the ConfigMap in the next step.
 
 . Now apply the https://github.com/redhat-ai-services/etx-agentic-ai/tree/main/infra/applications/gpu[GPU Cluster Policy and ConfigMap,window=_blank] objects that setup https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html[Time Slicing,window=_blank] - a method to share nvidia gpus.
 +
