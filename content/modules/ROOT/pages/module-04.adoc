@@ -690,7 +690,7 @@ oc -n llama-stack -c llama-stack-playground logs -l app.kubernetes.io/instance=l
 +
 [source,bash,options="wrap",role="execute"]
 ----
- list pods using the label app=ocp-mcp-server in the agent-demo namespace. dont give me the pod yaml, rather just give me the pod name
+list pods using the label app=ocp-mcp-server in the agent-demo namespace. dont give me the pod yaml, rather just give me the pod name
 ----
 +
 image::llamastack-playground-pod-search-no-error.png[LlamaStack MCP OpenShift No Error, 400]
@@ -750,9 +750,18 @@ image::llama-stack-mcp-github.png[LlamaStack MCP GitHub, 300]
 git add .; git commit -m "deploy llama-stack with mcp-github"; git push
 ----
 
-. Refresh the playground in the browser. Select the Tools playground with the MCP Server github, ReAct agent and Llama4 model. Try the prompt **Get the file contents README.adoc from the redhat-ai-services/etx-agentic-ai repo.**
+. Try this prompt instead using the same settings **MCP Servers openshift**, **ReAct agent** and **Llama4 model**
+
+. Refresh the playground in the browser. Select the **Tools** playground with the **MCP Servers github**, **ReAct agent** and **Llama4 model**. Try the prompt
++
+[source,bash,options="wrap",role="execute"]
+----
+Get the README.adoc from the ocp-eformat/etx-agentic-ai repo. give me the resource:text that contains the file contents. format the response as asciidoc and not json. remove any json keys and formatting.
+----
 +
 image::llama-playground-mcp-github-chat.png[LlamaStack MCP GitHub, 800]
++
+We have to be very specific as the mcp::github server returns a list of objects that we need to interpret. You can see the response in the pod logs for the mcp::github server in the agent-demo namespace.
 
 . Try different models, agents and prompts. Not all of them work all of the time. This is a common problem with Tool calling and LLMs
 
