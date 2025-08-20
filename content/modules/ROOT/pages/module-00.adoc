@@ -683,7 +683,7 @@ openshift-machine-api   ocp-kt5tz-worker-us-east-2b-5zx84       Running   m6a.4x
 openshift-machine-api   ocp-kt5tz-worker-us-east-2c-z9xzs       Running   m6a.4xlarge   us-east-2   us-east-2c   24h
 ----
 
-. We can see in this case that we have a https://aws.amazon.com/ec2/instance-types/g6e[**g6e.2xlarge**,window=_blank] instance. We can then check how many GPUs we are able to allocate:
+. We can see in this case that we have a https://aws.amazon.com/ec2/instance-types/g6e[**g6e.2xlarge**,window=_blank] instance. We can check how many GPUs we are able to allocate:
 +
 [source,bash,options="wrap",role="execute"]
 ----
