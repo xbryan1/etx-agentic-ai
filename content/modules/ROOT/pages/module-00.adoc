@@ -380,7 +380,7 @@ image::tavily-apikey.png[Create Tavily API Key, 600]
 
 . Done ✅
 
-=== GitHub token
+=== GitHub Token
 
 Create a fine-grained GitHub Personal Access (PAT) Token.
 
@@ -395,7 +395,19 @@ Create a fine-grained GitHub Personal Access (PAT) Token.
 .GitHub Repo Access
 image::github-access.png[GitHub Repo Access, 400]
 
-. Give it the following permissions: **FIXME - Add fine grained permissions**
+. Give it the following permissions:
++
+**All repositories**: allow access to your repositories including read-only public repos.
++
+**Commit statuses**: Read-Only
++
+**Content**: Read-Only
++
+**Issues**: Read and Write
++
+**Metadata**: Read-Only (this gets added automatically)
++
+**Pull requests**: Read-Only
 +
 .GitHub Repo Perms
 image::github-repo-perms.png[GitHub Repo Perms, 400]
