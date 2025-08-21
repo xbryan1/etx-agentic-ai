@@ -940,13 +940,21 @@ Use the Playground for our actual Use Case prompting (requires pipeline failure 
 
 . Query the namespace pod for a pod error; copy-paste search for solution to error logs
 +
-.. Review the OpenShift logs for the pod 'java-app-build-run-bad-mm4cq-build-pod', in the 'demo-application3' namespace.
+.. Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
+[source,bash,options="wrap",role="execute"]
+----
+Review the OpenShift logs for the pod 'java-app-build-run-bad-7rdzn-build-pod', in the 'demo-pipeline' namespace.
+----
 +
 image::playground-prompt-1.png[LlamaStack Traces, 800]
 +
 The agent reasoned correctly about the need to format the tool call with a container name as well
 +
-.. Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-mm4cq-build-pod' in the 'demo-application3' namespace.
+.. Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
+[source,bash,options="wrap",role="execute"]
+----
+Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-7rdzn-build-pod', in the 'demo-pipeline' namespace.
+----
 +
 image::playground-prompt-2.png[LlamaStack Traces, 800]
 +
@@ -958,7 +966,11 @@ Supplying the container name means less agent turns, less error prone
 - Agent Type: **ReAct**
 - Tools: **mcp::openshift, websearch**
 +
-. Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-mm4cq-build-pod' in the 'demo-application3' namespace. If the logs indicate an error search for the top OpenShift solution. Create a summary message with the category and explanation of the error.
+. Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
+[source,bash,options="wrap",role="execute"]
+----
+Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-7rdzn-build-pod', in the 'demo-pipeline' namespace. If the logs indicate an error search for the top OpenShift solution. Create a summary message with the category and explanation of the error.
+----
 +
 image::playground-prompt-3.png[LlamaStack Traces, 800]
 +
@@ -970,7 +982,7 @@ Compare the results to the actual pod logs.
 +
 [source,bash,options="wrap",role="execute"]
 ----
-oc -n demo-application3 -c step-s2i-build logs java-app-build-run-bad-mm4cq-build-pod
+oc -n demo-pipeline -c step-s2i-build logs java-app-build-run-bad-7rdzn-build-pod
 ----
 
 === Create a GitHub issue
