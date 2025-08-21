@@ -414,7 +414,13 @@ image::llama-stack-playground-acm.png[LlamaStack Playground ACM, 800]
 +
 image::llama-stack-playground2.png[LlamaStack Playground UI, 800]
 
-. We can Chat with the LLM - this calls the **/v1/chat/completion** endpoint that we can find in the OpenAI docs for the vLLM served model. You can prompt it to check the connection is working. Ask the LLM some more complex questions such as _"What is LlamaStack"_ to see if it contains that information.
+. We can Chat with the LLM - this calls the **/v1/chat/completion** endpoint that we can find in the OpenAI docs for the vLLM served model. You can prompt it to check the connection is working. Ask the LLM a more complex question such as:
++
+[source,bash,options="wrap",role="execute"]
+----
+What is LlamaStack ?
+----
+to see if it contains that information.
 +
 image::llama-stack-playground-hello.png[LlamaStack Playground Hello, 800]
 
@@ -464,7 +470,7 @@ image::llama-stack-basic-model-agent.png[LlamaStack Basic Model Agent, 300]
 git add .; git commit -m "deploy llama-stack with basic-model-agent"; git push
 ----
 
-. Once LlamaStack pod restarts, we can Refresh the playground UI and the error should now be cleared. Select the **websearch** Tool and prompt the model for information it will not have e.g.  Try the prompt:
+. Once LlamaStack pod restarts, we can Refresh the playground UI and the error should now be cleared. Select the **websearch** Tool and prompt the model for information it will not have e.g. Try the prompt:
 +
 [source,bash,options="wrap",role="execute"]
 ----
