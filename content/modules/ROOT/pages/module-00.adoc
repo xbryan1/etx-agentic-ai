@@ -468,24 +468,26 @@ We need to be able to hydrate the vault from a single source of truth. It makes 
 
 The secrets file is just a bash shell script that uses the vault cli.
 
-. Copy the example secrets file provided
+. Unencrypt the secrets file
 +
-[source,bash,options="wrap",role="execute"]
-----
-cp infra/secrets/vault-sno-example infra/secrets/vault-sno
-----
-+
-TIP: If the secrets file was encrypted we could unencrypt is as follows (the instructor will provide the key)
+NOTE: the instructor will provide the key
 +
 [source,bash,options="wrap",role="execute"]
 ----
 ansible-vault decrypt infra/secrets/vault-sno
 ----
 
-. Add the gathered api tokens as env vars to the secrets file and save it.
+. Check the gathered api tokens are set as env vars in the secrets file.
 +
 .Add API Tokens
 image::add-apikeys-secrets.png[Add API Tokens, 300]
++
+TIP: you can create a secrets file from scratch by copying the example file provided. Only do this if you are using your own MaaS API keys.
++
+[source,bash,options="wrap",role="execute"]
+----
+cp infra/secrets/vault-sno-example infra/secrets/vault-sno
+----
 
 . Setup env vars
 +
