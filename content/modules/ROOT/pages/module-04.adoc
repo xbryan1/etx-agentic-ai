@@ -633,7 +633,7 @@ You would then have to talk with the MaaS team to set these correctly for your m
 
 MCP is an upcoming, popular standard for tool discovery and execution. It is a protocol that allows tools to be dynamically discovered from an MCP endpoint and can be used to extend the agent’s capabilities.
 
-First we need to deploy the pod that runs the https://github.com/containers/kubernetes-mcp-server[**mcp::openshift**] functions. Then we need to configure LlamaStack to use our first MCP tool that interacts with the OpenShift cluster. MCP servers are configured similarly to the tool and toolgroup provider.
+First we need to deploy the pod that runs the https://github.com/containers/kubernetes-mcp-server[**mcp::openshift**,window=_blank] functions. Then we need to configure LlamaStack to use our first MCP tool that interacts with the OpenShift cluster. MCP servers are configured similarly to the tool and toolgroup provider.
 
 . Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/mcp-openshift.yaml.undeploy[**infra/app-of-apps/mcp-openshift.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/mcp-openshift.yaml[**infra/app-of-apps/mcp-openshift.yaml**,window=_blank]
 + 
