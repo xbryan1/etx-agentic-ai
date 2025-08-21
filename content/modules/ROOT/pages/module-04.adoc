@@ -464,13 +464,27 @@ image::llama-stack-basic-model-agent.png[LlamaStack Basic Model Agent, 300]
 git add .; git commit -m "deploy llama-stack with basic-model-agent"; git push
 ----
 
-. Once LlamaStack pod restarts, we can Refresh the playground UI and the error should now be cleared. Select the **websearch** Tool and prompt the model for information it will not have e.g. "What is the weather today in Brisbane ?". In the playground this actually uses the **Regular** agent to call the Tool. The LLM makes its own decision to call the Tool. The tool returns a result to LLM and allows LLM to perform a new decision. This process loops until the LLM decides that a result can be provided to the user or certain conditions are met. The LLM produces a final result for the agent.
+. Once LlamaStack pod restarts, we can Refresh the playground UI and the error should now be cleared. Select the **websearch** Tool and prompt the model for information it will not have e.g.  Try the prompt:
++
+[source,bash,options="wrap",role="execute"]
+----
+What is the weather today in Brisbane ?
+----
++
+In the playground this actually uses the **Regular** agent to call the Tool. The LLM makes its own decision to call the Tool. The tool returns a result to LLM and allows LLM to perform a new decision. This process loops until the LLM decides that a result can be provided to the user or certain conditions are met. The LLM produces a final result for the agent.
 +
 image::agent.png[Agent, 600]
 +
 image::llama-stack-websearch-agent.png[LlamaStack Websearch Agent, 800]
 
-. Try out the **ReAct** agent to call the tool with the same prompt - "What is the weather today in Brisbane ?". Notice that the agent first Reasons - where the LLM thins about the data or tool results, Acts - where the LLM performs an action, LLM then Observes the result of the tool call, before returning the result. This is the essence of the ReAct agent pattern.
+. Try out the **ReAct** agent to call the tool with the same prompt:
++
+[source,bash,options="wrap",role="execute"]
+----
+What is the weather today in Brisbane ?
+----
++
+Notice that the agent first Reasons - where the LLM thins about the data or tool results, Acts - where the LLM performs an action, LLM then Observes the result of the tool call, before returning the result. This is the essence of the ReAct agent pattern.
 +
 image::react-agent.png[ReAct Agent, 600]
 +
