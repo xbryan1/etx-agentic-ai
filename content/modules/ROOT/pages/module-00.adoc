@@ -649,7 +649,7 @@ This will install the tenant pipeline app and observability stack into our clust
 +
 image::bootstrap-initial.png[bootstrap-initial, 400]
 
-. Check the Install progress of the app-of-apps in ArgoCD
+. Check the Install progress of the app-of-apps in the **Agentic ArgoCD**
 +
 image::bootstrap-begin.png[bootstrap-begin, 400]
 
