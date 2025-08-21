@@ -4,7 +4,7 @@ Build a custom llama-stack distro image for providers - vllm::remote, inline::ra
 
 See:
 
-- https://github.com/meta-llama/llama-stack/blob/main/docs/source/distributions/building_distro.md
+- https://github.com/llamastack/llama-stack/blob/main/docs/source/distributions/building_distro.md
 
 ```bash
 git clone git@github.com:meta-llama/llama-stack.git llama-stack-clean

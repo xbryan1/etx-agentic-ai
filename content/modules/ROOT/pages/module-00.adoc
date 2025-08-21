@@ -172,7 +172,7 @@ Specialized services for AI/ML workloads and agentic applications:
 
 [TIP]
 ====
-**LLaMA Stack Integration**: Our agentic AI workloads leverage https://github.com/meta-llama/llama-stack[LLaMA Stack,window=_blank], a composable framework that provides standardized APIs for model inference, safety guardrails, and tool integration. This allows our AI agents to seamlessly interact with large language models while maintaining consistent interfaces for memory management, tool calling, and safety controls across different model providers.
+**LLaMA Stack Integration**: Our agentic AI workloads leverage https://github.com/llamastack/llama-stack[LLaMA Stack,window=_blank], a composable framework that provides standardized APIs for model inference, safety guardrails, and tool integration. This allows our AI agents to seamlessly interact with large language models while maintaining consistent interfaces for memory management, tool calling, and safety controls across different model providers.
 ====
 
 **The Benefits:**
