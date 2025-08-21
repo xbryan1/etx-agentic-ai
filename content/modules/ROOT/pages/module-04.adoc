@@ -756,12 +756,12 @@ git add .; git commit -m "deploy llama-stack with mcp-github"; git push
 +
 [source,bash,options="wrap",role="execute"]
 ----
-Get the README.adoc from the ${YOUR_GITHUB_USER}/etx-agentic-ai repo. give me the resource:text that contains the file contents. format the response as asciidoc and not json. remove any json keys and formatting.
+List the braches from ${YOUR_GITHUB_USER}/etx-agentic-ai repo.
 ----
 +
 image::llama-playground-mcp-github-chat.png[LlamaStack MCP GitHub, 800]
 +
-We have to be very specific as the mcp::github server returns a list of objects that we need to interpret. You can see the response in the pod logs for the mcp::github server in the agent-demo namespace.
+You can see the response in the pod logs for the mcp::github server in the agent-demo namespace.
 
 . Try different models, agents and prompts. Not all of them work all of the time. This is a common problem with Tool calling and LLMs
 
