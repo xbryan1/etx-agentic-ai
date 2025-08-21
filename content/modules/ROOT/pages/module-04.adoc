@@ -1049,7 +1049,7 @@ The pod is in a **CrashLoopBackOff** state because it was **OOMKilled**. The con
 
 NOW, YOUR TURN:
 
-Input: Review the OpenShift logs for the pod 'java-app-build-run-bad-7rdzn-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, search for the solution, create a summary message with the category and explanation of the error, and create a Github issue using {"name":"create_issue","arguments":{"owner":"${YOUR_GITHUB_USER}","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"<summary of the error>"}}. DO NOT add any optional parameters.
+Input: Review the OpenShift logs for the container 'step-s2i-build' for the pod 'java-app-build-run-bad-7rdzn-build-pod' in the 'demo-pipeline' namespace. If the logs indicate an error, search for the solution, create a summary message with the category and explanation of the error, and create a Github issue using {"name":"create_issue","arguments":{"owner":"${YOUR_GITHUB_USER}","repo":"etx-agentic-ai","title":"Issue with Etx pipeline","body":"<summary of the error>"}}. DO NOT add any optional parameters.
 
 ONLY tail the last 10 lines of the pod, no more.
 The JSON object formatted EXACTLY as outlined above.
