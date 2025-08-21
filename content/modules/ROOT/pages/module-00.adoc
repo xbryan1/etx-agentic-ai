@@ -210,7 +210,7 @@ oc login --server=https://api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 -u admin -p ${
 
 === MaaS credentials (Optional)
 
-NOTE: This step can be skipped unless you wish to use your own Model as a Service Credential. We will share the provided credentials to save time.
+NOTE: This step can be skipped unless you wish to use your own Model as a Service Credentials. We will share the provided credentials to save time.
 
 Gather your Model as a Service Credentials.
 
