@@ -138,7 +138,7 @@ You can read more about Configuration Policies here.
 
 - https://open-cluster-management.io/docs/getting-started/integration/policy-controllers/policy/[Policy API Concepts,window=_blank]
 - https://github.com/open-cluster-management-io/policy-collection[Policy Collection,window=_blank]
-- https://github.com/open-cluster-management-io/policy-generator-pluginp[Policy Generator,window=_blank]
+- https://github.com/open-cluster-management-io/policy-generator-plugin[Policy Generator,window=_blank]
 
 ====
 
