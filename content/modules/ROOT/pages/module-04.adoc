@@ -1005,7 +1005,7 @@ Create a github issue for a fake error in the ${YOUR_GITHUB_USER}/etx-agentic-ai
 +
 image::playground-prompt-5.png[LlamaStack Traces, 800]
 +
-This fails due to parsing json arrays as strings. Try this prompt (replace the github user with your user).
+This fails due to parsing json arrays as strings. Try this prompt (replace **YOUR_GITHUB_USER** with your user).
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -1024,7 +1024,7 @@ image::playground-prompt-8.png[LlamaStack Traces, 800]
 - Agent Type: **ReAct**
 - Tools: **mcp::openshift, mcp::github**
 +
-Prompt engineering; let's try and create a prompt that chains together the different tasks together, analyze the pod logs then generate a github issue 🍺 Try this prompt (replace the github user with your user, replace the pod name for the **java-app-build-run-bad-** in your **demo-pipeline** namespace)
+Prompt engineering; let's try and create a prompt that chains together the different tasks together, analyze the pod logs then generate a github issue 🍺 Try this prompt (replace **YOUR_GITHUB_USER** with your user, replace the pod name for the **java-app-build-run-bad-** in your **demo-pipeline** namespace)
 +
 [source,bash,options="wrap",role="execute"]
 ----
