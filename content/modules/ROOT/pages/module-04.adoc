@@ -937,8 +937,8 @@ Use the Playground for our actual Use Case prompting (requires pipeline failure 
 - Model: **llama-4-scout-17b-16e-w4a16**
 - Agent Type: **ReAct**
 - Tools: **mcp::openshift**
-
-. Query the namespace pod for a pod error; copy-paste search for solution to error logs
++
+Query the namespace pod for a pod error; copy-paste search for solution to error logs
 +
 Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
 +
