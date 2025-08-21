@@ -1,3 +1,4 @@
 ---
 resources:
-  - policy-gpu-node-label.yaml
+#  - policy-gpu-node-label.yaml
+  - policy-agentic-namespaces.yaml
