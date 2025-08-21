@@ -42,9 +42,9 @@ image::acm-governance.png[ACM Governance, 800]
 +
 image::acm-policies.png[ACM Policies, 800]
 
-. Check ACM Policies that **models-serving** has appeared with the expected results. Note that we can see default granite model only at this point in time as the MaaS secrets will not yet succeed (we create the *llama-stack* namespace in the next section).
+. Check ACM Policies that **models-serving** has appeared with the expected results.
 + 
-image::models-policy2.png[Models Policy, 800]
+image::models-policy.png[Models Policy, 800]
 
 . Check in RHOAI that there is a model deployment in the **vllm-server** namespace
 + 
