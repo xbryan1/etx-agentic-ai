@@ -574,7 +574,7 @@ image::vault-console.png[Login to Vault, 400]
 [IMPORTANT]
 .Experts Only ⛷️
 ====
-Only run this script if you are familiar with the Hashi Vault setup we just ran through and you skipped to here. Run the all-in-one vault setup script.
+Only run this script if you are familiar with the Hashi Vault setup we just ran through and you skipped all the previous vault steps to get to here. Run the all-in-one vault setup script.
 
 [source,bash,options="wrap",role="execute"]
 ----
