@@ -26,6 +26,7 @@ spec:
               name: allow-from-same-namespace
               namespace: agent-demo
             spec:
+              podSelector: {}
               ingress:
               - from:
                 - podSelector: {}
@@ -37,6 +38,7 @@ spec:
               name: allow-from-all
               namespace: agent-demo
             spec:
+              podSelector: {}
               ingress:
               - {}
         remediationAction: inform

@@ -26,6 +26,7 @@ spec:
               name: allow-from-llama-stack
               namespace: vllm-server
             spec:
+              podSelector: {}
               ingress:
               - from:
                 - namespaceSelector:
