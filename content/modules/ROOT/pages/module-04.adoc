@@ -940,7 +940,7 @@ Use the Playground for our actual Use Case prompting (requires pipeline failure 
 +
 Query the namespace pod for a pod error; copy-paste search for solution to error logs
 +
-Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
+Try this prompt (replace the pod name for the **java-app-build-run-bad-** in your **demo-pipeline** namespace)
 +
 [source,bash,options="wrap",role="execute"]
 ----
