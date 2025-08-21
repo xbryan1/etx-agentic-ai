@@ -727,7 +727,7 @@ TIP: If your instance type has different accelerators, you will need to adjust t
 +
 [source,bash,options="wrap",role="execute"]
 ----
-oc apply -k infra/applcations/gpu
+oc apply -k infra/applications/gpu
 ----
 
 . After approx ~30sec check the number of allocatable GPUs
