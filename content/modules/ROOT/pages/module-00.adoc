@@ -524,7 +524,7 @@ git add infra/secrets/vault-sno; git commit -m "hydrated vault with apikeys"; gi
 ----
 +
 [TIP]
-.Optional
+.Optional (but highly recommended)
 ====
 You can add a pre-commit git hook client side so that you do not check in an unencrypted AES256 secrets file. Run this after cloning forked repo to configure git hooks:
 
