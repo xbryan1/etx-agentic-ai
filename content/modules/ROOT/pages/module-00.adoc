@@ -477,33 +477,20 @@ NOTE: the instructor will provide the key
 ansible-vault decrypt infra/secrets/vault-sno
 ----
 
-. Check the gathered api tokens are set as env vars in the secrets file.
+. Check the gathered api tokens are set as env vars in the secrets file. Add your **Tavily** and **GitHub Pat** tokens to the file.
 +
 .Add API Tokens
 image::add-apikeys-secrets.png[Add API Tokens, 300]
 +
-TIP: you can create a secrets file from scratch by copying the example file provided. Only do this if you are using your own MaaS API keys.
+[TIP]
+====
+You can create a secrets file from scratch by copying the example file provided. Only do this if you are using your own MaaS API keys or do not have access to the decrypt key.
 +
 [source,bash,options="wrap",role="execute"]
 ----
 cp infra/secrets/vault-sno-example infra/secrets/vault-sno
 ----
-
-. Setup env vars
-+
-[source,bash,options="wrap",role="execute"]
-----
-export VAULT_ROUTE=vault-vault.apps.${CLUSTER_NAME}.${BASE_DOMAIN}
-export VAULT_ADDR=https://${VAULT_ROUTE}
-export VAULT_SKIP_VERIFY=true
-----
-
-. Login to Vault.
-+
-[source,bash,options="wrap",role="execute"]
-----
-vault login token=${ROOT_TOKEN}
-----
+====
 
 . Hydrate the vault by running the secrets file as a script. When prompted to enter the root token, use the $ROOT_TOKEN you exported earlier.
 +
