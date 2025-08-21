@@ -1,6 +1,6 @@
 ---
 resources:
-  - namespace.yaml
+  # - namespace.yaml
   - configmap.yaml
   - llama-stack.yaml
   - tavily-secret.yaml
