@@ -714,7 +714,7 @@ In this case - we have an output of **1** allocatable GPU:
 
 . Label the node with the **device-plugin.config** that matches the GPU instance product e.g. **NVIDIA-L40S** for this instance type.
 +
-[source,bash,options="wrap"]
+[source,bash,options="wrap",role="execute"]
 ----
 oc label --overwrite node \
     --selector=nvidia.com/gpu.product=NVIDIA-L40S \
@@ -725,7 +725,7 @@ TIP: If your instance type has different accelerators, you will need to adjust t
 
 . Now apply the https://github.com/redhat-ai-services/etx-agentic-ai/tree/main/infra/applications/gpu[GPU Cluster Policy and ConfigMap,window=_blank] objects that setup https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/gpu-sharing.html[Time Slicing,window=_blank] - a method to share nvidia gpus.
 +
-[source,bash,options="wrap"]
+[source,bash,options="wrap",role="execute"]
 ----
 oc apply -k infra/applcations/gpu
 ----
