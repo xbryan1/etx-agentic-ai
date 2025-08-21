@@ -485,7 +485,7 @@ image::add-apikeys-secrets.png[Add API Tokens, 300]
 [TIP]
 ====
 You can create a secrets file from scratch by copying the example file provided. Only do this if you are using your own MaaS API keys or do not have access to the decrypt key.
-+
+
 [source,bash,options="wrap",role="execute"]
 ----
 cp infra/secrets/vault-sno-example infra/secrets/vault-sno
