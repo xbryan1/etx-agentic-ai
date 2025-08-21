@@ -490,7 +490,7 @@ image::llama-stack-websearch-agent.png[LlamaStack Websearch Agent, 800]
 What is the weather today in Brisbane ?
 ----
 +
-Notice that the agent first Reasons - where the LLM thins about the data or tool results, Acts - where the LLM performs an action, LLM then Observes the result of the tool call, before returning the result. This is the essence of the ReAct agent pattern.
+Notice that the agent first Reasons - where the LLM thinks about the data or tool results, Acts - where the LLM performs an action, LLM then Observes the result of the tool call, before returning the result. This is the essence of the ReAct agent pattern.
 +
 image::react-agent.png[ReAct Agent, 600]
 +
