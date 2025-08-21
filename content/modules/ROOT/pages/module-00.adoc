@@ -734,7 +734,7 @@ oc apply -k infra/applications/gpu
 +
 [source,bash,options="wrap",role="execute"]
 ----
-oc get $(oc get node -o name -l beta.kubernetes.io/instance-type=g6e.2xlarge) -o=jsonpath={.status.allocatable} | | python -m json.tool
+oc get $(oc get node -o name -l beta.kubernetes.io/instance-type=g6e.2xlarge) -o=jsonpath={.status.allocatable} | python -m json.tool
 ----
 +
 This should now give an output with **8** allocatable GPUs. Great - now our data science team can see and use eight GPUs even though we only have one physical GPU.
