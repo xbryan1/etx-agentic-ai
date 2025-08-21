@@ -940,7 +940,7 @@ Use the Playground for our actual Use Case prompting (requires pipeline failure 
 
 . Query the namespace pod for a pod error; copy-paste search for solution to error logs
 +
-.. Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
+Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
 [source,bash,options="wrap",role="execute"]
 ----
 Review the OpenShift logs for the pod 'java-app-build-run-bad-7rdzn-build-pod', in the 'demo-pipeline' namespace.
@@ -950,7 +950,7 @@ image::playground-prompt-1.png[LlamaStack Traces, 800]
 +
 The agent reasoned correctly about the need to format the tool call with a container name as well
 +
-.. Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
+Try this prompt (replace the pod name for the **java-app-build-run-bad-** in your **demo-pipeline** namespace)
 [source,bash,options="wrap",role="execute"]
 ----
 Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-7rdzn-build-pod', in the 'demo-pipeline' namespace.
@@ -966,7 +966,7 @@ Supplying the container name means less agent turns, less error prone
 - Agent Type: **ReAct**
 - Tools: **mcp::openshift, websearch**
 +
-. Try this prompt (replace the pod name for the **java-app-build-run-bad-* in your **demo-pipeline** namespace)
+Try this prompt (replace the pod name for the **java-app-build-run-bad-** in your **demo-pipeline** namespace)
 [source,bash,options="wrap",role="execute"]
 ----
 Review the OpenShift logs for the container 'step-s2i-build' in pod 'java-app-build-run-bad-7rdzn-build-pod', in the 'demo-pipeline' namespace. If the logs indicate an error search for the top OpenShift solution. Create a summary message with the category and explanation of the error.
