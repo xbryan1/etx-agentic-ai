@@ -723,7 +723,7 @@ This works without any parsing errors in the playground OK
 
 === LlamaStack mcp::github
 
-The last MCP Server we need to deploy https://github.com/github/github-mcp-server[interacts with GitHub]. The configuration is very similar to MCP OpenShift.
+The last MCP Server we need to deploy https://github.com/github/github-mcp-server[interacts with GitHub,window=_blank]. The configuration is very similar to MCP OpenShift.
 
 . Rename the file https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/mcp-github.yaml.undeploy[**infra/app-of-apps/sno/mcp-github.yaml.undeploy**,window=_blank] -> https://github.com/redhat-ai-services/etx-agentic-ai/blob/main/infra/app-of-apps/sno/mcp-github.yaml[**infra/app-of-apps/sno/mcp-github.yaml**,window=_blank]
 + 
