@@ -56,21 +56,25 @@ oc login --server=https://api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 -u admin -p ${
 ----
 
 . First, expose the Llama Stack service to your Workbench via a port-forward:
-
++
 [source,bash,options="wrap",role="execute"]
 ----
 # From a Workbench Terminal
 oc project llama-stack
 oc get svc llamastack-with-config-service
-oc -n llama-stack port-forward svc/llamastack-with-config-service 8321:8321
 ----
-
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n llama-stack port-forward svc/llamastack-with-config-service 8321:8321 2>&1>/dev/null &
+----
++
 [NOTE]
 ====
 This keeps a local tunnel from your Workbench pod to the service on port 8321. Leave it running for the duration of the lab. If your Llama Stack is configured with TLS, you can still use port-forward; adjust the `LLAMA_STACK_URL` scheme to `https` accordingly.
 ====
 
-* Apply required RBAC so the MCP server can read Tekton pipeline pods in `demo-pipeline`:
+. Apply required RBAC so the MCP server can read Tekton pipeline pods in `demo-pipeline`:
 +
 [source,bash,options="wrap",role="execute"]
 ----
