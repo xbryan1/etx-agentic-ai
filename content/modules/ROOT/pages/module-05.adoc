@@ -48,6 +48,13 @@ If you use a persistent volume, your repo may already exist. Ensure it’s up to
 
 == Configure Notebook Environment (matches notebook)
 
+. Login to OpenShift if you are not already logged in
++
+[source,bash,options="wrap",role="execute"]
+----
+oc login --server=https://api.${CLUSTER_NAME}.${BASE_DOMAIN}:6443 -u admin -p ${ADMIN_PASSWORD}
+----
+
 . First, expose the Llama Stack service to your Workbench via a port-forward:
 
 [source,bash,options="wrap",role="execute"]
