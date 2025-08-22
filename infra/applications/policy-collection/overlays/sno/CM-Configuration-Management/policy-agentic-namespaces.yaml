@@ -41,3 +41,12 @@ spec:
                   labels:
                     openshift.io/cluster-monitoring: "true"
                 spec: {}
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: vllm-server
+                  labels:
+                    openshift.io/cluster-monitoring: "true"
+                spec: {}

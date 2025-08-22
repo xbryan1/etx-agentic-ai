@@ -5,5 +5,4 @@ resources:
   # - serving-granite32-8b-vllm-oci.yaml
   # - serving-granite32-vllm-oci.yaml
   # - serving-granite32-vllm.yaml
-  - namespace.yaml
   - granite-31-2b-vllm-oci.yaml
