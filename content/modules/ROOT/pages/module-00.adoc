@@ -36,14 +36,12 @@ Before diving into the agentic AI lab, we need to set up our development environ
 
 [IMPORTANT]
 ====
-**For this lab**: We'll use the automated https://github.com/redhat-ai-services/etx-agentic-ai/tree/main/infra/bootstrap[bootstrap scripts,window=_blank] to handle setup quickly so we can focus on building AI agents.
+**For this lab**: We have used automated https://github.com/rhpds/etx-llmaas-gitops[bootstrap scripts,window=_blank] to handle the setup quickly so we can focus on building AI agents.
 ====
 
 **For later exploration** (after the lab):
 
 * **Manual setup**: The step-by-step instructions below show how each component works - perfect for understanding GitOps and secret management in detail
-
-
 
 == Team Setup
 
