@@ -1,122 +1,218 @@
-= Prototyping with Tool Calling
+= From Prototype to App: Deploying the Agent as a Service
 
-== Basic Tool Calling
+[IMPORTANT]
+.In this lab
+====
+You will turn the agent you prototyped in the previous module into a running service on OpenShift. We will deploy the `ai-agent` tenant, build and expose the FastAPI app, and wire the Tekton pipeline trigger so failures send context to the agent which then creates a GitHub issue.
+====
 
-Open up the following notebook in your workspace.
+== Objectives
 
-In this notebook we will introduce how to build a simple agent using Llama Stack's agent framework, enhanced with a single tool: the builtin web search tool.
+* Deploy the `ai-agent` tenant resources
+* Point build configs to your GitHub fork
+* Build and roll out the agent service (FastAPI)
+* Verify connectivity to Llama Stack from the app
+* Wire the pipeline trigger so failures call the agent
+* Validate end-to-end by creating a GitHub issue from a failure
 
-We will cover the agent basics. This is an important step toward developing a more capable and autonomous agent.
+== Prerequisites
 
-== Prompt Chaining
+* Completed xref:module-05.adoc[Module 05] with a working agent flow in the notebook
+* Your repo fork is up to date and the cluster GitOps points to it
+* Llama Stack server reachable inside the cluster (module 04 deployment)
 
-Open up the following notebook in your workspace.
+== Deploy the ai-agent Tenant
 
-These approaches allow the agent to complete multi-step tasks, dynamically choose tools, and adjust its behavior based on context.
+* Confirm the project exists and resources are present:
++
+[source,bash,options="wrap",role="execute"]
+----
+oc get ns ai-agent
+oc -n ai-agent get deploy,svc,route,cm,sa,rb,secret
+----
 
-== ReAct
+* If resources are missing, ensure your GitOps/App-of-Apps includes the tenant. Then sync in ArgoCD.
 
-Open up the following notebook in your workspace.
+== Point to Your GitHub Fork and Correct the Webhook Path
 
-= Prototyping with MCP
+By default the tenant and Helm chart reference `redhat-ai-services/etx-agentic-ai` and post to `/webhook`, while the FastAPI app exposes `/report-failure`.
 
-Open up the following notebook in your workspace.
+* Set your GitHub username:
++
+[source,bash,options="wrap",role="execute"]
+----
+export YOUR_GITHUB_USER=your-gh-user
+export YOUR_FORK=https://github.com/${YOUR_GITHUB_USER}/etx-agentic-ai.git
+----
 
-This notebook is for developers who are already familiar with basic agent workflows. Here, we will highlight more advanced use cases for agents where a single tool call is insufficient to complete the required task.
+* Update the tenant Tekton Pipeline to use your fork and the correct endpoint:
++
+[source,bash,options="wrap",role="execute"]
+----
+sed -i "s#https://github.com/redhat-ai-services/etx-agentic-ai.git#${YOUR_FORK}#g" \
+  infra/tenants/ai-agent/base/sno/templates/pipeline.yaml
 
-We will also use https://github.com/modelcontextprotocol/servers[MCP tools] (which can be deployed onto an OpenShift cluster) throughout this demo to show users how to extend their agents beyond Llama Stacks's current builtin tools and connect to many different services and data sources to build their own custom agents.
+# Use the app's actual endpoint
+sed -i "s#/webhook#/report-failure#g" \
+  infra/tenants/ai-agent/base/sno/templates/pipeline.yaml
+----
 
+* Update the Job that triggers a PipelineRun so it also uses your fork:
++
+[source,bash,options="wrap",role="execute"]
+----
+sed -i "s#https://github.com/redhat-ai-services/etx-agentic-ai.git#${YOUR_FORK}#g" \
+  infra/tenants/ai-agent/base/sno/templates/job.yaml
+----
 
-// lightbox - for images - FIXME need to make the include::partial$lightbox.hbs WORK
-++++
-<div id="myModal" class="modal">
-    <span class="close cursor" onclick="closeModal()">&times;</span>
-    <div class="modal-content" onclick="closeModal()">
-        <!--suppress HtmlRequiredAltAttribute as this will be set when selecting the image via JavaScript,
-        RequiredAttributes as src will be set by when selecting the image via JavaScript -->
-        <img id="imageinmodal">
-    </div>
-</div>
-<script>
-    function openModal() {
-        document.getElementById("myModal").style.display = "block";
-        // use overflowY = hidden to prevent the body from scrolling when modal is visible
-        // doesn't work with overscroll-behavior, as this would work only when the modal has a scrollbar
-        document.getElementsByTagName("body")[0].style.overflowY = "hidden";
-    }
+* (Optional, if using the Helm chart locally) Update the chart defaults:
++
+[source,bash,options="wrap",role="execute"]
+----
+sed -i "s#https://github.com/redhat-ai-services/etx-agentic-ai.git#${YOUR_FORK}#g" code/chart/values.yaml
+sed -i "s#/webhook#/report-failure#g" code/chart/values.yaml
+----
 
-    function closeModal() {
-        document.getElementById("myModal").style.display = "none";
-        document.getElementsByTagName("body")[0].style.overflowY = "auto";
-    }
+* Commit and push changes so GitOps applies them:
++
+[source,bash,options="wrap",role="execute"]
+----
+git add .
+git commit -m "tenant(ai-agent): use my fork and correct webhook endpoint"
+git push
+----
 
-    document.querySelectorAll('.imageblock img').forEach(element => {
-        if (element.closest('a') === null) {
-            element.className += " lightbox";
-            element.addEventListener('click', evt => {
-                document.getElementById("imageinmodal").setAttribute("src", evt.currentTarget.getAttribute("src"))
-                document.getElementById("imageinmodal").setAttribute("alt", evt.currentTarget.getAttribute("alt"))
-                openModal();
-            })
-        }
-    });
-</script>
-<style>
-    /* The Modal (background) */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 10;
-        padding-top: 5vh;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        backdrop-filter: blur(3px);
-        background-color: rgba(30, 30, 30, 0.8);
-    }
-    img.lightbox {
-        cursor: pointer;
-    }
-    /* Modal Content */
-    .modal-content {
-        position: relative;
-        margin: auto;
-        padding: 0;
-        width: 90%;
-        max-height: 90vh;
-        cursor: pointer;
-    }
+== Ensure Secrets and Config
 
-    .modal-content img {
-        width: auto;
-        height: auto;
-        max-width: 90vw;
-        max-height: 90vh;
-        min-width: 90vw;
-        min-height: 90vh;
-        display: block;
-        margin-right: auto;
-        margin-left: auto;
-        object-fit: contain;
-    }
+* Verify `agent-config` points to your Llama Stack service. Defaults to the in-cluster service:
++
+`infra/tenants/ai-agent/base/sno/templates/configmap.yaml`
++
+[source,yaml]
+----
+data:
+  LLAMA_STACK_URL: "http://llamastack-with-config-service.llama-stack.svc.cluster.local:8321"
+  MODEL_ID: "llama-4-scout-17b-16e-w4a16"
+  TEMPERATURE: "0.0"
+  MAX_TOKENS: "5000"
+----
 
-    /* The Close Button */
-    .close {
-        color: white;
-        position: absolute;
-        top: 10px;
-        right: 25px;
-        font-size: 35px;
-        font-weight: bold;
-    }
+* If needed for your Llama Stack config, hydrate any missing secrets (GitHub, Tavily) as per module 04/05.
 
-    .close:hover,
-    .close:focus {
-        color: #999;
-        text-decoration: none;
-        cursor: pointer;
-    }
-</style>
-++++
+== Build and Roll Out the App
+
+* Trigger the build PipelineRun via the provided Job (creates a new run):
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n ai-agent create -f infra/tenants/ai-agent/base/sno/templates/job.yaml
+----
+
+* Watch the PipelineRun in the OpenShift Console (Pipelines) until tasks complete.
+
+* Verify the Deployment rolls out:
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n ai-agent rollout status deploy/ai-agent
+oc -n ai-agent get pods
+----
+
+* Get the route and test health:
++
+[source,bash,options="wrap",role="execute"]
+----
+ROUTE=$(oc -n ai-agent get route ai-agent -o jsonpath='{.spec.host}')
+curl -s http://${ROUTE}/health | cat
+----
+
+== Understanding the Pipeline and DORA Metrics (MTTR)
+
+This demo application pipeline models a common CI/CD flow and adds an automated recovery aid:
+
+* Fetch source: `git-clone` pulls your repo and revision
+* Build image: `buildah` builds and pushes the container image
+* Deploy: `oc rollout status` verifies the deployment
+* Finally: On failure, a `finally` step triggers the agent service with pod context
+
+[TIP]
+====
+Why this matters: DORA metrics
+
+* Deployment Frequency: how often you ship
+* Lead Time for Changes: time from commit to production
+* Change Failure Rate: % of changes that cause incidents
+* Mean Time to Recovery (MTTR): time to restore service after a failure
+
+This lab scenario focuses on making a good team better by lowering MTTR. To do this we added a `finally` step that automatically notifies the agent with failure context (pod name, namespace, container), which then analyzes logs, searches for a fix, and opens a GitHub issue. Automating triage shortens the time from failure detection to actionable remediation. As we remediate failures more quickly, we can ship more often and get to production faster. This is but one example of how we can become a high performing team.
+====
+
+== Wire the Pipeline Trigger
+
+The Tekton `agent-service-build` Pipeline includes a `finally` step that posts a failure payload to the agent service.
+
+* Confirm the `finally` step now points to `/report-failure` and `namespace: ai-agent` in:
++
+`infra/tenants/ai-agent/base/sno/templates/pipeline.yaml`
+
+* Ensure the `ai-agent` service account/rolebinding exist in the `ai-agent` namespace:
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n ai-agent get sa pipeline
+oc -n ai-agent get rolebinding openshift-pipelines-edit
+----
+
+== End-to-End Test
+
+To simulate a build failure and test the agent integration, use the pre-configured `bad` revision of the application. You can trigger this in one of two ways:
+
+*Option 1: CLI*
+
+Run the following command to start a PipelineRun using the `bad` ref:
+
+[source,bash,options="wrap",role="execute"]
+----
+oc -n ai-agent create -f infra/tenants/ai-agent/base/sno/templates/job-bad.yaml
+----
+
+*Option 2: Web Console*
+
+1. In the OpenShift Web Console, navigate to **Pipelines** in the `ai-agent` namespace.
+2. Click on the `agent-service-build` pipeline.
+3. Click **Start** to create a new PipelineRun.
+4. In the parameters, set the `ref` (or `GIT_REF`) value to `bad` to use the intentionally broken revision.
+5. Start the PipelineRun.
+
+image::pipeline-bad-revision.png[Example: Starting a pipeline run with the bad revision, 700]
+
+* Intentionally break the build (e.g., temporarily change `code/Containerfile` to an invalid base) and trigger a build:
++
+[source,bash,options="wrap",role="execute"]
+----
+oc -n ai-agent create -f infra/tenants/ai-agent/base/sno/templates/job.yaml
+----
+
+* When the PipelineRun fails, the `finally` step calls the agent. The agent reads logs via MCP OpenShift, searches the web, and creates a GitHub issue.
+
+* Verify:
+** Console → `ai-agent` → Workloads → Pods show agent logs with tool calls
+** Your GitHub repo shows a new issue with the summary
+
+== Troubleshooting
+
+* If the PipelineRun cannot reach the agent route, verify the Route/Service are ready and DNS resolves in-cluster.
+* If the agent times out on Llama Stack, confirm the server is healthy and reachable from the `ai-agent` namespace.
+* If MCP tools are not registered, revisit module 04 to re-register `mcp::openshift` and `mcp::github` in Llama Stack.
+* If no GitHub issue is created, check the agent logs for the tool call to `create_issue` and ensure the GitHub MCP server is configured.
+
+== What’s Next
+
+With the agent running as a service and integrated with the pipeline trigger, you have the foundation for a production rollout. You are now setup for a scenario where you have a new ticket coming in and you need to update your agent and your MTTR is fast due to the automation. Perhaps you are event adventurous enough to add the agent tooling itself as a `finally` call in your agent build pipeline to catch and resolve errors quickly. We will not be doing that today, so that will be left to the reader, but in the next module, we will discuss hardening, observability, and promotion flows.
+== Next Steps
+
+With your agent now running as a service and integrated with the pipeline trigger, you have established the foundation for a production-ready workflow. This setup enables rapid response to failures, as new issues are automatically created in your GitHub repository, reducing mean time to resolution (MTTR).
+
+In the next module, you will learn how to further harden your deployment, add observability, and implement promotion flows to ensure your agent remains robust and reliable as you move toward production.
+
+Onward to Module 07!

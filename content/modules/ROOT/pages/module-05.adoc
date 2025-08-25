@@ -6,6 +6,15 @@
 You will open an OpenShift AI Workbench, carry over decisions and artifacts from the Llama Stack Playground work in xref:module-04.adoc[the previous module], then iteratively step through `notebooks/agent-prototyping.ipynb` to codify a working agentic flow. The lab ends by creating a GitHub issue in your repository from the agent’s final output. The following lesson will take this prototype to production.
 ====
 
+[TIP]
+====
+Why this matters (DORA and MTTR)
+
+* DORA metrics are industry-standard measures of software delivery performance used to identify high performing teams: Deployment Frequency, Lead Time for Changes, Change Failure Rate, and Mean Time to Recovery (MTTR). See `https://dora.dev` for background.
+* MTTR is the average time it takes to restore service after a failure. Lower MTTR means faster recovery and less downtime.
+* In this module you’ll codify your agent so it can consistently triage failures and create an actionable GitHub issue. In xref:module-06.adoc[Module 06], we’ll wire this into the pipeline’s finally step so failures automatically trigger the agent—helping drive down MTTR.
+====
+
 == Prerequisites
 
 * Completed xref:module-00.adoc[environment setup] (cluster access, repo fork, tokens)
