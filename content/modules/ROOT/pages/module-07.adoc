@@ -1,4 +1,39 @@
-= Agent Evaluation
+= Evaluation and Observability
+
+[IMPORTANT]
+.In this module
+====
+Learn a practical, high-level flow to combine agent evaluation with observability so you can measure, understand, and improve behavior over time.
+====
+
+[NOTE]
+====
+Estimated time: 15-20 minutes
+====
+
+== What you'll do...stretch goals!
+
+* Plan evaluation scenarios and acceptance criteria
+* Run evaluations and capture outputs, tool calls, and reasoning traces
+* Instrument the service to emit logs/metrics/traces that align to evaluation steps
+* Add guardrails/safety toggles and observe impact in both eval results and signals
+* Establish dashboards/alerts to continuously monitor the same signals
+
+== Flow overview
+
+1. Define what “good” looks like for your agent (correctness, stability, latency, tool success)
+2. Evaluate with representative prompts/tasks; record outputs and intermediate steps
+3. Observe service-level signals (logs, metrics, traces) during the same runs
+4. Compare results against criteria; identify where behavior or performance falls short
+5. Tweak prompts, tools, or guardrails; re-run to verify improvements
+6. Keep dashboards and alerts keyed to the same signals used in evaluation
+
+== Success criteria
+
+* The agent produces consistent answers across N repeated runs for a fixed prompt (tolerance defined by your team)
+* Tool-call failures/timeouts trend downward after guardrail/safety changes
+* Latency and error rates meet targets; traces show fewer retries and faster resolutions
+* Approximate MTTR improvement: measure time from failure detection to GitHub issue creation before and after the finally step
 
 Open up the following notebook in your workspace.
 

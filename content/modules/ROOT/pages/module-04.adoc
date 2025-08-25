@@ -8,6 +8,18 @@ We are going to build out the LlamaStack server configuration from the ground up
 In the final section we will use the playground to develop our Use Case specific prompts.
 ====
 
+[NOTE]
+====
+Estimated time: 60–90 minutes
+====
+
+== What you'll do
+
+* Deploy Llama Stack and Playground
+* Register builtin/MCP tools
+* Develop and refine prompts in Playground
+* Capture configuration and decisions for later modules
+
 == Create an LLM
 
 It is nice to have a small LLM available locally to validate the default deployment of LlamaStack. We can test in an isolated fashion our configuration.
@@ -1180,3 +1192,11 @@ And the GitHub issue successfully created 🏆
     }
 </style>
 ++++
+
+== Artifacts to carry forward
+
+* Selected model and endpoint details (Playground URL, model id)
+* Finalized system prompt and example user prompts used in Playground
+* Tooling decisions (builtin websearch enabled, MCP servers registered)
+* Any safety/guardrail parameters you validated
+* Notes/screenshots of successful Playground runs

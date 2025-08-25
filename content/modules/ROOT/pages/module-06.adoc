@@ -6,6 +6,11 @@
 You will turn the agent you prototyped in the previous module into a running service on OpenShift. We will deploy the `ai-agent` tenant, build and expose the FastAPI app, and wire the Tekton pipeline trigger so failures send context to the agent which then creates a GitHub issue.
 ====
 
+[NOTE]
+====
+Estimated time: 60–90 minutes
+====
+
 == Objectives
 
 * Deploy the `ai-agent` tenant resources
@@ -126,7 +131,16 @@ ROUTE=$(oc -n ai-agent get route ai-agent -o jsonpath='{.spec.host}')
 curl -s http://${ROUTE}/health | cat
 ----
 
-== Understanding the Pipeline and DORA Metrics (MTTR)
+[TIP]
+====
+Reset/retry tips:
+
+* If `pip install` upgraded dependencies earlier, restart the Jupyter kernel before re-running notebook cells (module 05)
+* Stop previous port-forward (`Ctrl+C`) before starting a new one
+* If a PipelineRun is stuck, cancel and start a fresh run; ensure Workspace PVC is recreated when using `generateName`
+====
+
+== Pipeline overview
 
 This demo application pipeline models a common CI/CD flow and adds an automated recovery aid:
 
@@ -135,17 +149,7 @@ This demo application pipeline models a common CI/CD flow and adds an automated 
 * Deploy: `oc rollout status` verifies the deployment
 * Finally: On failure, a `finally` step triggers the agent service with pod context
 
-[TIP]
-====
-Why this matters: DORA metrics
-
-* Deployment Frequency: how often you ship
-* Lead Time for Changes: time from commit to production
-* Change Failure Rate: % of changes that cause incidents
-* Mean Time to Recovery (MTTR): time to restore service after a failure
-
-This lab scenario focuses on making a good team better by lowering MTTR. To do this we added a `finally` step that automatically notifies the agent with failure context (pod name, namespace, container), which then analyzes logs, searches for a fix, and opens a GitHub issue. Automating triage shortens the time from failure detection to actionable remediation. As we remediate failures more quickly, we can ship more often and get to production faster. This is but one example of how we can become a high performing team.
-====
+Coming from xref:module-05.adoc[Module 05]: You codified the agent and validated the flow in a Workbench. Here we connect that flow to your pipeline so failures automatically notify the agent.
 
 == Wire the Pipeline Trigger
 
@@ -165,26 +169,65 @@ oc -n ai-agent get rolebinding openshift-pipelines-edit
 
 == End-to-End Test
 
-To simulate a build failure and test the agent integration, use the pre-configured `bad` revision of the application. You can trigger this in one of two ways:
+To simulate a build failure and test the agent integration, use the pre-configured `bad` revision.
 
-*Option 1: CLI*
-
-Run the following command to start a PipelineRun using the `bad` ref:
-
-[source,bash,options="wrap",role="execute"]
-----
-oc -n ai-agent create -f infra/tenants/ai-agent/base/sno/templates/job-bad.yaml
-----
-
-*Option 2: Web Console*
+*Option 1: Web Console*
 
 1. In the OpenShift Web Console, navigate to **Pipelines** in the `ai-agent` namespace.
 2. Click on the `agent-service-build` pipeline.
 3. Click **Start** to create a new PipelineRun.
-4. In the parameters, set the `ref` (or `GIT_REF`) value to `bad` to use the intentionally broken revision.
+4. In the parameters, set the `GIT_REVISION` value to `bad` to use the intentionally broken revision.
 5. Start the PipelineRun.
 
-image::pipeline-bad-revision.png[Example: Starting a pipeline run with the bad revision, 700]
+*Option 2: Run a pre-created Job*
+
+From the console, create a job from YAML using the `infra/tenants/demo-pipeline/base/sno/templates/job-bad.yaml` as a reference, or run via CLI:
+
+[source,bash,options="wrap",role="execute"]
+----
+oc -n demo-pipeline create -f infra/tenants/demo-pipeline/base/sno/templates/job-bad.yaml
+----
+
+Feel free to use the web console or CLI to trigger the job.
+
+*Option 3: One-off PipelineRun via CLI*
+
+Start a one-off PipelineRun with the `bad` ref:
+
+[source,bash,options="wrap",role="execute"]
+----
+oc -n ai-agent create -f - <<'EOF'
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: agent-service-build-run-bad-
+  namespace: ai-agent
+spec:
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  pipelineRef:
+    name: agent-service-build
+  params:
+    - name: APP_NAME
+      value: "ai-agent"
+    - name: IMAGE_NAME
+      value: "image-registry.openshift-image-registry.svc:5000/ai-agent/ai-agent"
+    - name: GIT_REPO
+      value: "https://github.com/${YOUR_GITHUB_USER}/etx-agentic-ai.git"
+    - name: GIT_REVISION
+      value: "bad"
+    - name: PATH_CONTEXT
+      value: "code"
+  workspaces:
+    - name: workspace
+      volumeClaimTemplate:
+        spec:
+          accessModes: [ "ReadWriteOnce" ]
+          resources:
+            requests:
+              storage: 3Gi
+EOF
+----
 
 * Intentionally break the build (e.g., temporarily change `code/Containerfile` to an invalid base) and trigger a build:
 +
@@ -199,12 +242,24 @@ oc -n ai-agent create -f infra/tenants/ai-agent/base/sno/templates/job.yaml
 ** Console → `ai-agent` → Workloads → Pods show agent logs with tool calls
 ** Your GitHub repo shows a new issue with the summary
 
+== Artifacts to carry forward
+
+* Route URL for `ai-agent` (health verified)
+* Updated tenant pipeline/job YAML pointing to your fork
+* A sample failed PipelineRun name and failing pod name
+* URL of the created GitHub issue
+
 == Troubleshooting
 
 * If the PipelineRun cannot reach the agent route, verify the Route/Service are ready and DNS resolves in-cluster.
 * If the agent times out on Llama Stack, confirm the server is healthy and reachable from the `ai-agent` namespace.
 * If MCP tools are not registered, revisit module 04 to re-register `mcp::openshift` and `mcp::github` in Llama Stack.
 * If no GitHub issue is created, check the agent logs for the tool call to `create_issue` and ensure the GitHub MCP server is configured.
+
+[TIP]
+====
+See xref:troubleshooting.adoc[Troubleshooting Guide] for more.
+====
 
 == What’s Next
 

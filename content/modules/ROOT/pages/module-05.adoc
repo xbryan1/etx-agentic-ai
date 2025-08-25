@@ -6,13 +6,9 @@
 You will open an OpenShift AI Workbench, carry over decisions and artifacts from the Llama Stack Playground work in xref:module-04.adoc[the previous module], then iteratively step through `notebooks/agent-prototyping.ipynb` to codify a working agentic flow. The lab ends by creating a GitHub issue in your repository from the agent’s final output. The following lesson will take this prototype to production.
 ====
 
-[TIP]
+[NOTE]
 ====
-Why this matters (DORA and MTTR)
-
-* DORA metrics are industry-standard measures of software delivery performance used to identify high performing teams: Deployment Frequency, Lead Time for Changes, Change Failure Rate, and Mean Time to Recovery (MTTR). See `https://dora.dev` for background.
-* MTTR is the average time it takes to restore service after a failure. Lower MTTR means faster recovery and less downtime.
-* In this module you’ll codify your agent so it can consistently triage failures and create an actionable GitHub issue. In xref:module-06.adoc[Module 06], we’ll wire this into the pipeline’s finally step so failures automatically trigger the agent—helping drive down MTTR.
+Estimated time: 60–90 minutes
 ====
 
 == Prerequisites
@@ -30,6 +26,11 @@ Have these ready from your Playground session:
 * Any tool choices (e.g., web search/Tavily) and API keys
 * Parameters you validated
 ====
+
+.Security reminders
+* Keep PAT scopes minimal; store tokens securely
+* Do not commit secrets or tokens to notebooks or repo; use pre-commit hooks to check for secrets
+* Prefer Vault-managed secrets where possible
 
 == Open an OpenShift AI Workbench
 
@@ -81,6 +82,14 @@ oc -n llama-stack port-forward svc/llamastack-with-config-service 8321:8321 2>&1
 [NOTE]
 ====
 This keeps a local tunnel from your Workbench pod to the service on port 8321. Leave it running for the duration of the lab. If your Llama Stack is configured with TLS, you can still use port-forward; adjust the `LLAMA_STACK_URL` scheme to `https` accordingly.
+====
+
+[TIP]
+====
+Reset/retry tips:
+
+* If `! pip install -qr requirements.txt` upgrades dependencies, restart the Jupyter kernel
+* Stop any existing port-forward (`Ctrl+C`) before starting a new one
 ====
 
 . Apply required RBAC so the MCP server can read Tekton pipeline pods in `demo-pipeline`:
@@ -218,12 +227,24 @@ image::github-issue-created.png[Example of a GitHub issue created by the agent�
 
 The full MCP-based ReAct run should create the issue automatically via the GitHub MCP server. Capture the URL from the streamed logs or agent output and record it in your lab notes.
 
+[TIP]
+====
+If something doesn’t work, see xref:troubleshooting.adoc[Troubleshooting Guide].
+====
+
 == Validation Checklist
 
 * Workbench server is running; repo is up to date
 * Notebook executed end-to-end with no unresolved errors
 * `artifacts/agent_run_report.json` exists and summarizes the run
 * GitHub issue created; URL recorded
+
+== Artifacts to carry forward
+
+* `notebooks/env` values used (LLAMA_STACK_URL, LLM_MODEL_ID, TEMPERATURE, MAX_TOKENS)
+* The final agent prompt and tool choices (builtin::websearch, mcp::openshift, mcp::github)
+* `artifacts/agent_run_report.json` (if created)
+* URL of the created GitHub issue
 
 == Commit Your Work
 

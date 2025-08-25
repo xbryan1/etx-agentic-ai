@@ -1,16 +1,34 @@
 = Initial Exploration
 
+[IMPORTANT]
+.In this module
+====
+Get hands-on with the platform: create an OpenShift AI Workbench, connect to the repo, and open your first notebook so you’re ready for later labs.
+====
+
+[NOTE]
+====
+Estimated time: 20–30 minutes
+====
+
+== What you'll do
+
+* Use Console Links to navigate
+* Create a GPU-enabled Workbench
+* Clone the lab repo into your Workbench
+* Open and run the getting started notebook
+
 == Getting Started
 
 === Explore the environment
 
 Use the OpenShift Console Links to quickly navigate around the environment.
 
-- RHOAI
-- LLamaStack Playground
-- OpenShift
-- ACM
-- ArgoCD
+* RHOAI
+* LLamaStack Playground
+* OpenShift
+* ACM
+* ArgoCD
 
 image::console-links.png[Console Links, 300]
 

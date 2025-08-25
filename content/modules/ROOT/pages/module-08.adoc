@@ -1,6 +1,29 @@
-= Rolling out the Agent
+= Production Hardening and Promotion (Optional)
 
-Deploy the full agent
+[NOTE]
+====
+Estimated time: 45–60 minutes (Optional)
+====
+
+== Before you begin
+
+Make sure the following are completed from earlier modules:
+
+* Cluster is bootstrapped and healthy (OpenShift GitOps and Agentic ArgoCD reachable)
+* Vault is initialized, unsealed, and you exported `ROOT_TOKEN` and `UNSEAL_KEY`
+* Secrets have been hydrated into Vault (Agentic ArgoCD showing healthy secret integration)
+* Your fork is configured with PAT and webhook to ArgoCD
+* Tools installed: `oc`, `vault`, `jq`, `envsubst`, `python3`
+* Optional: If using MaaS, export the `MODEL_*` environment variables
+
+== What you'll do...stretch goals!
+
+* Add observability (logs/metrics/traces), readiness/liveness/startup probes
+* Apply configuration policies and security posture (image signing, NetworkPolicies, Secrets)
+* Define promotion flows (dev→stage→prod), environment parity checks, and rollback strategy
+* Introduce safer rollouts (blue/green or canary), capacity planning, and autoscaling
+
+== Deploy the hardening and promotion assets
 
 
 // lightbox - for images - FIXME need to make the include::partial$lightbox.hbs WORK

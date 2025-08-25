@@ -1,5 +1,17 @@
 = Lab Setup and Prerequisites
 
+[NOTE]
+====
+Estimated time: 60–90 minutes
+====
+
+== What you'll do
+
+* Verify cluster access and bootstrap GitOps
+* Initialize Vault and hydrate secrets
+* Fork the repo, set PATs and webhooks
+* Ensure Console Links and core apps are healthy
+
 == Prerequisites
 
 Before starting this lab, ensure you have the following:
@@ -9,6 +21,9 @@ Before starting this lab, ensure you have the following:
 * **Git CLI**: Installed and configured on your local machine
 * **OpenShift CLI (oc)**: Download from https://mirror.openshift.com/pub/openshift-v4/clients/ocp/[OpenShift client downloads,window=_blank]
 * **HashiCorp Vault CLI**: Download from https://developer.hashicorp.com/vault/install[Vault installation guide,window=_blank]
+* **jq**: Command-line JSON processor for parsing command outputs
+* **Python 3**: Provides `json.tool` for pretty-printing JSON
+* **envsubst (gettext)**: For environment variable substitution in manifests
 * **Terminal/Command Line**: Bash shell with basic utilities (openssl, curl)
 * **Ansible Vault**: Part of Ansible toolkit for secret management
 * **Web Browser**: For accessing OpenShift console, MaaS portal, and documentation
@@ -113,39 +128,41 @@ These foundational components are deployed first to establish the platform's ope
 * **ArgoCD**: Declarative, Git-driven application deployments
 * **HashiCorp Vault**: Secure credential storage and automated secret injection
 
-=== Security & Governance
-Built on the bootstrap foundation, these components enforce enterprise policies:
+=== Security, Governance, and Delivery (ArgoCD + Policy as Code)
+Built on the bootstrap foundation, we combine continuous delivery with continuous compliance:
 
 [IMPORTANT]
-.Policy as Code
+.Why both exist in this repo
 ====
-**Everything is managed through automated policy enforcement:**
+* **ArgoCD (delivery)** deploys the capabilities that teams need (Llama Stack, MCP tools, agent services, pipelines) from Git
+* **Policy as Code (governance)** enforces the rules those capabilities must follow (security, sources, sizes, hygiene)
 
-* **Zero Configuration Drift**: What's in Git is exactly what runs in production
-* **Automated Compliance**: Policies are enforced automatically, not through manual reviews
-* **Scalable Governance**: Manage hundreds of clusters with the same effort as one
-* **Declarative Security**: Security policies are versioned, tested, and automatically applied
+What policies can assert here:
 
-**How this differs from standard GitOps**: While traditional GitOps deploys applications, Policy as Code deploys and enforces the _rules_ that govern how applications can behave, what resources they can access, and how they must be configured. The policies themselves are GitOps-managed, creating a "governance layer" above your applications.
+* **Model source allowlists**: only approved providers/endpoints (legal/commercial constraints)
+* **Model size limits**: keep parameter/VRAM footprint within cost/perf targets
+* **Image/registry restrictions**: approved registries and signed images
+* **Resource hygiene**: every Pod declares requests/limits; GPU workloads use time-slicing/quotas
+* **Secret handling**: Vault or external secret injection; no plaintext k8s secrets
+* **Network posture**: NetworkPolicies limiting egress to approved services (e.g., Llama Stack, GitHub MCP)
 
-**Green from GO** ✅: We start compliant from day one. Rather than building systems and retrofitting security and compliance later, our development environment mirrors production with all policies active from the beginning. This means teams learn to work within enterprise guardrails naturally.
+This pairing yields:
 
-This approach ensures software quality, security, and consistency at enterprise scale.
+* **Zero Configuration Drift**: what's in Git is what runs (ArgoCD)
+* **Automated Compliance**: guardrails are applied continuously (policies)
+* **Green from GO**: start compliant; learn inside enterprise guardrails from day one
 
-You can read more about Configuration Policies here.
+NOTE: Policy as Code is not strictly required to complete this lab. It is, however, a highly useful paradigm—and in some environments or delivery workflows it is required—so we model it here to reflect real-world practices.
 
-- https://open-cluster-management.io/docs/getting-started/integration/policy-controllers/policy/[Policy API Concepts,window=_blank]
-- https://github.com/open-cluster-management-io/policy-collection[Policy Collection,window=_blank]
-- https://github.com/open-cluster-management-io/policy-generator-plugin[Policy Generator,window=_blank]
+Learn more:
 
+* https://open-cluster-management.io/docs/getting-started/integration/policy-controllers/policy/[Policy API Concepts,window=_blank]
+* https://github.com/open-cluster-management-io/policy-collection[Policy Collection,window=_blank]
+* https://github.com/open-cluster-management-io/policy-generator-plugin[Policy Generator,window=_blank]
 ====
 
 .Policy as Code using GitOps and ACM
 image::policy-as-code.png[Policy as Code, 600]
-
-* **Policy Enforcement**: ACM automatically applies and monitors compliance across all workloads in all clusters (particularly useful for large-scale multi-cluster environments)
-* **Observability Stack**: Comprehensive monitoring, logging, and tracing for security insights
-* **GPU Resource Management**: Node Feature Discovery (NFD) for specialized compute allocation
 
 === Developer Platform Services
 Self-service capabilities that enable development teams:
