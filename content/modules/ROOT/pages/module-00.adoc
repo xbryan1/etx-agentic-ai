@@ -224,13 +224,17 @@ Specialized services for AI/ML workloads and agentic applications:
 
 As a Team, you need to do each of these Prerequisites.
 
-. Choose a client to bootstrap from. It could be:
-*** Your https://www.dell.com/en-au/shop/dell-laptops/xps-16-laptop/spd/xps-16-9640-laptop[Laptop,window=_blank] or a https://docs.fedoraproject.org/en-US/fedora-silverblue/toolbox[Toolbx,window=_blank] or a https://docs.fedoraproject.org/en-US/docs/[Fedora like jumphost,window=_blank] or a https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Workbench Terminal,window=_blank] that can access your cluster and the internet
+. We **Recommend** using the **Quick Starts** initially, then your laptop after the initial setup.
+
+. You may choose another client to bootstrap from (not recommended **especially** if you are on **MacOSX** which is not fully tested). It could be:
+** Your https://www.dell.com/en-au/shop/dell-laptops/xps-16-laptop/spd/xps-16-9640-laptop[Laptop,window=_blank] or a https://docs.fedoraproject.org/en-US/fedora-silverblue/toolbox[Toolbx,window=_blank] or a https://docs.fedoraproject.org/en-US/docs/[Fedora like jumphost,window=_blank] or a https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Workbench Terminal,window=_blank] that can access your cluster and the internet
 ** Your bootstrap client must have a https://packages.fedoraproject.org/pkgs/bash/bash/[bash,window=_blank] shell with https://packages.fedoraproject.org/pkgs/openssl/openssl/[openssl,window=_blank], https://docs.ansible.com/ansible/2.9/cli/ansible-vault.html#ansible-vault[ansible-vault,window=_blank] installed
 ** Download and https://developer.hashicorp.com/vault/install[Install the Hashi Vault Client binary,window=_blank]
 ** Login to your OpenShift cluster using the https://mirror.openshift.com/pub/openshift-v4/clients/ocp/[OpenShift client,window=_blank] as the cluster-admin user
 
 . Setup env vars and login to OpenShift
++
+TIP: Covered in a Quick Start
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -287,6 +291,8 @@ export MODEL_EMBED_NAME=/mnt/models
 ====
 
 === Vault Setup for GitOps
+
+TIP: Covered in a Quick Start
 
 We need to setup vault for your environment.
 
@@ -497,6 +503,8 @@ image::github-webhook.png[GitHub Webhook, 400]
 . Done ✅
 
 === The Secrets File
+
+TIP: Covered in a Quick Start
 
 [IMPORTANT]
 .Why Do This
