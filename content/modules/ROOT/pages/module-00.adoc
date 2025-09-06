@@ -77,7 +77,9 @@ image::etx-quick-starts.png[ETX Quick Starts, 800]
 .ETX 1 The Basics
 image::etx-quick-starts2.png[ETX 1 The Basics, 800]
 
-. Continue with the ETX Quick Starts and follow the documentation at the same time. We will point out in the docs if they are covered in a **Quick Start**.
+. Continue with the ETX Quick Starts and follow the documentation at the same time. We will point out in the docs if a step or section is covered in a **Quick Start** using a **TIP**
++
+TIP: Covered in a Quick Start
 
 . Done ✅
 
