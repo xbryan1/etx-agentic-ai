@@ -66,19 +66,19 @@ Before diving into the agentic AI lab, we need to set up our development environ
 You can browse to the Quick Starts in OpenShift Web Console > Help **?** > QuickStarts - then search for **etx**
 +
 .ETX Quick Starts
-image:etx-quick-starts.png[ETX Quick Starts, 800]
+image::etx-quick-starts.png[ETX Quick Starts, 800]
 
 . Select the first one **ETX -1- The Basics** and then Click **Step 1 - Set your shell**
 
 . Next Select **Run in Web Terminal** play button. The **Initialize Terminal** screen should appear in the bottom half of your browser.
-+
+
 . Select **Start** to run the terminal
 +
 .ETX 1 The Basics
-image:etx-quick-starts2.png[ETX 1 The Basics, 800]
-+
-. Continue with all the ETX Quick Starts. We will point out in the docs if they are covered in a **Quick Start**.
-+
+image::etx-quick-starts2.png[ETX 1 The Basics, 800]
+
+. Continue with the ETX Quick Starts and follow the documentation at the same time. We will point out in the docs if they are covered in a **Quick Start**.
+
 . Done ✅
 
 == Team Setup
