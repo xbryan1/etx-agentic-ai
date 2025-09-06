@@ -39,17 +39,17 @@ spec:
 
         1. Use the values of the **Unseal Key 1** and **Initial Root Token** and store them in the .bashrc file. You should also copy these safely outside of the cluster.
 
-        1. Set the Unseal Key with the value
+        1. Set the Unseal Key with the value.
         ```
-         echo export UNSEAL_KEY=**Unseal Key 1** | tee -a ~/.bashrc
+         echo export UNSEAL_KEY="Unseal Key 1" | tee -a ~/.bashrc
         ```{{execute}}
 
-        1. Set the Root Token with the value
+        1. Set the Root Token with the value.
         ```
-         echo export ROOT_TOKEN=${ROOT_TOKEN} | tee -a ~/.bashrc
+         echo export ROOT_TOKEN="Root Token" | tee -a ~/.bashrc
         ```{{execute}}
 
-        1. Check
+        1. Check.
         ```
          source ~/.bashrc
          echo ${UNSEAL_KEY}
