@@ -744,7 +744,7 @@ openshift-machine-api   ocp-kt5tz-worker-us-east-2c-z9xzs       Running   m6a.4x
 +
 [source,bash,options="wrap",role="execute"]
 ----
-oc get $(oc get node -o name -l beta.kubernetes.io/instance-type=g6e.2xlarge) -o=jsonpath={.status.allocatable} | python -m json.tool
+oc get $(oc get node -o name -l beta.kubernetes.io/instance-type=g6e.2xlarge) -o=jsonpath={.status.allocatable} | python3 -m json.tool
 ----
 +
 In this case - we have an output of **1** allocatable GPU:
@@ -784,7 +784,7 @@ oc apply -k infra/applications/gpu
 +
 [source,bash,options="wrap",role="execute"]
 ----
-oc get $(oc get node -o name -l beta.kubernetes.io/instance-type=g6e.2xlarge) -o=jsonpath={.status.allocatable} | python -m json.tool
+oc get $(oc get node -o name -l beta.kubernetes.io/instance-type=g6e.2xlarge) -o=jsonpath={.status.allocatable} | python3 -m json.tool
 ----
 +
 This should now give an output with **8** allocatable GPUs. Great - now our data science team can see and use eight GPUs even though we only have one physical GPU.
