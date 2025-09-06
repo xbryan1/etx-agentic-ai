@@ -227,6 +227,8 @@ Specialized services for AI/ML workloads and agentic applications:
 As a Team, you need to do each of these Prerequisites.
 
 . We **Recommend** using the **Quick Starts** initially, then your laptop after the initial setup.
++
+Start with the **Quick Start** - **ETX 1 The Basics**
 
 . You may choose another client to bootstrap from (not recommended **especially** if you are on **MacOSX** which is not fully tested). It could be:
 ** Your https://www.dell.com/en-au/shop/dell-laptops/xps-16-laptop/spd/xps-16-9640-laptop[Laptop,window=_blank] or a https://docs.fedoraproject.org/en-US/fedora-silverblue/toolbox[Toolbx,window=_blank] or a https://docs.fedoraproject.org/en-US/docs/[Fedora like jumphost,window=_blank] or a https://docs.redhat.com/en/documentation/red_hat_openshift_ai_cloud_service/1/html/working_on_data_science_projects/using-project-workbenches_projects#creating-a-project-workbench_projects[Workbench Terminal,window=_blank] that can access your cluster and the internet
