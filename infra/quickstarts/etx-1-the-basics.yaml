@@ -20,25 +20,25 @@ spec:
 
         1. Check your HOME and set your shell.
         ```
-         echo ${HOME}
-         pwd
-         bash
+        echo ${HOME}
+        pwd
+        bash
         ```{{execute}}
       title: Set your shell
     - description: |-
         ### Setup Your Environment
 
-        1. Setup your admin password `echo export ADMIN_PASSWORD="password" | tee -a ~/.bashrc`{{execute}} in the shell environment.
+        1. Setup your admin password `echo export ADMIN_PASSWORD="password" | tee -a ~/.bashrc`{{copy}} in the shell environment.
 
         1. Get the existing cluster domain and set it in our .bashrc file and source it.
         ```
-         CLUSTER_DOMAIN=$(oc get ingress.config/cluster -o 'jsonpath={.spec.domain}')
-         echo export CLUSTER_DOMAIN=${CLUSTER_DOMAIN} | tee -a ~/.bashrc
-         BASE_DOMAIN=$(oc get dns cluster -o jsonpath='{.spec.baseDomain}')
-         echo export BASE_DOMAIN=${BASE_DOMAIN} | tee -a ~/.bashrc
-         source ~/.bashrc
-         echo ${CLUSTER_DOMAIN}
-         echo ${BASE_DOMAIN}
+        CLUSTER_DOMAIN=$(oc get ingress.config/cluster -o 'jsonpath={.spec.domain}')
+        echo export CLUSTER_DOMAIN=${CLUSTER_DOMAIN} | tee -a ~/.bashrc
+        BASE_DOMAIN=$(oc get dns cluster -o jsonpath='{.spec.baseDomain}')
+        echo export BASE_DOMAIN=${BASE_DOMAIN} | tee -a ~/.bashrc
+        source ~/.bashrc
+        echo ${CLUSTER_DOMAIN}
+        echo ${BASE_DOMAIN}
         ```{{execute}}
       title: Setup Your Environment
     - description: |-
@@ -46,7 +46,7 @@ spec:
 
         1. Login using the admin user to the external api
         ```
-         oc login --server=https://api.${BASE_DOMAIN}:6443 -u admin -p ${ADMIN_PASSWORD}
+        oc login --server=https://api.${BASE_DOMAIN}:6443 -u admin -p ${ADMIN_PASSWORD}
         ```{{execute}}
       title: Login to external api
       review:
