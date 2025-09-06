@@ -20,7 +20,7 @@ spec:
     - description: |-
         ### Initialize the vault
 
-        1. Initialize the vault. Make sure you record the **UNSEAL_KEY** and **ROOT_TOKEN** somewhere safe.
+        1. Initialize the vault. Make sure you record the **Unseal Key** and **Root Token** somewhere safe.
         ```
          oc -n vault exec -ti vault-0 -- vault operator init -key-threshold=1 -key-shares=1 -tls-skip-verify
         ```{{execute}}
@@ -38,9 +38,19 @@ spec:
         ### Set Vault env vars
 
         1. Use the values of the **Unseal Key 1** and **Initial Root Token** and store them in the .bashrc file. You should also copy these safely outside of the cluster.
+
+        1. Set the Unseal Key with the value
         ```
-         echo export UNSEAL_KEY=${UNSEAL_KEY} | tee -a ~/.bashrc
+         echo export UNSEAL_KEY=**Unseal Key 1** | tee -a ~/.bashrc
+        ```{{execute}}
+
+        1. Set the Root Token with the value
+        ```
          echo export ROOT_TOKEN=${ROOT_TOKEN} | tee -a ~/.bashrc
+        ```{{execute}}
+
+        1. Check
+        ```
          source ~/.bashrc
          echo ${UNSEAL_KEY}
          echo ${ROOT_TOKEN}
