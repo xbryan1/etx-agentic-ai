@@ -22,7 +22,7 @@ spec:
 
         1. Initialize the vault. Make sure you record the **Unseal Key** and **Root Token** somewhere safe.
         ```
-         oc -n vault exec -ti vault-0 -- vault operator init -key-threshold=1 -key-shares=1 -tls-skip-verify
+        oc -n vault exec -ti vault-0 -- vault operator init -key-threshold=1 -key-shares=1 -tls-skip-verify
         ```{{execute}}
       title: Initialize the vault
       review:
@@ -39,21 +39,21 @@ spec:
 
         1. Use the values of the **Unseal Key 1** and **Initial Root Token** and store them in the .bashrc file. You should also copy these safely outside of the cluster.
 
-        1. Set the Unseal Key with the value.
+        2. Set the Unseal Key with the value.
         ```
-         echo export UNSEAL_KEY="Unseal Key 1" | tee -a ~/.bashrc
+        echo export UNSEAL_KEY="Unseal Key 1" | tee -a ~/.bashrc
         ```{{copy}}
 
         3. Set the Root Token with the value.
         ```
-         echo export ROOT_TOKEN="Root Token" | tee -a ~/.bashrc
+        echo export ROOT_TOKEN="Root Token" | tee -a ~/.bashrc
         ```{{copy}}
 
         4. Check.
         ```
-         source ~/.bashrc
-         echo ${UNSEAL_KEY}
-         echo ${ROOT_TOKEN}
+        source ~/.bashrc
+        echo ${UNSEAL_KEY}
+        echo ${ROOT_TOKEN}
         ```{{execute}}
       title: Set Vault env vars
     - description: |-
@@ -61,7 +61,7 @@ spec:
 
         1. Unseal the Vault. You should see **Sealed** **false** in the output.
         ```
-         oc -n vault exec -ti vault-0 -- vault operator unseal -tls-skip-verify $UNSEAL_KEY
+        oc -n vault exec -ti vault-0 -- vault operator unseal -tls-skip-verify $UNSEAL_KEY
         ```{{execute}}
       title: Unseal the Vault
       review:
@@ -78,37 +78,37 @@ spec:
 
         1. Setup the **VAULT_ROUTE** env vars to point to Vault
         ```
-         echo export VAULT_ROUTE=vault-vault.${CLUSTER_DOMAIN} | tee -a ~/.bashrc
-         source ~/.bashrc
-         echo ${VAULT_ROUTE}
+        echo export VAULT_ROUTE=vault-vault.${CLUSTER_DOMAIN} | tee -a ~/.bashrc
+        source ~/.bashrc
+        echo ${VAULT_ROUTE}
         ```{{execute}}
 
-        1. Setup the **VAULT_ADDR** env vars to point to Vault
+        2. Setup the **VAULT_ADDR** env vars to point to Vault
         ```
-         echo export VAULT_ADDR=https://${VAULT_ROUTE} | tee -a ~/.bashrc
-         source ~/.bashrc
-         echo ${VAULT_ADDR}
+        echo export VAULT_ADDR=https://${VAULT_ROUTE} | tee -a ~/.bashrc
+        source ~/.bashrc
+        echo ${VAULT_ADDR}
         ```{{execute}}
 
-        1. Setup the **VAULT_SKIP_VERIFY** env vars to skip TLS verification for Vault
+        3. Setup the **VAULT_SKIP_VERIFY** env vars to skip TLS verification for Vault
         ```
-         echo export VAULT_SKIP_VERIFY=true | tee -a ~/.bashrc
-         source ~/.bashrc
-         echo ${VAULT_SKIP_VERIFY}
+        echo export VAULT_SKIP_VERIFY=true | tee -a ~/.bashrc
+        source ~/.bashrc
+        echo ${VAULT_SKIP_VERIFY}
         ```{{execute}}
 
-        1. Setup the **APP_NAME** env vars for configuration deployment
+        4. Setup the **APP_NAME** env vars for configuration deployment
         ```
-         echo export APP_NAME=vault | tee -a ~/.bashrc
-         source ~/.bashrc
-         echo ${APP_NAME}
+        echo export APP_NAME=vault | tee -a ~/.bashrc
+        source ~/.bashrc
+        echo ${APP_NAME}
         ```{{execute}}
 
-        1. Setup the **PROJECT_NAME** env vars to point to ArgoCD namespace
+        5. Setup the **PROJECT_NAME** env vars to point to ArgoCD namespace
         ```
-         echo export PROJECT_NAME=openshift-policy | tee -a ~/.bashrc
-         source ~/.bashrc
-         echo ${PROJECT_NAME}
+        echo export PROJECT_NAME=openshift-policy | tee -a ~/.bashrc
+        source ~/.bashrc
+        echo ${PROJECT_NAME}
         ```{{execute}}
       title: Set Vault env vars
     - description: |-
@@ -116,7 +116,7 @@ spec:
 
         1. Login to Vault
         ```
-         vault login token=${ROOT_TOKEN}
+        vault login token=${ROOT_TOKEN}
         ```{{execute}}
       title: Login to Vault
       review:
@@ -133,7 +133,7 @@ spec:
 
         1. Create the Vault Auth using Kubernetes auth
         ```
-         vault auth enable -path=${CLUSTER_DOMAIN}-${PROJECT_NAME} kubernetes
+        vault auth enable -path=${CLUSTER_DOMAIN}-${PROJECT_NAME} kubernetes
         ```{{execute}}
       title: Create Vault Auth
     - description: |-
@@ -141,9 +141,9 @@ spec:
 
         1. Setup the **MOUNT_ACCESSOR** env vars
         ```
-         echo export MOUNT_ACCESSOR=$(vault auth list -format=json | vault auth list -format=json | jq -r ".\\"$CLUSTER_DOMAIN-$PROJECT_NAME/\\".accessor") | tee -a ~/.bashrc
-         source ~/.bashrc
-         echo ${MOUNT_ACCESSOR}
+        echo export MOUNT_ACCESSOR=$(vault auth list -format=json | vault auth list -format=json | jq -r ".\\"$CLUSTER_DOMAIN-$PROJECT_NAME/\\".accessor") | tee -a ~/.bashrc
+        source ~/.bashrc
+        echo ${MOUNT_ACCESSOR}
         ```{{execute}}
       title: Set Vault env vars
     - description: |-
@@ -163,7 +163,7 @@ spec:
 
         1. Enable kv2 to store our secrets
         ```
-         vault secrets enable -path=kv/ -version=2 kv
+        vault secrets enable -path=kv/ -version=2 kv
         ```{{execute}}
       title: Enable kv2
     - description: |-
@@ -171,11 +171,11 @@ spec:
 
         1. Bind the ACL to Auth policy
         ```
-         vault write auth/$CLUSTER_DOMAIN-$PROJECT_NAME/role/$APP_NAME \\
-         bound_service_account_names=$APP_NAME \\
-         bound_service_account_namespaces=$PROJECT_NAME \\
-         policies=$CLUSTER_DOMAIN-$PROJECT_NAME-kv-read \\
-         period=120s
+        vault write auth/$CLUSTER_DOMAIN-$PROJECT_NAME/role/$APP_NAME \\
+        bound_service_account_names=$APP_NAME \\
+        bound_service_account_namespaces=$PROJECT_NAME \\
+        policies=$CLUSTER_DOMAIN-$PROJECT_NAME-kv-read \\
+        period=120s
         ```{{execute}}
       title: Bind the ACL to Auth policy
     - description: |-
@@ -183,9 +183,9 @@ spec:
 
         1. Add the initial token and CA cert to the Vault Auth Config.
         ```
-         vault write auth/${CLUSTER_DOMAIN}-${PROJECT_NAME}/config \\
-         kubernetes_host="$(oc whoami --show-server)" \\
-         kubernetes_ca_cert="$CA_CRT"
+        vault write auth/${CLUSTER_DOMAIN}-${PROJECT_NAME}/config \\
+        kubernetes_host="$(oc whoami --show-server)" \\
+        kubernetes_ca_cert="$CA_CRT"
         ```{{execute}}
       title: Add CA and Initial Token
   conclusion: >-
