@@ -17,6 +17,7 @@ Estimated time: 60–90 minutes
 Before starting this lab, ensure you have the following:
 
 === Required Tools
+
 * **GitHub Account**: You'll need access to fork repositories and collaborate
 * **Git CLI**: Installed and configured on your local machine
 * **OpenShift CLI (oc)**: Download from https://mirror.openshift.com/pub/openshift-v4/clients/ocp/[OpenShift client downloads,window=_blank]
@@ -57,6 +58,28 @@ Before diving into the agentic AI lab, we need to set up our development environ
 **For later exploration** (after the lab):
 
 * **Manual setup**: The step-by-step instructions below show how each component works - perfect for understanding GitOps and secret management in detail
+
+== Quick Starts
+
+. We have created some OpenShift Quick Starts to make the initial configuration steps a bit easier to follow. They also allow us to standardize the environment being used (bash, linux command line, tools).
++
+You can browse to the Quick Starts in OpenShift Web Console > Help **?** > QuickStarts - then search for **etx**
++
+.ETX Quick Starts
+image:etx-quick-starts.png[ETX Quick Starts, 800]
+
+. Select the first one **ETX -1- The Basics** and then Click **Step 1 - Set your shell**
+
+. Next Select **Run in Web Terminal** play button. The **Initialize Terminal** screen should appear in the bottom half of your browser.
++
+. Select **Start** to run the terminal
++
+.ETX 1 The Basics
+image:etx-quick-starts2.png[ETX 1 The Basics, 800]
++
+. Continue with all the ETX Quick Starts. We will point out in the docs if they are covered in a **Quick Start**.
++
+. Done ✅
 
 == Team Setup
 
