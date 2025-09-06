@@ -42,12 +42,12 @@ spec:
         1. Set the Unseal Key with the value.
         ```
          echo export UNSEAL_KEY="Unseal Key 1" | tee -a ~/.bashrc
-        ```{{execute}}
+        ```{{copy}}
 
         3. Set the Root Token with the value.
         ```
          echo export ROOT_TOKEN="Root Token" | tee -a ~/.bashrc
-        ```{{execute}}
+        ```{{copy}}
 
         4. Check.
         ```
