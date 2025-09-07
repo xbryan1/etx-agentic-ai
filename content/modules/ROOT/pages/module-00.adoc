@@ -68,7 +68,7 @@ You can browse to the Quick Starts in OpenShift Web Console > Help **?** > Quick
 .ETX Quick Starts
 image::etx-quick-starts.png[ETX Quick Starts, 800]
 
-. Select the first one **ETX -1- The Basics** and then Click **Step 1 - Set your shell**
+. Select the first one **ETX -1- The Basics** and then Click **Start** > **Step 1 - Set your shell**
 
 . Next Select **Run in Web Terminal** play button. The **Initialize Terminal** screen should appear in the bottom half of your browser.
 
