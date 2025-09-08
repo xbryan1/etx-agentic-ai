@@ -648,7 +648,7 @@ image::add-console-links.png[Console Links, 300]
 +
 **Red Hat Applications** - these are cloud services provided by Red Hat for your cluster.
 +
-**GenAI** - these are the GenAI applications that we will be using in the exercises. The **Agentic ArgoCD** should be running but is empty (no apps deployed yet) and is our GitOps application. The **LLamaStack Playground** is not deployed yet, but will be the link for the LlamaStack UI for integrating Tools and Agents. **Vault** is running but not yet initialized or unsealed and is the app that stores our secrets.
+**GenAI** - these are the GenAI applications that we will be using in the exercises. The **Agentic ArgoCD** should be running but is empty (no apps deployed yet) and is our GitOps application. The **LLamaStack Playground** is not deployed yet, but will be the link for the LlamaStack UI for integrating Tools and Agents. **Vault** is running and initialized and unsealed and is the app that stores our secrets.
 +
 **OpenShift GitOps** - this is the cluster bootstrap ArgoCD GitOps. This has all of the setup to get started for our cluster. It does not include the Agentic applications that we cover in the exercises.
 +
