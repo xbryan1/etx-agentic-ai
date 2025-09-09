@@ -121,11 +121,11 @@ image::github-repo-enable-issues.png[GitHub Repo Enable Issues, 400]
 
 . **Setup and run the Web Terminal Operator as described in the Quick Starts**
 
-. **Both team members: Clone the forked repository (in your web terminal if using the Web Terminal Operator as described above in the Quick Starts, locally otherwise)**
+. **Both team members: Later in the lab we will clone the forked repository to the OpenShift Web Terminal through steps in the Quick Starts, but if you're running the lab locally you can go ahead and clone the repository locally to your laptop.**
 +
 [source,bash,options="wrap",role="execute"]
 ----
-git clone https://github.com/{your-gh-user}/etx-agentic-ai
+git clone git@github.com:your-gh-user/etx-agentic-ai.git
 cd etx-agentic-ai
 ----
 +
