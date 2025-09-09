@@ -119,11 +119,13 @@ image::github-collaborators.png[GitHub Repo Collaborators, 400]
 .GitHub Repo Enable Issues
 image::github-repo-enable-issues.png[GitHub Repo Enable Issues, 400]
 
-. **Both team members: Clone the forked repository locally**
+. **Setup and run the Web Terminal Operator as described in the Quick Starts**
+
+. **Both team members: Clone the forked repository (in your web terminal if using the Web Terminal Operator as described above in the Quick Starts, locally otherwise)**
 +
 [source,bash,options="wrap",role="execute"]
 ----
-git clone git@github.com:your-gh-user/etx-agentic-ai.git
+git clone https://github.com/{your-gh-user}/etx-agentic-ai
 cd etx-agentic-ai
 ----
 +
