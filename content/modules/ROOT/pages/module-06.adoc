@@ -36,7 +36,7 @@ oc get ns ai-agent
 oc -n ai-agent get deploy,svc,route,cm,sa,rb,secret
 ----
 
-* If resources are missing, ensure your GitOps/App-of-Apps includes the tenant. Then sync in ArgoCD.
+* If resources are missing, ensure your GitOps/App-of-Apps includes the tenant. Then sync in Argo CD.
 
 == Point to Your GitHub Fork and Correct the Webhook Path
 

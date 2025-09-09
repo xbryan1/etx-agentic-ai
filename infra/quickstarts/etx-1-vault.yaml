@@ -104,7 +104,7 @@ spec:
         echo ${APP_NAME}
         ```{{execute}}
 
-        5. Setup the **PROJECT_NAME** env vars to point to ArgoCD namespace
+        5. Setup the **PROJECT_NAME** env vars to point to Argo CD namespace
         ```
         echo export PROJECT_NAME=openshift-policy | tee -a ~/.bashrc
         source ~/.bashrc
@@ -149,7 +149,7 @@ spec:
     - description: |-
         ### Create an ACL Policy
 
-        1. ArgoCD will only be allowed to __READ__ secret values for hydration into the cluster
+        1. Argo CD will only be allowed to __READ__ secret values for hydration into the cluster
         ```
          vault policy write $CLUSTER_DOMAIN-$PROJECT_NAME-kv-read -<< EOF
          path "kv/data/*" {

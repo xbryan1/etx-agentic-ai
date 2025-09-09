@@ -9,7 +9,7 @@ pre-reqs
 whats in the cluster
 - Juliano's etx-ai cluster (RHOAI, GPU, NFD)
 - bootstrap 
-    - ACM + ArgoCD
+    - ACM + Argo CD
         - vault
         - observability
         - LLM granite is there maas (with no tool calling config in vllm at start - so it breaks)

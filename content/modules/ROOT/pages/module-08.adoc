@@ -9,10 +9,10 @@ Estimated time: 45–60 minutes (Optional)
 
 Make sure the following are completed from earlier modules:
 
-* Cluster is bootstrapped and healthy (OpenShift GitOps and Agentic ArgoCD reachable)
+* Cluster is bootstrapped and healthy (OpenShift GitOps and Agentic Argo CD reachable)
 * Vault is initialized, unsealed, and you exported `ROOT_TOKEN` and `UNSEAL_KEY`
-* Secrets have been hydrated into Vault (Agentic ArgoCD showing healthy secret integration)
-* Your fork is configured with PAT and webhook to ArgoCD
+* Secrets have been hydrated into Vault (Agentic Argo CD showing healthy secret integration)
+* Your fork is configured with PAT and webhook to Argo CD
 * Tools installed: `oc`, `vault`, `jq`, `envsubst`, `python3`
 * Optional: If using MaaS, export the `MODEL_*` environment variables
 

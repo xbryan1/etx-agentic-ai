@@ -61,6 +61,8 @@ Before diving into the agentic AI lab, we need to set up our development environ
 
 == Quick Starts
 
+You will do this AFTER you gain access to your cluster. We are explaining it here for awareness before you login so you know how to balance getting started qucikly with the information provided in the lab.
+
 . We have created some OpenShift Quick Starts to make the initial configuration steps a bit easier to follow. They also allow us to standardize the environment being used (bash, linux command line, tools).
 +
 You can browse to the Quick Starts in OpenShift Web Console > Help **?** > QuickStarts - then search for **etx**
@@ -85,7 +87,7 @@ TIP: Covered in a Quick Start
 
 == Team Setup
 
-. **You'll be working in teams of 2 people per cluster**
+. **You'll likely either be working in teams of 2 people per cluster or groups of 2 where each person gets their own cluster (if resources are available)**
 +
 [NOTE]
 ====
@@ -150,16 +152,16 @@ These foundational components are deployed first to establish the platform's ope
 
 * **Red Hat OpenShift**: Enterprise Kubernetes platform providing container orchestration
 * **Advanced Cluster Management (ACM)**: Multi-cluster governance and GitOps orchestration
-* **ArgoCD**: Declarative, Git-driven application deployments
+* **Argo CD**: Declarative, Git-driven application deployments
 * **HashiCorp Vault**: Secure credential storage and automated secret injection
 
-=== Security, Governance, and Delivery (ArgoCD + Policy as Code)
+=== Security, Governance, and Delivery (Argo CD + Policy as Code)
 Built on the bootstrap foundation, we combine continuous delivery with continuous compliance:
 
 [IMPORTANT]
 .Why both exist in this repo
 ====
-* **ArgoCD (delivery)** deploys the capabilities that teams need (Llama Stack, MCP tools, agent services, pipelines) from Git
+* **Argo CD (delivery)** deploys the capabilities that teams need (Llama Stack, MCP tools, agent services, pipelines) from Git
 * **Policy as Code (governance)** enforces the rules those capabilities must follow (security, sources, sizes, hygiene)
 
 What policies can assert here:
@@ -173,7 +175,7 @@ What policies can assert here:
 
 This pairing yields:
 
-* **Zero Configuration Drift**: what's in Git is what runs (ArgoCD)
+* **Zero Configuration Drift**: what's in Git is what runs (Argo CD)
 * **Automated Compliance**: guardrails are applied continuously (policies)
 * **Green from GO**: start compliant; learn inside enterprise guardrails from day one
 
@@ -236,7 +238,7 @@ Start with the **Quick Start** - **ETX 1 The Basics**
 ** Download and https://developer.hashicorp.com/vault/install[Install the Hashi Vault Client binary,window=_blank]
 ** Login to your OpenShift cluster using the https://mirror.openshift.com/pub/openshift-v4/clients/ocp/[OpenShift client,window=_blank] as the cluster-admin user
 
-. Setup env vars and login to OpenShift
+. Setup env vars and login to OpenShift. You can either use the OpenShift Web Console to grab a login command or use the details below to construct the login command on your own.
 +
 TIP: Covered in a Quick Start
 +
@@ -324,8 +326,9 @@ image::vault-init.png[Vault initialization output showing unseal key and root to
 oc -n vault exec -ti vault-0 -- vault operator unseal -tls-skip-verify $UNSEAL_KEY
 ----
 
-. Setup secrets for gitops.
-+
+=== Setup secrets for gitops
+
+
 TIP: (Optional Reading) You can see more details of this sort of setup https://eformat.github.io/rainforest-docs/#/2-platform-work/3-secrets[here,window=_blank] if you need more background.
 
 . Setup env vars
@@ -366,7 +369,7 @@ vault auth enable -path=${CLUSTER_DOMAIN}-${PROJECT_NAME} kubernetes
 export MOUNT_ACCESSOR=$(vault auth list -format=json | jq -r ".\"$CLUSTER_DOMAIN-$PROJECT_NAME/\".accessor")
 ----
 
-. Create an ACL Policy - ArgoCD will only be allowed to __READ__ secret values for hydration into the cluster
+. Create an ACL Policy - Argo CD will only be allowed to __READ__ secret values for hydration into the cluster
 +
 [source,bash,options="wrap",role="execute"]
 ----
@@ -478,7 +481,7 @@ image::github-pat.png[GitHub Repo Token, 400]
 
 === GitHub Webhook
 
-Create a webhook that fires from your GitHub repo fork to ArgoCD on the OpenShift Cluster. This ensures the applications are synced whenever you push a change into git (rather than wait the 3min default sync time).
+Create a webhook that fires from your GitHub repo fork to Argo CD on the OpenShift Cluster. This ensures the applications are synced whenever you push a change into git (rather than wait the 3min default sync time).
 
 . Login to GitHub in a browser, go to your **etx-agentic-ai** fork > **Settings**
 
@@ -527,7 +530,7 @@ NOTE: the instructor will provide the key
 ansible-vault decrypt infra/secrets/vault-sno
 ----
 
-. Check the gathered api tokens are set as env vars in the secrets file. Add your **Tavily** and **GitHub Pat** tokens to the file.
+. Review the file and set the gathered api tokens as env vars in the secrets file. Add your **Tavily** and **GitHub Pat** tokens to the file.
 +
 .Add API Tokens
 image::add-apikeys-secrets.png[Add API Tokens, 300]
@@ -587,7 +590,7 @@ cd ../../
 ----
 ====
 
-. Lastly, create the secret used by ArgoCD to connect to Vault in our OpenShift cluster. Since the OpenShift TokenAPI is used, we only really reference the service account details.
+. Lastly, create the secret used by Argo CD to connect to Vault in our OpenShift cluster. Since the OpenShift TokenAPI is used, we only really reference the service account details.
 +
 [source,yaml,options="wrap",role="execute"]
 ----
@@ -608,7 +611,7 @@ type: Opaque
 EOF
 ----
 
-. Your _Agentic_ ArgoCD is now setup to read secrets from Vault and should be in a healthy state.
+. Your _Agentic_ Argo CD is now setup to read secrets from Vault and should be in a healthy state.
 +
 image::vault-health.png[Vault Health, 600]
 
@@ -648,9 +651,9 @@ image::add-console-links.png[Console Links, 300]
 +
 **Red Hat Applications** - these are cloud services provided by Red Hat for your cluster.
 +
-**GenAI** - these are the GenAI applications that we will be using in the exercises. The **Agentic ArgoCD** should be running but is empty (no apps deployed yet) and is our GitOps application. The **LLamaStack Playground** is not deployed yet, but will be the link for the LlamaStack UI for integrating Tools and Agents. **Vault** is running and initialized and unsealed and is the app that stores our secrets.
+**GenAI** - these are the GenAI applications that we will be using in the exercises. The **Agentic Argo CD** should be running but is empty (no apps deployed yet) and is our GitOps application. The **LLamaStack Playground** is not deployed yet, but will be the link for the LlamaStack UI for integrating Tools and Agents. **Vault** is running and initialized and unsealed and is the app that stores our secrets.
 +
-**OpenShift GitOps** - this is the cluster bootstrap ArgoCD GitOps. This has all of the setup to get started for our cluster. It does not include the Agentic applications that we cover in the exercises.
+**OpenShift GitOps** - this is the cluster bootstrap Argo CD GitOps. This has all of the setup to get started for our cluster. It does not include the Agentic applications that we cover in the exercises.
 +
 **RHOAI** - the UI for Red Hat OpenShift AI. Login here to access your Data Science workbenches, models, pipelines and experiments.
 
@@ -658,7 +661,7 @@ image::add-console-links.png[Console Links, 300]
 +
 [source,bash,options="wrap",role="execute"]
 ----
-# We need to update our ArgoCD Apps to point to your team fork
+# We need to update our Argo CD Apps to point to your team fork
 export YOUR_GITHUB_USER=your-gh-user  # the Team member who forked the GitHub Repo
 cd etx-agentic-ai   # Navigate to root directory of code base if not already there
 ----
@@ -699,7 +702,7 @@ This will install the tenant pipeline app and observability stack into our clust
 +
 image::bootstrap-initial.png[bootstrap-initial, 400]
 
-. Check the Install progress of the app-of-apps in the **Agentic ArgoCD**
+. Check the Install progress of the app-of-apps in the **Agentic Argo CD**
 +
 image::bootstrap-begin.png[bootstrap-begin, 400]
 

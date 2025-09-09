@@ -28,7 +28,7 @@ Use the OpenShift Console Links to quickly navigate around the environment.
 * LLamaStack Playground
 * OpenShift
 * ACM
-* ArgoCD
+* Argo CD
 
 image::console-links.png[Console Links, 300]
 

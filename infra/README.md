@@ -20,7 +20,7 @@ export OPENSHIFT_VERSION=4.18.14
 
 ## Bootstrap
 
-Installs ArgoCD and ACM
+Installs Argo CD and ACM
 
 ```bash
 kustomize build --enable-helm bootstrap | oc apply -f-
@@ -73,7 +73,7 @@ This uses the default storage we setup for LVM
 
 Install `vault.yaml` in the app-of-apps folder.
 
-Setup Vault Auth for ArgoCD
+Setup Vault Auth for Argo CD
 
 ```bash
 ./gitops/bootstrap/vault-setup.sh

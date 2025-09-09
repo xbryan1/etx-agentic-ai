@@ -38,7 +38,7 @@ image::models-deploy.png[Models Deploy, 300]
 git add .; git commit -m "deploy default models"; git push
 ----
 
-. Check ArgoCD that **models** has appeared under the **etx-app-of-apps**
+. Check Argo CD that **models** has appeared under the **etx-app-of-apps**
 + 
 image::models-etx-app-of-apps.png[Models GitOps, 800]
 
@@ -216,9 +216,9 @@ TIP: If **PolicyGenerator** is new to you, checkout the https://docs.redhat.com/
 git add .; git commit -m "deploy llama-stack distribution"; git push
 ----
 
-. Check ArgoCD, ACM for LlamaStack
+. Check Argo CD, ACM for LlamaStack
 +
-image::llama-stack-basic-argocd.png[LlamaStack Basic ArgoCD, 800]
+image::llama-stack-basic-argocd.png[LlamaStack Basic Argo CD, 800]
 +
 image::llama-stack-basic-acm.png[LlamaStack Basic ACM, 800]
 
@@ -418,9 +418,9 @@ image::llama-stack-playground-deploy.png[LlamaStack Deploy, 300]
 git add .; git commit -m "deploy llama-stack-playground"; git push
 ----
 
-. Check ArgoCD, ACM and the **llama-stack-playground** Deployment in the **llama-stack** Namespace
+. Check Argo CD, ACM and the **llama-stack-playground** Deployment in the **llama-stack** Namespace
 +
-image::llama-stack-playground-argocd.png[LlamaStack Playground ArgoCD, 800]
+image::llama-stack-playground-argocd.png[LlamaStack Playground Argo CD, 800]
 +
 image::llama-stack-playground-acm.png[LlamaStack Playground ACM, 800]
 +
@@ -659,9 +659,9 @@ image::mcp-openshift-deploy.png[LlamaStack MCP OpenShift, 300]
 git add .; git commit -m "deploy mcp::openshift"; git push
 ----
 
-. Check ArgoCD and ACM and for the MCP Pod
+. Check Argo CD and ACM and for the MCP Pod
 +
-image::mcp-openshift-argocd.png[LlamaStack Basic ArgoCD, 800]
+image::mcp-openshift-argocd.png[LlamaStack Basic Argo CD, 800]
 +
 image::mcp-openshift-acm.png[LlamaStack Basic ACM, 800]
 
@@ -749,9 +749,9 @@ image::mcp-github-deploy.png[LlamaStack MCP GitHub, 300]
 git add .; git commit -m "deploy mcp::github"; git push
 ----
 
-. Check ArgoCD and ACM and for the MCP Pod
+. Check Argo CD and ACM and for the MCP Pod
 +
-image::mcp-github-argocd.png[LlamaStack MCP GitHub ArgoCD, 800]
+image::mcp-github-argocd.png[LlamaStack MCP GitHub Argo CD, 800]
 +
 image::mcp-github-acm.png[LlamaStack MCP GitHub ACM, 800]
 
