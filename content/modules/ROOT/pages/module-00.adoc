@@ -314,7 +314,7 @@ oc -n vault exec -ti vault-0 -- vault operator init -key-threshold=1 -key-shares
 export UNSEAL_KEY=EGbx...
 export ROOT_TOKEN=hvs.wnz...
 ----
-
++
 After running the vault initialization command, you'll see output containing the unseal key and root token. Copy these values and export them as environment variables as shown.
 
 image::vault-init.png[Vault initialization output showing unseal key and root token]
@@ -325,10 +325,7 @@ image::vault-init.png[Vault initialization output showing unseal key and root to
 ----
 oc -n vault exec -ti vault-0 -- vault operator unseal -tls-skip-verify $UNSEAL_KEY
 ----
-
-=== Setup secrets for gitops
-
-
++
 TIP: (Optional Reading) You can see more details of this sort of setup https://eformat.github.io/rainforest-docs/#/2-platform-work/3-secrets[here,window=_blank] if you need more background.
 
 . Setup env vars
